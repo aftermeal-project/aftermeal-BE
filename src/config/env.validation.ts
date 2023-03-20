@@ -1,26 +1,11 @@
 import { ValidationError } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { IsEnum, validateSync } from 'class-validator';
+import { validateSync } from 'class-validator';
 import { IsNumber, IsString } from 'class-validator';
-import { DatabaseType } from 'typeorm/driver/types/DatabaseType';
-
-enum Environment {
-  Development = 'development',
-  Production = 'production',
-}
 
 class EnvironmentVariables {
-  @IsEnum(Environment)
-  NODE_ENV: Environment;
-
-  @IsString()
-  HOST: string;
-
   @IsNumber()
   PORT: number;
-
-  @IsString()
-  DB_TYPE: DatabaseType;
 
   @IsString()
   DB_HOST: string;
@@ -51,7 +36,7 @@ export const validate = (
     skipMissingProperties: false,
   });
 
-  if (errors.length > 0) throw new Error(errors.toString());
+  if (errors.length === 0) return validateConfig;
 
-  return validateConfig;
+  throw new Error(errors.toString());
 };
