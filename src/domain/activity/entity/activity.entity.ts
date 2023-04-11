@@ -17,8 +17,8 @@ export class Activity extends BaseTimeEntity {
   @Column({
     name: 'time_slot',
     type: 'enum',
-    enum: ['DAY', 'NIGHT', 'NONE'],
-    default: 'NONE',
+    enum: TimeSlot.values(),
+    default: TimeSlot.NONE,
   })
   timeSlot: TimeSlot;
 
