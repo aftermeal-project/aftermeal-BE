@@ -14,5 +14,5 @@ export class Participate extends BaseTimeEntity {
 
   @ManyToOne(() => Activity, { nullable: false, cascade: true })
   @JoinColumn({ name: 'selected_activity_id' })
-  activity: Activity;
+  selectedActivity: Activity;
 }

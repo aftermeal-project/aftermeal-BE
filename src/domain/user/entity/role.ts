@@ -24,15 +24,6 @@ export class Role extends EnumType<Role>() {
     return this.values().find((e) => e.equals(code))?.name;
   }
 
-  static findByGeneration(generation: number) {
-    return this.values().find((e) => e.betweenYear(generation))?.name;
-  }
-
-  betweenYear(generation: number) {
-    const currentYear = new Date().getFullYear();
-    // generation와 currentYear 이용해서 졸업년도 구하기
-  }
-
   private equals(code: string): boolean {
     return this.code === code;
   }
