@@ -1,6 +1,14 @@
-import { Column, Entity, Generated, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Generated,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Role } from './role';
 import { BaseTimeEntity } from '../../../global/entity/base-time.entity';
+import { Student } from './student.entity';
 
 @Entity()
 export class User extends BaseTimeEntity {
@@ -14,20 +22,18 @@ export class User extends BaseTimeEntity {
   @Column({ name: 'name', nullable: false })
   name: string;
 
-  @Column({ name: 'email', nullable: false })
+  @Column({ name: 'email', nullable: false, unique: true })
   email: string;
-
-  @Column({ name: 'generation', nullable: false })
-  generation: number;
-
-  @Column({ name: 'student_id', nullable: true, unique: true, default: null })
-  studentId: number | null;
 
   @Column({
     name: 'role',
     type: 'enum',
-    enum: ['GUEST', 'STUDENT', 'GRADUATE', 'ADMIN'],
-    default: 'GUEST',
+    enum: Role.values(),
+    default: Role.NONE,
   })
   role: Role;
+
+  @OneToOne(() => Student, { nullable: true })
+  @JoinColumn({ name: 'generation' })
+  student: Student;
 }
