@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
-import appConfig from './config/app/app.config';
+import appConfig from './global/config/app/app.config';
 import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
