@@ -1,11 +1,12 @@
 import { Enum, EnumType } from 'ts-jenum';
 
 @Enum('code')
-export class StudentEntity extends EnumType<StudentEntity>() {
-  static readonly STUDENT = new StudentEntity('STUDENT', '재학생');
-  static readonly GRADUATE = new StudentEntity('GRADUATE', '졸업생');
-  static readonly ADMIN = new StudentEntity('ADMIN', '관리자');
-  static readonly NONE = new StudentEntity('NONE', 'NONE');
+export class Role extends EnumType<Role>() {
+  static readonly STUDENT = new Role('STUDENT', '재학생');
+  static readonly GRADUATE = new Role('GRADUATE', '졸업생');
+  static readonly TEACHER = new Role('TEACHER', '선생님');
+  static readonly ADMIN = new Role('ADMIN', '관리자');
+  static readonly NONE = new Role('NONE', 'NONE');
 
   private constructor(readonly _code: string, readonly _name: string) {
     super();
@@ -19,18 +20,17 @@ export class StudentEntity extends EnumType<StudentEntity>() {
     return this._name;
   }
 
-  static findNameByCode(code: string): string {
+  static findName(code: string): string {
     return this.values().find((e) => e.equals(code))?.name;
   }
 
   static findByGeneration(generation: number) {
-    const year: number = new Date().getUTCFullYear();
-    return this.values().find((e) => e.)?.name;
+    return this.values().find((e) => e.betweenYear(generation))?.name;
   }
 
-  betweenYear(year: number): boolean {
-    const currentYear = new Date().getUTCFullYear();
-    return this.startYear <= year && this.cu >= year;
+  betweenYear(generation: number) {
+    const currentYear = new Date().getFullYear();
+    // generation와 currentYear 이용해서 졸업년도 구하기
   }
 
   private equals(code: string): boolean {
