@@ -1,11 +1,11 @@
 import { Enum, EnumType } from 'ts-jenum';
 
-@Enum('enum')
-export class Role extends EnumType<Role>() {
-  static readonly GUEST = new Role('GUEST', '게스트');
-  static readonly STUDENT = new Role('STUDENT', '재학생');
-  static readonly GRADUATE = new Role('GRADUATE', '졸업생');
-  static readonly ADMIN = new Role('ADMIN', '관리자');
+@Enum('code')
+export class StudentEntity extends EnumType<StudentEntity>() {
+  static readonly STUDENT = new StudentEntity('STUDENT', '재학생');
+  static readonly GRADUATE = new StudentEntity('GRADUATE', '졸업생');
+  static readonly ADMIN = new StudentEntity('ADMIN', '관리자');
+  static readonly NONE = new StudentEntity('NONE', 'NONE');
 
   private constructor(readonly _code: string, readonly _name: string) {
     super();
@@ -19,11 +19,21 @@ export class Role extends EnumType<Role>() {
     return this._name;
   }
 
-  static findName(code: string): string {
+  static findNameByCode(code: string): string {
     return this.values().find((e) => e.equals(code))?.name;
   }
 
-  equals(code: string): boolean {
+  static findByGeneration(generation: number) {
+    const year: number = new Date().getUTCFullYear();
+    return this.values().find((e) => e.)?.name;
+  }
+
+  betweenYear(year: number): boolean {
+    const currentYear = new Date().getUTCFullYear();
+    return this.startYear <= year && this.cu >= year;
+  }
+
+  private equals(code: string): boolean {
     return this.code === code;
   }
 }
