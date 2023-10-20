@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTimeEntity } from '../../common/model/base-time.entity';
 import { UserStatus } from './user-status';
+import { Generation } from './generation.entity';
 
 @Entity()
 export class User extends BaseTimeEntity {
@@ -16,12 +17,16 @@ export class User extends BaseTimeEntity {
   @Column({ name: 'type' })
   type: string;
 
-  @Column({ name: 'generation', nullable: true })
-  generation?: number | null;
-
   @Column({ type: 'array', name: 'role' })
   role: string[];
 
   @Column({ name: 'status', default: UserStatus.Candidate })
   status: string;
+
+  @OneToOne(() => Generation, {
+    nullable: true,
+    eager: true,
+  })
+  @JoinColumn({ name: 'generation' })
+  generation: Generation;
 }
