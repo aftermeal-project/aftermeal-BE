@@ -1,13 +1,13 @@
-import { BaseTimeEntity } from '../../../global/entity/base-time.entity';
+import { BaseTimeEntity } from '../../common/model/base-time.entity';
 import { Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Activity } from './activity.entity';
 
 @Entity()
 export class SelectedActivity extends BaseTimeEntity {
   @PrimaryColumn({ name: 'selected_activity_id' })
-  selectedActivityId: number;
+  id: number;
 
-  @OneToOne(() => Activity, { nullable: false, cascade: true })
+  @OneToOne(() => Activity, { cascade: true })
   @JoinColumn({ name: 'selected_activity_id' })
-  activity: Activity;
+  selectedActivity: Activity;
 }
