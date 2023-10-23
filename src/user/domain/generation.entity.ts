@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { GenerationStatus } from './generation-status';
 
 @Entity()
 export class Generation {
@@ -9,6 +8,6 @@ export class Generation {
   @Column({ name: 'year_of_admission', unique: true })
   yearOfAdmission: number;
 
-  @Column({ name: 'status', type: 'enum' })
-  status: GenerationStatus;
+  @Column({ name: 'graduated' })
+  graduated: boolean;
 }
