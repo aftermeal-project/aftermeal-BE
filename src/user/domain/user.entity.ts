@@ -27,6 +27,6 @@ export class User extends BaseTimeEntity {
   userRole: UserRole;
 
   @OneToOne(() => Generation)
-  @JoinColumn({ name: 'generation' })
+  @JoinColumn({ name: 'generation_number' })
   generation: Generation;
 }
