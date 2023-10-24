@@ -1,9 +1,9 @@
 import { Enum, EnumType } from 'ts-jenum';
 
 @Enum('code')
-export class TimeZone extends EnumType<TimeZone>() {
-  static readonly LUNCH: TimeZone = new TimeZone('LUNCH', '점심');
-  static readonly DINNER: TimeZone = new TimeZone('DINNER', '저녁');
+export class Time extends EnumType<Time>() {
+  static readonly LUNCH: Time = new Time('LUNCH', '점심');
+  static readonly DINNER: Time = new Time('DINNER', '저녁');
 
   private constructor(readonly _code: string, readonly _name: string) {
     super();
