@@ -1,24 +1,21 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { BaseTimeEntity } from '../../common/model/base-time.entity';
 import { User } from '../../user/domain/user.entity';
 import { Activity } from '../../activity/domain/activity.entity';
 
 @Entity()
 export class Vote extends BaseTimeEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn()
+  userId: number;
 
-  @ManyToOne(() => User, {
-    cascade: true,
-    lazy: true,
-  })
+  @PrimaryColumn()
+  activityId: number;
+
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
-  user: Promise<User>;
+  user: User;
 
-  @ManyToOne(() => Activity, {
-    cascade: true,
-    lazy: true,
-  })
+  @ManyToOne(() => Activity)
   @JoinColumn({ name: 'activity_id' })
-  activity: Promise<Activity>;
+  activity: Activity;
 }
