@@ -9,13 +9,13 @@ export class UserRole {
   @PrimaryColumn()
   userId: number;
 
-  @ManyToOne(() => Role, (role) => role.userRole, {
+  @ManyToOne(() => Role, {
     nullable: false,
   })
   @JoinColumn({ name: 'role_id' })
   role: Role;
 
-  @ManyToOne(() => User, (user) => user.userRole, {
+  @ManyToOne(() => User, {
     nullable: false,
   })
   @JoinColumn({ name: 'user_id' })
