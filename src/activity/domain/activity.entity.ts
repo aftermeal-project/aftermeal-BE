@@ -1,24 +1,22 @@
 import { BaseTimeEntity } from '../../common/model/base-time.entity';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { TimeZone } from './time-zone';
+import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ActivityItem } from './activity-item.entity';
-import { ActivityStatus } from './activity-status';
+import { ActivityStatus } from './activity-status.entity';
 
 @Entity()
 export class Activity extends BaseTimeEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'enum', enum: TimeZone.values() })
-  mealTime: TimeZone;
-
-  @Column({ type: 'enum', enum: ActivityStatus.values() })
-  status: ActivityStatus;
-
   @OneToOne(() => ActivityItem, {
-    cascade: true,
     eager: true,
   })
   @JoinColumn({ name: 'activity_item_id' })
   activityItem: ActivityItem;
+
+  @OneToOne(() => ActivityStatus, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'activity_status_id' })
+  activityStatus: ActivityStatus;
 }
