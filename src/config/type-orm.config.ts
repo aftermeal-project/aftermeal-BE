@@ -3,6 +3,7 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ConfigType } from '@nestjs/config';
 import databaseConfig from './database.config';
 import applicationConfig from './app.config';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Injectable()
 export class TypeOrmConfig implements TypeOrmOptionsFactory {
@@ -24,6 +25,7 @@ export class TypeOrmConfig implements TypeOrmOptionsFactory {
       entities: [__dirname + '/../../../../**/*.domain{.ts,.js}'],
       synchronize: this.appConfig.env === 'development',
       logging: this.appConfig.env === 'development',
+      namingStrategy: new SnakeNamingStrategy(),
     };
   }
 }

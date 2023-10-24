@@ -5,7 +5,7 @@ import { Activity } from '../../activity/domain/activity.entity';
 
 @Entity()
 export class Vote extends BaseTimeEntity {
-  @PrimaryGeneratedColumn({ name: 'vote_id' })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => User, {

@@ -6,21 +6,13 @@ import { ActivityStatus } from './activity-status';
 
 @Entity()
 export class Activity extends BaseTimeEntity {
-  @PrimaryColumn({ name: 'activity_id' })
+  @PrimaryColumn()
   id: number;
 
-  @Column({
-    name: 'meal_time',
-    type: 'enum',
-    enum: TimeZone.values(),
-  })
+  @Column({ type: 'enum', enum: TimeZone.values() })
   mealTime: TimeZone;
 
-  @Column({
-    name: 'activity_status',
-    type: 'enum',
-    enum: ActivityStatus.values(),
-  })
+  @Column({ type: 'enum', enum: ActivityStatus.values() })
   status: ActivityStatus;
 
   @OneToOne(() => ActivityItem, {

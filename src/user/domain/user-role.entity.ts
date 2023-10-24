@@ -3,10 +3,10 @@ import { Role } from './role.entity';
 import { User } from './user.entity';
 
 export class UserRole {
-  @PrimaryColumn({ name: 'role_id' })
+  @PrimaryColumn()
   roleId: number;
 
-  @PrimaryColumn({ name: 'user_id' })
+  @PrimaryColumn()
   userId: number;
 
   @ManyToOne(() => Role, (role) => role.userRole, {
@@ -15,7 +15,7 @@ export class UserRole {
   @JoinColumn({ name: 'role_id' })
   role: Role;
 
-  @ManyToOne(() => User, (user) => user.userRole,{
+  @ManyToOne(() => User, (user) => user.userRole, {
     nullable: false,
   })
   @JoinColumn({ name: 'user_id' })

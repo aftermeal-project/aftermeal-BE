@@ -5,22 +5,22 @@ import { Generation } from './generation.entity';
 
 @Entity()
 export class User extends BaseTimeEntity {
-  @PrimaryGeneratedColumn({ name: 'user_id' })
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'name' })
+  @Column()
   name: string;
 
-  @Column({ name: 'email', unique: true })
+  @Column({ unique: true })
   email: string;
 
-  @Column({ name: 'type' })
+  @Column()
   type: string;
 
-  @Column({ name: 'enabled' })
+  @Column()
   enabled: boolean;
 
-  @Column({ name: 'generation_number', nullable: true })
+  @Column({ nullable: true })
   generationNumber: number;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)

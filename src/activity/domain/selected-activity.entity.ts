@@ -4,7 +4,7 @@ import { Activity } from './activity.entity';
 
 @Entity()
 export class SelectedActivity extends BaseTimeEntity {
-  @PrimaryColumn({ name: 'selected_activity_id' })
+  @PrimaryColumn()
   id: number;
 
   @OneToOne(() => Activity, { cascade: true })
