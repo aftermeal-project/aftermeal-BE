@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Time } from './time';
 
 @Entity()
 export class ActivityStatus {
@@ -8,7 +7,4 @@ export class ActivityStatus {
 
   @Column()
   status: string;
-
-  @Column({ enum: Time.values() })
-  timeSlot: Time;
 }
