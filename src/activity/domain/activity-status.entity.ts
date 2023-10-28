@@ -6,5 +6,5 @@ export class ActivityStatus {
   id: number;
 
   @Column()
-  status: string;
+  name: string;
 }
