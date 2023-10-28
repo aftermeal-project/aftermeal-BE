@@ -1,7 +1,7 @@
 import { BaseTimeEntity } from '../../common/model/base-time.entity';
 import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ActivityItem } from './activity-item.entity';
-import { ActivityStatus } from './activity-status.entity';
+import { ActivityState } from './activity-state.entity';
 
 @Entity()
 export class Activity extends BaseTimeEntity {
@@ -15,10 +15,10 @@ export class Activity extends BaseTimeEntity {
   @JoinColumn({ name: 'activity_item_id' })
   activityItem: ActivityItem;
 
-  @OneToOne(() => ActivityStatus, {
+  @OneToOne(() => ActivityState, {
     eager: true,
     nullable: false,
   })
   @JoinColumn({ name: 'activity_status_id' })
-  activityStatus: ActivityStatus;
+  activityStatus: ActivityState;
 }
