@@ -2,14 +2,14 @@ import { plainToClass } from 'class-transformer';
 import { IsEnum, validateSync, ValidationError } from 'class-validator';
 import { IsNumber, IsString } from 'class-validator';
 
-enum Environment {
+enum NodeEnvironment {
   Development = 'development',
   Production = 'production',
 }
 
 class EnvironmentVariables {
-  @IsEnum(Environment)
-  NODE_ENV: Environment;
+  @IsEnum(NodeEnvironment)
+  NODE_ENV: NodeEnvironment;
 
   @IsString()
   HOST: string;
@@ -35,14 +35,11 @@ class EnvironmentVariables {
   @IsString()
   DB_NAME: string;
 }
-export const validate = (
-  config: Record<string, unknown>,
-): EnvironmentVariables => {
-  const validateConfig: EnvironmentVariables = plainToClass(
-    EnvironmentVariables,
-    config,
-    { enableImplicitConversion: true },
-  );
+
+export const validate = (config: Record<string, unknown>): EnvironmentVariables => {
+  const validateConfig: EnvironmentVariables = plainToClass(EnvironmentVariables, config, {
+    enableImplicitConversion: true,
+  });
   const errors: ValidationError[] = validateSync(validateConfig, {
     skipMissingProperties: false,
   });

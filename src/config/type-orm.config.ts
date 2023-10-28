@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import databaseConfig from '../database.config';
-import applicationConfig from '../../app/app.config';
 import { ConfigType } from '@nestjs/config';
+import databaseConfig from './database.config';
+import applicationConfig from './app.config';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Injectable()
-export class TypeOrmConfigService implements TypeOrmOptionsFactory {
+export class TypeOrmConfig implements TypeOrmOptionsFactory {
   constructor(
     @Inject(databaseConfig.KEY)
     private dbConfig: ConfigType<typeof databaseConfig>,
@@ -21,9 +22,10 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: this.dbConfig.user,
       password: this.dbConfig.password,
       database: this.dbConfig.name,
-      entities: [__dirname + '/../../../../**/*.entity{.ts,.js}'],
+      entities: [__dirname + '/../../../../**/*.domain{.ts,.js}'],
       synchronize: this.appConfig.env === 'development',
       logging: this.appConfig.env === 'development',
+      namingStrategy: new SnakeNamingStrategy(),
     };
   }
 }

@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
-import appConfig from './global/config/app/app.config';
+import appConfig from '../src/config/app.config';
 import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
@@ -9,8 +9,6 @@ async function bootstrap() {
   const config = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
   const port: number = config.port;
   const host: string = config.host;
-  await app.listen(port, host, async () =>
-    Logger.log(`Application is running on: ${await app.getUrl()}`),
-  );
+  await app.listen(port, host, async () => Logger.log(`Application is running on: ${await app.getUrl()}`));
 }
 void bootstrap();
