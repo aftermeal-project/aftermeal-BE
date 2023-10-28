@@ -17,7 +17,7 @@ export class User extends BaseTimeEntity {
   @Column()
   type: string;
 
-  @Column()
+  @Column({ default: false })
   enabled: boolean;
 
   @Column({ nullable: true })
