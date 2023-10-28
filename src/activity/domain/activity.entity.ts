@@ -10,12 +10,14 @@ export class Activity extends BaseTimeEntity {
 
   @OneToOne(() => ActivityItem, {
     eager: true,
+    nullable: false,
   })
   @JoinColumn({ name: 'activity_item_id' })
   activityItem: ActivityItem;
 
   @OneToOne(() => ActivityStatus, {
     eager: true,
+    nullable: false,
   })
   @JoinColumn({ name: 'activity_status_id' })
   activityStatus: ActivityStatus;
