@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn
 import { BaseTimeEntity } from '../../common/model/base-time.entity';
 import { Generation } from './generation.entity';
 import { UserRole } from './user-role.entity';
+import { UserStatus } from './user-status';
 
 @Entity()
 export class User extends BaseTimeEntity {
@@ -16,9 +17,6 @@ export class User extends BaseTimeEntity {
 
   @Column()
   type: string;
-
-  @Column({ default: false })
-  enabled: boolean;
 
   @Column({ nullable: true })
   generationNumber: number;
