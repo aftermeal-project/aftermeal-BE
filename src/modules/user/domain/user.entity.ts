@@ -1,6 +1,13 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { BaseTimeEntity } from '../../common/model/base-time.entity';
-import { Generation } from './generation.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { BaseTimeEntity } from '@common/model/base-time.entity';
+import { Generation } from '../../generation/domain/generation.entity';
 import { UserRole } from './user-role.entity';
 
 @Entity()
@@ -16,9 +23,6 @@ export class User extends BaseTimeEntity {
 
   @Column()
   type: string;
-
-  @Column({ nullable: true })
-  generationNumber: number;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   role: UserRole[];
