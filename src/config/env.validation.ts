@@ -12,13 +12,13 @@ class EnvironmentVariables {
   NODE_ENV: NodeEnvironment;
 
   @IsString()
+  BASE_URL: string;
+
+  @IsString()
   HOST: string;
 
   @IsNumber()
   PORT: number;
-
-  @IsString()
-  DB_TYPE: string;
 
   @IsString()
   DB_HOST: string;
@@ -34,17 +34,48 @@ class EnvironmentVariables {
 
   @IsString()
   DB_NAME: string;
+
+  @IsString()
+  ACCESS_TOKEN_SECRET: string;
+
+  @IsString()
+  REFRESH_TOKEN_SECRET: string;
+
+  @IsNumber()
+  ACCESS_TOKEN_EXPIRY_TIME: number;
+
+  @IsNumber()
+  REFRESH_TOKEN_EXPIRY_TIME: number;
+
+  @IsNumber()
+  CACHE_INVITATION_TTL: number;
+
+  @IsString()
+  EMAIL_SERVICE: string;
+
+  @IsString()
+  EMAIL_AUTH_USER: string;
+
+  @IsString()
+  EMAIL_AUTH_PASSWORD: string;
 }
 
-export const validate = (config: Record<string, unknown>): EnvironmentVariables => {
-  const validateConfig: EnvironmentVariables = plainToClass(EnvironmentVariables, config, {
-    enableImplicitConversion: true,
-  });
+export const validate = (
+  config: Record<string, unknown>,
+): EnvironmentVariables => {
+  const validateConfig: EnvironmentVariables = plainToClass(
+    EnvironmentVariables,
+    config,
+    {
+      enableImplicitConversion: true,
+    },
+  );
   const errors: ValidationError[] = validateSync(validateConfig, {
     skipMissingProperties: false,
   });
 
-  if (errors.length > 0) throw new Error(errors.toString());
-
+  if (errors.length > 0) {
+    throw new Error(errors.toString());
+  }
   return validateConfig;
 };

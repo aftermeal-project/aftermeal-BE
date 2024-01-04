@@ -1,24 +1,38 @@
 import { Module } from '@nestjs/common';
+import { validate } from '@config/env.validation';
 import { ConfigModule } from '@nestjs/config';
-import { validate } from './config/env.validation';
-import appConfig from './config/app.config';
+import appConfiguration from '@config/app.config';
+import databaseConfiguration from '@config/database.config';
+import emailConfiguration from '@config/email.config';
+import jwtConfiguration from '@config/jwt.config';
+import { InvitationModule } from './modules/invitation/invitation.module';
+import cacheConfiguration from '@config/cache.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import databaseConfig from './config/database.config';
-import { TypeOrmConfig } from './config/type-orm.config';
+import { MysqlProvider } from './providers/database/mysql.provider';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
-      envFilePath: process.env.NODE_ENV == 'production' ? '.env.production' : '.env.development',
-      load: [appConfig],
+      envFilePath:
+        process.env.NODE_ENV == 'production'
+          ? '.env.production'
+          : '.env.development',
+      load: [
+        appConfiguration,
+        databaseConfiguration,
+        jwtConfiguration,
+        emailConfiguration,
+        cacheConfiguration,
+      ],
       validate: validate,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule.forFeature(databaseConfig)],
-      useClass: TypeOrmConfig,
+      useClass: MysqlProvider,
+      inject: [databaseConfiguration.KEY, appConfiguration.KEY],
     }),
+    InvitationModule,
   ],
 })
 export class AppModule {}

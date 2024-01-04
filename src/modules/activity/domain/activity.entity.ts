@@ -1,4 +1,4 @@
-import { BaseTimeEntity } from '../../common/model/base-time.entity';
+import { BaseTimeEntity } from '@common/model/base-time.entity';
 import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ActivityItem } from './activity-item.entity';
 import { ActivityState } from './activity-state.entity';
