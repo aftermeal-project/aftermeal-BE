@@ -1,4 +1,10 @@
-import { matches, registerDecorator, ValidationOptions } from 'class-validator';
+import {
+  buildMessage,
+  matches,
+  registerDecorator,
+  ValidationArguments,
+  ValidationOptions,
+} from 'class-validator';
 import { School } from '../../../modules/user/domain/vo/school';
 
 /**
@@ -9,21 +15,30 @@ import { School } from '../../../modules/user/domain/vo/school';
 export function IsSchoolEmail(
   schoolCode: string,
   validationOptions?: ValidationOptions,
-): (object: any, propertyName: string) => void {
-  return function (target: () => void, propertyName: string) {
+): PropertyDecorator {
+  return function (target: object, propertyKey: string) {
     registerDecorator({
       name: 'isSchoolEmail',
       target: target.constructor,
-      propertyName: propertyName,
+      propertyName: propertyKey,
+      constraints: [schoolCode],
       options: validationOptions,
       validator: {
-        defaultMessage(): string {
-          return `email must be an ${schoolCode} email`;
+        validate(
+          value: unknown,
+          validationArguments: ValidationArguments,
+        ): Promise<boolean> | boolean {
+          console.log('이거 왜 실행되나요?');
+          const { regExp }: School = School.findByCode(
+            validationArguments?.constraints[0],
+          );
+          return typeof value === 'string' && matches(value, regExp);
         },
-        validate(value: any): boolean {
-          const school: School = School.findByCode(schoolCode);
-          return typeof value === 'string' && matches(value, school.regExp);
-        },
+        defaultMessage: buildMessage(
+          (eachPrefix) =>
+            eachPrefix + '$property should follow $constraint1 format',
+          validationOptions,
+        ),
       },
     });
   };

@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
 import appConfig from '@config/app.config';
 import { Logger } from '@nestjs/common';
-import { setNestApp } from '@common/utils/set-nest-app';
+import { setNestApp } from '@common/utils/src/set-nest-app';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

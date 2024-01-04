@@ -1,32 +1,34 @@
 import {
+  ArrayUnique,
   IsArray,
+  IsEmail,
   IsEnum,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-  ValidateIf,
+  IsPositive,
 } from 'class-validator';
-import { IsSchoolEmail } from '@common/decorator/validation/is-school-email';
 import { MemberType } from '../../user/domain/vo/member-type';
+import { IsSchoolEmail } from '@common/decorator/validation/is-school-email';
 import { School } from '../../user/domain/vo/school';
+import { IsGraduatedGeneration } from '@common/decorator/validation/is-graduated-generation';
+import { IsExistGeneration } from '@common/decorator/validation/is-exist-generation';
 
 export class InvitationForm {
-  @IsSchoolEmail(School.GSM.code, { each: true, groups: [MemberType.Student] })
+  @IsSchoolEmail(School.GSM.code, { each: true, groups: [MemberType.STUDENT] })
+  @ArrayUnique({ always: true })
+  @IsEmail({}, { each: true, always: true })
   @IsArray({ always: true })
   @IsNotEmpty({ always: true })
   email: string[];
 
   @IsEnum(MemberType, { always: true })
-  @IsString({ always: true })
   @IsNotEmpty({ always: true })
-  type: string;
+  memberType: MemberType;
 
-  @Min(1)
-  @IsNumber()
-  @IsOptional({ groups: [MemberType.Teacher] })
-  // type이 'STUDENT'가 아니면 해당 필드에 해당하는 모든 유효성 검사 규칙을 무시한다.
-  @ValidateIf((object) => object.type === MemberType.Student)
-  generationNumber?: number | null;
+  @IsGraduatedGeneration({ groups: [MemberType.STUDENT] })
+  @IsExistGeneration({ groups: [MemberType.STUDENT] })
+  @IsPositive({ groups: [MemberType.STUDENT] })
+  @IsNumber({}, { groups: [MemberType.STUDENT] })
+  @IsNotEmpty({ groups: [MemberType.STUDENT] })
+  generationNumber?: number;
 }
