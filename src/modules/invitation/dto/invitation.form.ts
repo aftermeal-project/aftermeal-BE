@@ -14,7 +14,7 @@ import { IsGraduatedGeneration } from '@common/decorator/validation/is-graduated
 import { IsExistGeneration } from '@common/decorator/validation/is-exist-generation';
 
 export class InvitationForm {
-  @IsSchoolEmail(School.GSM.code, { each: true, groups: [MemberType.STUDENT] })
+  @IsSchoolEmail(School.GSM.code, { each: true, groups: [MemberType.Student] })
   @ArrayUnique({ always: true })
   @IsEmail({}, { each: true, always: true })
   @IsArray({ always: true })
@@ -25,10 +25,10 @@ export class InvitationForm {
   @IsNotEmpty({ always: true })
   memberType: MemberType;
 
-  @IsGraduatedGeneration({ groups: [MemberType.STUDENT] })
-  @IsExistGeneration({ groups: [MemberType.STUDENT] })
-  @IsPositive({ groups: [MemberType.STUDENT] })
-  @IsNumber({}, { groups: [MemberType.STUDENT] })
-  @IsNotEmpty({ groups: [MemberType.STUDENT] })
+  @IsGraduatedGeneration({ groups: [MemberType.Student] })
+  @IsExistGeneration({ groups: [MemberType.Student] })
+  @IsPositive({ groups: [MemberType.Student] })
+  @IsNumber({}, { groups: [MemberType.Student] })
+  @IsNotEmpty({ groups: [MemberType.Student] })
   generationNumber?: number;
 }

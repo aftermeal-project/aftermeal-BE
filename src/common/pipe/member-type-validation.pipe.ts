@@ -11,8 +11,8 @@ export class MemberTypeValidationPipe
     const validationOptions: ValidatorOptions = {};
 
     // Determine the validation group based on memberType
-    if (value.memberType === MemberType.STUDENT) {
-      validationOptions.groups = [MemberType.STUDENT];
+    if (value.memberType === MemberType.Student) {
+      validationOptions.groups = [MemberType.Student];
     }
 
     const errors: ValidationError[] = await validate(value, {
