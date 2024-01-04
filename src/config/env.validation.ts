@@ -12,6 +12,9 @@ class EnvironmentVariables {
   NODE_ENV: NodeEnvironment;
 
   @IsString()
+  BASE_URL: string;
+
+  @IsString()
   HOST: string;
 
   @IsNumber()
@@ -46,6 +49,15 @@ class EnvironmentVariables {
 
   @IsNumber()
   CACHE_INVITATION_TTL: number;
+
+  @IsString()
+  EMAIL_SERVICE: string;
+
+  @IsString()
+  EMAIL_AUTH_USER: string;
+
+  @IsString()
+  EMAIL_AUTH_PASSWORD: string;
 }
 
 export const validate = (
