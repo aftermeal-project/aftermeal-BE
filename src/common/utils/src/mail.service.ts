@@ -10,6 +10,7 @@ import { createTransport } from 'nodemailer';
 import { Transporter } from 'nodemailer';
 import { HtmlTemplate } from '@common/utils/src/html-template.service';
 import appConfiguration from '@config/app.config';
+import { Invitation } from '../../../modules/invitation/domain/invitation';
 
 interface InvitationTemplateData {
   invitee: string;
@@ -38,14 +39,11 @@ export class MailService {
     });
   }
 
-  async sendInvitation(
-    email: string,
-    invitationVerifyToken: string,
-  ): Promise<void> {
+  async sendInvitation(invitation: Invitation): Promise<void> {
     const baseUrl = this.appConfig.baseUrl;
     const port = this.appConfig.port;
 
-    const url = `${baseUrl}:${port}/api/v1/invitation-verify?invitationVerifyToken=${invitationVerifyToken}`;
+    const url = `${baseUrl}:${port}/api/v1/invitation-verify?invitationToken=${invitation.code}`;
     const invitationTemplateData: InvitationTemplateData = {
       invitee: '송유현',
       inviter: '관리자',
@@ -59,8 +57,8 @@ export class MailService {
     this.transporter.sendMail(
       {
         from: `식후땡 <${this.emailConfig.auth.user}>`,
-        to: email,
-        subject: `임시 초대 코드는 ${invitationVerifyToken}입니다.`,
+        to: invitation.inviteeEmail,
+        subject: `임시 초대 코드는 ${invitation.code}입니다.`,
         html: invitationTemplate,
       },
       (err, info) => {

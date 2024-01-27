@@ -1,0 +1,18 @@
+## In Local
+### 선생님에게 초대장 전송
+POST http://localhost:3000/api/v1/invitation/member
+Content-Type: application/json
+
+{
+  "inviteeEmail": ["doong3373@gmail.com"],
+  "inviteeMemberType": "선생님"
+}
+
+### 학생에게 초대장 전송
+POST http://localhost:3000/api/v1/invitation/member
+Content-Type: application/json
+
+{
+"inviteeEmail": ["s20041@gsm.hs.kr"],
+"inviteeMemberType": "선생님"
+}

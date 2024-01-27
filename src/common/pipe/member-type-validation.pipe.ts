@@ -1,22 +1,21 @@
 import { Injectable, PipeTransform, BadRequestException } from '@nestjs/common';
 import { validate, ValidationError, ValidatorOptions } from 'class-validator';
-import { MemberType } from '../../modules/user/domain/vo/member-type';
-import { InvitationForm } from '../../modules/invitation/dto/invitation.form';
+import { MemberType } from '../../modules/user/domain/member-type';
+import { InviteRequestDto } from '../../modules/invitation/dto/invite.request-dto';
 
 @Injectable()
 export class MemberTypeValidationPipe
-  implements PipeTransform<InvitationForm, Promise<InvitationForm>>
+  implements PipeTransform<InviteRequestDto, Promise<InviteRequestDto>>
 {
-  async transform(value: InvitationForm): Promise<InvitationForm> {
+  async transform(value: InviteRequestDto): Promise<InviteRequestDto> {
     const validationOptions: ValidatorOptions = {};
 
     // Determine the validation group based on memberType
-    if (value.memberType === MemberType.Student) {
+    if (value.inviteeMemberType === MemberType.Student) {
       validationOptions.groups = [MemberType.Student];
     }
 
     const errors: ValidationError[] = await validate(value, {
-      stopAtFirstError: true,
       whitelist: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,

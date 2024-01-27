@@ -1,53 +1,76 @@
 import { InvitationService } from './invitation.service';
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MailService } from '@common/utils/src/mail.service';
-import cacheConfiguration from '@config/cache.config';
 import { Cache } from 'cache-manager';
-import { ConfigType } from '@nestjs/config';
-import { MemberType } from '../../user/domain/vo/member-type';
-import { InvitationForm } from '../dto/invitation.form';
-
-interface InvitationVerifyToken {
-  email: string;
-  type: MemberType;
-  generationNumber?: number;
-}
+import { InviteMember } from '../dto/invite.member';
+import { User } from '../../user/domain/user.entity';
+import { Invitation, Target } from '../domain/invitation';
+import { UserService } from '../../user/application/user.service';
 
 @Injectable()
 export class InvitationMemberService implements InvitationService {
-  private readonly INVITATION_TTL: number;
-
   constructor(
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
-    @Inject(cacheConfiguration.KEY)
-    private readonly cacheConfig: ConfigType<typeof cacheConfiguration>,
     private readonly mailService: MailService,
-  ) {
-    this.INVITATION_TTL = this.cacheConfig.invitation.ttl;
-  }
+    private readonly userService: UserService,
+  ) {}
 
-  async invite(invitationForm: InvitationForm): Promise<void> {
-    for (const email of invitationForm.email) {
-      const invitationVerifyToken: string = this.generateInvitationToken({
-        email: email,
-        type: invitationForm.memberType,
-        generationNumber: invitationForm?.generationNumber,
-      });
-
-      await this.cacheManager.set(
-        email,
-        invitationVerifyToken,
-        this.INVITATION_TTL,
+  async invite(inviteMember: InviteMember): Promise<void> {
+    for (const inviteeEmail of inviteMember.email) {
+      const { id }: User = await this.userService.newCandidate(
+        inviteeEmail,
+        inviteMember.memberType,
+        inviteMember?.generationNumber,
       );
-      await this.mailService.sendInvitation(email, invitationVerifyToken);
+
+      const invitation: Invitation = Invitation.issue(
+        {
+          userId: id,
+        },
+        {
+          duration: Invitation.DEFAULT_EXPIRED_DAYS,
+          email: inviteeEmail,
+        },
+      );
+      await this.issueInvitation(invitation);
     }
   }
 
-  private generateInvitationToken(
-    invitationVerifyToken: InvitationVerifyToken,
-  ): string {
-    return btoa(invitationVerifyToken.toString());
+  async getByTarget(target: Target): Promise<Invitation | null> {
+    const invitationRedisKey: string = this.invitationRedisKey(target);
+    return await this.cacheManager.get<Invitation>(invitationRedisKey);
+  }
+
+  async getByInvitationCode(invitationCode: string): Promise<Invitation> {
+    const targetRedisKey: string = this.targetRedisKey(invitationCode);
+    const target: Target = await this.cacheManager.get<Target>(targetRedisKey);
+    return this.getByTarget(target);
+  }
+
+  private async issueInvitation(invitation): Promise<void> {
+    await this.saveInvitation(invitation);
+    await this.mailService.sendInvitation(invitation);
+  }
+
+  private async saveInvitation(invitation: Invitation): Promise<void> {
+    const ttl: number = invitation.remainDuration(Date.now());
+
+    const invitationRedisKey: string = this.invitationRedisKey(
+      invitation.target,
+    );
+    const targetRedisKey: string = this.targetRedisKey(invitation.code);
+
+    await this.cacheManager.set(invitationRedisKey, invitation, ttl);
+    await this.cacheManager.set(targetRedisKey, invitation.target, ttl);
+  }
+
+  private invitationRedisKey(target: Target): string {
+    return 'invitation:target:' + target;
+  }
+
+  private targetRedisKey(invitationCode: string): string {
+    return 'invitation:code:' + invitationCode;
   }
 }
