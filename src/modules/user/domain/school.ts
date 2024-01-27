@@ -11,7 +11,7 @@ export class School extends EnumType<School>() {
   private constructor(
     readonly _code: string,
     readonly _name: string,
-    readonly _regExp: RegExp,
+    readonly _emailFormat: RegExp,
   ) {
     super();
   }
@@ -24,8 +24,8 @@ export class School extends EnumType<School>() {
     return this._name;
   }
 
-  get regExp(): RegExp {
-    return this._regExp;
+  get emailFormat(): RegExp {
+    return this._emailFormat;
   }
 
   static findByCode(code: string) {
@@ -34,5 +34,12 @@ export class School extends EnumType<School>() {
 
   equals(code: string): boolean {
     return this.code === code;
+  }
+
+  toCodeName() {
+    return {
+      code: this.code,
+      name: this.name,
+    };
   }
 }
