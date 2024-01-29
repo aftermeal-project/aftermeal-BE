@@ -20,7 +20,7 @@ export class User extends BaseTimeEntity {
     email: string,
     memberType: MemberType,
     status: UserStatus,
-    generation?: Generation | null,
+    generation: Generation | null,
   );
   constructor(
     name?: string,
@@ -65,5 +65,14 @@ export class User extends BaseTimeEntity {
     generation?: Generation | null,
   ): User {
     return new User(null, email, memberType, UserStatus.Candidate, generation);
+  }
+
+  static newMember(
+    name: string,
+    email: string,
+    memberType: MemberType,
+    generation: Generation | null,
+  ): User {
+    return new User(name, email, memberType, UserStatus.Activate, generation);
   }
 }
