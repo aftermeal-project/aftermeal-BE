@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsPositive,
   IsString,
+  Length,
 } from 'class-validator';
 import { IsSchoolEmail } from '@common/decorator/validation/is-school-email';
 import { School } from '../domain/school';
@@ -16,8 +17,9 @@ export class SignUpForm {
   @IsNotEmpty({ always: true })
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @Length(2, 10, { always: true })
+  @IsString({ always: true })
+  @IsNotEmpty({ always: true })
   name: string;
 
   @IsEnum(MemberType, { always: true })
