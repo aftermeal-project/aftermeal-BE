@@ -1,0 +1,23 @@
+## 로컬
+### 선생님으로 가입
+POST http://localhost:3000/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "김선생",
+  "email": "doong3373@gmail.com",
+  "memberType": "선생님",
+  "password": "1234"
+}
+
+### 학생으로 가입
+POST http://localhost:3000/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "박학생",
+  "email": "s20041@gsm.hs.kr",
+  "memberType": "학생",
+  "generationNumber": 6,
+  "password": "1234"
+}

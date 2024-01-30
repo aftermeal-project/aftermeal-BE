@@ -9,6 +9,7 @@ import { InvitationModule } from './modules/invitation/invitation.module';
 import cacheConfiguration from '@config/cache.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MysqlProvider } from './providers/database/mysql.provider';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { MysqlProvider } from './providers/database/mysql.provider';
       inject: [databaseConfiguration.KEY, appConfiguration.KEY],
     }),
     InvitationModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

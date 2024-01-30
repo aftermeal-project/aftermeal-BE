@@ -12,6 +12,34 @@ import { UserRole } from './user-role.entity';
 
 @Entity()
 export class User extends BaseTimeEntity {
+<<<<<<< Updated upstream
+=======
+  constructor();
+  constructor(
+    name: string,
+    email: string,
+    password: string,
+    memberType: MemberType,
+    status: UserStatus,
+    generation: Generation | null,
+  );
+  constructor(
+    name?: string,
+    email?: string,
+    password?: string,
+    memberType?: MemberType,
+    status?: UserStatus,
+    generation?: Generation | null,
+  ) {
+    super();
+    this.name = name;
+    this.email = email;
+    this.memberType = memberType;
+    this.status = status;
+    this.generation = generation;
+  }
+
+>>>>>>> Stashed changes
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,10 +52,49 @@ export class User extends BaseTimeEntity {
   @Column()
   type: string;
 
+  @Column()
+  password: string;
+
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   role: UserRole[];
 
   @OneToOne(() => Generation)
   @JoinColumn({ name: 'generation_number' })
+<<<<<<< Updated upstream
   generation: Generation;
+=======
+  generation?: Generation;
+
+  static newCandidate(
+    email: string,
+    memberType: MemberType,
+    generation: Generation | null,
+  ): User {
+    return new User(
+      null,
+      email,
+      null,
+      memberType,
+      UserStatus.Candidate,
+      generation,
+    );
+  }
+
+  static newMember(
+    name: string,
+    email: string,
+    password: string,
+    memberType: MemberType,
+    generation: Generation | null,
+  ): User {
+    return new User(
+      name,
+      email,
+      password,
+      memberType,
+      UserStatus.Activate,
+      generation,
+    );
+  }
+>>>>>>> Stashed changes
 }
