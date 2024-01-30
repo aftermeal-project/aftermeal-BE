@@ -8,12 +8,12 @@ import {
 } from 'typeorm';
 import { BaseTimeEntity } from '@common/model/base-time.entity';
 import { Generation } from '../../generation/domain/generation.entity';
+import { MemberType } from './member-type';
+import { UserStatus } from './user-status';
 import { UserRole } from './user-role.entity';
 
 @Entity()
 export class User extends BaseTimeEntity {
-<<<<<<< Updated upstream
-=======
   constructor();
   constructor(
     name: string,
@@ -39,18 +39,20 @@ export class User extends BaseTimeEntity {
     this.generation = generation;
   }
 
->>>>>>> Stashed changes
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
   @Column({ unique: true })
   email: string;
 
   @Column()
-  type: string;
+  status: UserStatus;
+
+  @Column()
+  memberType: MemberType;
 
   @Column()
   password: string;
@@ -58,12 +60,9 @@ export class User extends BaseTimeEntity {
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   role: UserRole[];
 
-  @OneToOne(() => Generation)
+  @OneToOne(() => Generation, { nullable: true })
   @JoinColumn({ name: 'generation_number' })
-<<<<<<< Updated upstream
-  generation: Generation;
-=======
-  generation?: Generation;
+  generation: Generation | null;
 
   static newCandidate(
     email: string,
@@ -96,5 +95,4 @@ export class User extends BaseTimeEntity {
       generation,
     );
   }
->>>>>>> Stashed changes
 }

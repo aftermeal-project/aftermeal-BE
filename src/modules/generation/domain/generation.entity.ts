@@ -3,12 +3,12 @@ import { BaseTimeEntity } from '@common/model/base-time.entity';
 
 @Entity()
 export class Generation extends BaseTimeEntity {
-  @PrimaryColumn({ name: 'generation_number' })
+  @PrimaryColumn()
   generationNumber: number;
 
   @Column({ unique: true })
   yearOfAdmission: number;
 
   @Column()
-  graduated: boolean;
+  isGraduated: boolean;
 }

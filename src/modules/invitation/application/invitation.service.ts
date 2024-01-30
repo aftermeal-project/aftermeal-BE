@@ -1,5 +1,8 @@
-import { InvitationForm } from '../dto/invitation.form';
+import { InviteMember } from '../dto/invite.member';
+import { Invitation, Target } from '../domain/invitation';
 
 export interface InvitationService {
-  invite(invitationForm: InvitationForm);
+  invite(dto: InviteMember): Promise<void>;
+  getByTarget(target: Target): Promise<Invitation | null>;
+  getByInvitationCode(invitationCode: string): Promise<Invitation>;
 }

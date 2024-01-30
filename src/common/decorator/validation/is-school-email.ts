@@ -5,15 +5,15 @@ import {
   ValidationArguments,
   ValidationOptions,
 } from 'class-validator';
-import { School } from '../../../modules/user/domain/vo/school';
+import { School } from '../../../modules/user/domain/school';
 
 /**
- * @param schoolCode
+ * @param school
  * @param validationOptions
  * @description 학교 이메일인지 검증하는 데코레이터입니다.
  */
 export function IsSchoolEmail(
-  schoolCode: string,
+  school: School,
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return function (target: object, propertyKey: string) {
@@ -21,18 +21,15 @@ export function IsSchoolEmail(
       name: 'isSchoolEmail',
       target: target.constructor,
       propertyName: propertyKey,
-      constraints: [schoolCode],
+      constraints: [school],
       options: validationOptions,
       validator: {
         validate(
           value: unknown,
           validationArguments: ValidationArguments,
         ): Promise<boolean> | boolean {
-          console.log('이거 왜 실행되나요?');
-          const { regExp }: School = School.findByCode(
-            validationArguments?.constraints[0],
-          );
-          return typeof value === 'string' && matches(value, regExp);
+          const { emailFormat }: School = validationArguments?.constraints[0];
+          return typeof value === 'string' && matches(value, emailFormat);
         },
         defaultMessage: buildMessage(
           (eachPrefix) =>
