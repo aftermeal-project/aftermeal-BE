@@ -12,26 +12,23 @@ import jwtConfiguration from '@config/jwt.config';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
     @Inject(jwtConfiguration.KEY)
     private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('hi');
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Token not found');
     }
     try {
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
       request['user'] = await this.jwtService.verifyAsync(token, {
         secret: this.jwtConfig.accessToken.secret,
       });
-    } catch {
-      throw new UnauthorizedException();
+    } catch (e) {
+      throw new UnauthorizedException(e);
     }
     return true;
   }

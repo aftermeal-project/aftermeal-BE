@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { SignUpRequestDto } from '../dto/sign-up.request-dto';
-import { SignUpResponseDto } from '../dto/sign-up.response-dto';
+import { UserRegisterRequestDto } from '../dto/user-register-request.dto';
+import { UserRegisterResponseDto } from '../dto/user-register-response.dto';
 import { ResponseEntity } from '@common/model/response.entity';
 import { MemberTypeValidationPipe } from '@common/pipe/member-type-validation.pipe';
 import { UserService } from '../application/user.service';
@@ -10,12 +10,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async signUp(
-    @Body(MemberTypeValidationPipe) dto: SignUpRequestDto,
-  ): Promise<ResponseEntity<SignUpResponseDto>> {
+  async register(
+    @Body(MemberTypeValidationPipe) dto: UserRegisterRequestDto,
+  ): Promise<ResponseEntity<UserRegisterResponseDto>> {
     return ResponseEntity.OK_WITH_DATA(
-      '가입 성공',
-      await this.userService.signUp(dto),
+      '등록 성공',
+      await this.userService.register(dto),
     );
   }
 }

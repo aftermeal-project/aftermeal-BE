@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   Entity,
   JoinColumn,
@@ -11,6 +12,7 @@ import { Generation } from '../../generation/domain/generation.entity';
 import { MemberType } from './member-type';
 import { UserStatus } from './user-status';
 import { UserRole } from './user-role.entity';
+import { genSalt, hash } from 'bcrypt';
 
 @Entity()
 export class User extends BaseTimeEntity {
@@ -94,5 +96,11 @@ export class User extends BaseTimeEntity {
       UserStatus.Activate,
       generation,
     );
+  }
+
+  @BeforeInsert()
+  async hashPassword(): Promise<void> {
+    const salt: string = await genSalt();
+    this.password = await hash(this.password, salt);
   }
 }

@@ -6,8 +6,8 @@ import { UserRole } from '../domain/user-role.entity';
 import { Role } from '../domain/role.entity';
 import { Generation } from '../../generation/domain/generation.entity';
 import { MemberType } from '../domain/member-type';
-import { SignUpResponseDto } from '../dto/sign-up.response-dto';
-import { SignUpRequestDto } from '../dto/sign-up.request-dto';
+import { UserRegisterResponseDto } from '../dto/user-register-response.dto';
+import { UserRegisterRequestDto } from '../dto/user-register-request.dto';
 
 @Injectable()
 export class UserService {
@@ -22,7 +22,9 @@ export class UserService {
     private readonly generationRepository: Repository<Generation>,
   ) {}
 
-  async signUp(dto: SignUpRequestDto): Promise<SignUpResponseDto> {
+  async register(
+    dto: UserRegisterRequestDto,
+  ): Promise<UserRegisterResponseDto> {
     await this.verifyEmailDuplication(dto.email);
     let generation: Generation | null = null;
 
@@ -53,7 +55,7 @@ export class UserService {
     userRole.user = savedUser;
     await this.userRoleRepository.save(userRole);
 
-    return new SignUpResponseDto(savedUser.id);
+    return new UserRegisterResponseDto(savedUser.id);
   }
 
   async newCandidate(
