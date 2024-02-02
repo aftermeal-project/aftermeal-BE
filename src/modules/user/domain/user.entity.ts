@@ -36,6 +36,7 @@ export class User extends BaseTimeEntity {
     super();
     this.name = name;
     this.email = email;
+    this.password = password;
     this.memberType = memberType;
     this.status = status;
     this.generation = generation;
