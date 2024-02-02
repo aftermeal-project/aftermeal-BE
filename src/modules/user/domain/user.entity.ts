@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   Entity,
   JoinColumn,
@@ -11,6 +12,7 @@ import { Generation } from '../../generation/domain/generation.entity';
 import { MemberType } from './member-type';
 import { UserStatus } from './user-status';
 import { UserRole } from './user-role.entity';
+import { genSalt, hash } from 'bcrypt';
 
 @Entity()
 export class User extends BaseTimeEntity {
@@ -18,6 +20,7 @@ export class User extends BaseTimeEntity {
   constructor(
     name: string,
     email: string,
+    password: string,
     memberType: MemberType,
     status: UserStatus,
     generation: Generation | null,
@@ -25,6 +28,7 @@ export class User extends BaseTimeEntity {
   constructor(
     name?: string,
     email?: string,
+    password?: string,
     memberType?: MemberType,
     status?: UserStatus,
     generation?: Generation | null,
@@ -52,27 +56,51 @@ export class User extends BaseTimeEntity {
   @Column()
   memberType: MemberType;
 
+  @Column()
+  password: string;
+
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   role: UserRole[];
 
   @OneToOne(() => Generation, { nullable: true })
   @JoinColumn({ name: 'generation_number' })
-  generation?: Generation;
+  generation: Generation | null;
 
   static newCandidate(
     email: string,
     memberType: MemberType,
-    generation?: Generation | null,
+    generation: Generation | null,
   ): User {
-    return new User(null, email, memberType, UserStatus.Candidate, generation);
+    return new User(
+      null,
+      email,
+      null,
+      memberType,
+      UserStatus.Candidate,
+      generation,
+    );
   }
 
   static newMember(
     name: string,
     email: string,
+    password: string,
     memberType: MemberType,
     generation: Generation | null,
   ): User {
-    return new User(name, email, memberType, UserStatus.Activate, generation);
+    return new User(
+      name,
+      email,
+      password,
+      memberType,
+      UserStatus.Activate,
+      generation,
+    );
+  }
+
+  @BeforeInsert()
+  async hashPassword(): Promise<void> {
+    const salt: string = await genSalt();
+    this.password = await hash(this.password, salt);
   }
 }

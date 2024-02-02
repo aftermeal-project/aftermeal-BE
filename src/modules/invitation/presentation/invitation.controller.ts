@@ -18,7 +18,7 @@ export class InvitationController {
   async invite(
     @Body(MemberTypeValidationPipe) dto: InviteRequestDto,
     // TODO @User() user: User,
-  ): Promise<ResponseEntity<[]>> {
+  ): Promise<ResponseEntity<void>> {
     await this.invitationService.invite(
       new InviteMember(
         dto.inviteeEmail,

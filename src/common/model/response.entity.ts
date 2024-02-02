@@ -11,8 +11,8 @@ export class ResponseEntity<T> {
     this._data = data;
   }
 
-  static OK_WITH(message: string): ResponseEntity<[]> {
-    return new ResponseEntity<[]>(true, message);
+  static OK_WITH(message: string): ResponseEntity<void> {
+    return new ResponseEntity<void>(true, message);
   }
 
   static OK_WITH_DATA<T>(message: string, data: T): ResponseEntity<T> {

@@ -1,13 +1,13 @@
 import { Injectable, PipeTransform, BadRequestException } from '@nestjs/common';
 import { validate, ValidationError, ValidatorOptions } from 'class-validator';
 import { MemberType } from '../../modules/user/domain/member-type';
-import { SignUpForm } from '../../modules/user/dto/sign-up.form';
+import { UserRegisterRequestDto } from '../../modules/user/dto/user-register-request.dto';
 
 @Injectable()
 export class MemberTypeValidationPipe
-  implements PipeTransform<SignUpForm, Promise<SignUpForm>>
+  implements PipeTransform<UserRegisterRequestDto, Promise<UserRegisterRequestDto>>
 {
-  async transform(value: SignUpForm): Promise<SignUpForm> {
+  async transform(value: UserRegisterRequestDto): Promise<UserRegisterRequestDto> {
     const validationOptions: ValidatorOptions = {};
 
     // Determine the validation group based on memberType

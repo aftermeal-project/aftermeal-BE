@@ -38,17 +38,26 @@ class EnvironmentVariables {
   @IsString()
   ACCESS_TOKEN_SECRET: string;
 
+  @IsNumber()
+  ACCESS_TOKEN_EXPIRY_TIME: number;
+
   @IsString()
   REFRESH_TOKEN_SECRET: string;
 
   @IsNumber()
-  ACCESS_TOKEN_EXPIRY_TIME: number;
-
-  @IsNumber()
   REFRESH_TOKEN_EXPIRY_TIME: number;
 
+  @IsString()
+  JWT_ISSUER: string;
+
   @IsNumber()
-  CACHE_INVITATION_TTL: number;
+  INVITATION_EXPIRY_TIME: number;
+
+  @IsString()
+  CACHE_HOST: string;
+
+  @IsNumber()
+  CACHE_PORT: number;
 
   @IsString()
   EMAIL_SERVICE: string;

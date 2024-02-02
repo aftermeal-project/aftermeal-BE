@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 
-export class SignUpResponseDto {
+export class UserRegisterResponseDto {
   @Exclude() private readonly _id: number;
 
   constructor(id: number) {

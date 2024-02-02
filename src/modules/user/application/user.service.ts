@@ -6,7 +6,8 @@ import { UserRole } from '../domain/user-role.entity';
 import { Role } from '../domain/role.entity';
 import { Generation } from '../../generation/domain/generation.entity';
 import { MemberType } from '../domain/member-type';
-import { SignUpResponseDto } from '../dto/sign-up.response-dto';
+import { UserRegisterResponseDto } from '../dto/user-register-response.dto';
+import { UserRegisterRequestDto } from '../dto/user-register-request.dto';
 
 @Injectable()
 export class UserService {
@@ -21,24 +22,27 @@ export class UserService {
     private readonly generationRepository: Repository<Generation>,
   ) {}
 
-  async signUp(
-    name: string,
-    email: string,
-    memberType: MemberType,
-    generationNumber?: number | null,
-  ): Promise<SignUpResponseDto> {
-    await this.verifyEmailDuplication(email);
+  async register(
+    dto: UserRegisterRequestDto,
+  ): Promise<UserRegisterResponseDto> {
+    await this.verifyEmailDuplication(dto.email);
     let generation: Generation | null = null;
 
-    if (memberType === MemberType.Student) {
+    if (dto.memberType === MemberType.Student) {
       generation = await this.generationRepository.findOneBy({
-        generationNumber: generationNumber,
+        generationNumber: dto.generationNumber,
       });
       this.checkGenerationExistence(generation);
       this.checkIfAlreadyGraduatedGeneration(generation);
     }
 
-    const user: User = User.newMember(name, email, memberType, generation);
+    const user: User = User.newMember(
+      dto.name,
+      dto.email,
+      dto.password,
+      dto.memberType,
+      generation,
+    );
     const savedUser: User = await this.userRepository.save(user);
 
     const role: Role | null = await this.roleRepository.findOneBy({
@@ -51,7 +55,7 @@ export class UserService {
     userRole.user = savedUser;
     await this.userRoleRepository.save(userRole);
 
-    return new SignUpResponseDto(savedUser.id);
+    return new UserRegisterResponseDto(savedUser.id);
   }
 
   async newCandidate(
