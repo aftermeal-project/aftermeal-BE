@@ -5,12 +5,9 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfiguration from '@config/jwt.config';
 import { ConfigType } from '@nestjs/config';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
 import { LoginRequestDto } from '../dto/login-request.dto';
 import { LoginResponseDto } from '../dto/login-response.dto';
 import { compare } from 'bcrypt';
-import { generateRandomString } from '@common/utils/src/generate-random-string';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +17,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @Inject(jwtConfiguration.KEY)
     private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
-    @Inject(CACHE_MANAGER)
-    private readonly cacheManager: Cache,
   ) {}
 
   async login(dto: LoginRequestDto): Promise<LoginResponseDto> {
