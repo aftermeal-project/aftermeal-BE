@@ -4,11 +4,13 @@ import { UserRegisterResponseDto } from '../dto/user-register-response.dto';
 import { ResponseEntity } from '@common/model/response.entity';
 import { MemberTypeValidationPipe } from '@common/pipe/member-type-validation.pipe';
 import { UserService } from '../application/user.service';
+import { Public } from '@common/decorator/public.decorator';
 
 @Controller('v1/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Public()
   @Post()
   async register(
     @Body(MemberTypeValidationPipe) dto: UserRegisterRequestDto,

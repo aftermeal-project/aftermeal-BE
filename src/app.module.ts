@@ -10,6 +10,7 @@ import cacheConfiguration from '@config/cache.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MysqlProvider } from './providers/database/mysql.provider';
 import { AuthModule } from './modules/auth/auth.module';
+import { VoteModule } from './modules/vote/vote.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from './modules/auth/auth.module';
     }),
     InvitationModule,
     AuthModule,
+    VoteModule,
   ],
 })
 export class AppModule {}
