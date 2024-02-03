@@ -6,11 +6,14 @@ import { AuthService } from './application/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import jwtConfiguration from '@config/jwt.config';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '@common/guard/auth.guard';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
+      global: true,
       useFactory: (jwtConfig: ConfigType<typeof jwtConfiguration>) => ({
         secret: jwtConfig.accessToken.secret,
         verifyOptions: {
@@ -21,6 +24,12 @@ import jwtConfiguration from '@config/jwt.config';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AuthModule {}
