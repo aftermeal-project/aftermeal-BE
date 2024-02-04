@@ -11,6 +11,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MysqlProvider } from './providers/database/mysql.provider';
 import { AuthModule } from './modules/auth/auth.module';
 import { VoteModule } from './modules/vote/vote.module';
+import { ParticipationModule } from './modules/participation/participation.module';
+import { ActivityModule } from './modules/activity/activity.module';
 
 @Module({
   imports: [
@@ -36,7 +38,9 @@ import { VoteModule } from './modules/vote/vote.module';
     }),
     InvitationModule,
     AuthModule,
+    ActivityModule,
     VoteModule,
+    ParticipationModule,
   ],
 })
 export class AppModule {}

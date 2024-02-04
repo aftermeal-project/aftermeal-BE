@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Activity } from '../domain/activity.entity';
 import { Repository } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
-import { Vote } from '../../vote/domain/vote.entity';
 import { ActivityDetail } from '../domain/activity-detail.entity';
 
 enum CronExpression {
@@ -18,8 +17,6 @@ export class ActivityService {
     private readonly activityRepository: Repository<Activity>,
     @InjectRepository(ActivityDetail)
     private readonly activityDetailRepository: Repository<ActivityDetail>,
-    @InjectRepository(Vote)
-    private readonly voteRepository: Repository<Vote>,
   ) {}
 
   async getActivity(activityId: number): Promise<Activity> {
@@ -33,9 +30,9 @@ export class ActivityService {
   }
 
   async getActivityHighestVoted(): Promise<Activity> {
-    return await this.voteRepository
-      .createQueryBuilder('v')
-      .leftJoinAndSelect('v.activity', 'a')
+    return await this.activityRepository
+      .createQueryBuilder('a')
+      .leftJoinAndSelect('a.vote', 'v')
       .select('a.id', 'id')
       .addSelect('a.activity_detail_id', 'activity_detail_id')
       .addSelect('COUNT(v.activity_id)', 'VoteCount')
@@ -55,7 +52,7 @@ export class ActivityService {
     activityDetail.map(
       async (activityDetail: ActivityDetail): Promise<void> => {
         const activity = new Activity();
-        activity.detail = activityDetail;
+        activity.activityDetail = activityDetail;
         await this.activityRepository.save(activity);
       },
     );

@@ -20,6 +20,6 @@ export class Activity extends BaseTimeEntity {
     eager: true,
     nullable: false,
   })
-  @JoinColumn({ name: 'activity_item_id' })
-  detail: ActivityDetail;
+  @JoinColumn({ name: 'activity_detail_id' })
+  activityDetail: ActivityDetail;
 }

@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "name": "김선생",
-  "email": "doong3373@gmail.com",
+  "email": {{email}},
   "memberType": "선생님",
-  "password": "HiImFaker!1234"
+  "password": {{password}}
 }
