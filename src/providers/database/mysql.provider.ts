@@ -28,7 +28,7 @@ export class MysqlProvider implements TypeOrmOptionsFactory {
       database: this.dbConfig.name,
       entities: [entityPath],
       synchronize: this.appConfig.env === 'development',
-      logging: false,
+      logging: true,
       namingStrategy: new SnakeNamingStrategy(),
     };
   }

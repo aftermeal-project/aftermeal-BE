@@ -1,8 +1,8 @@
-## 로컬
+### 로컬
 POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "doong3373@gmail.com",
-  "password": "HiImFaker!1234"
+  "email": {{email}},
+  "password": {{password}}
 }

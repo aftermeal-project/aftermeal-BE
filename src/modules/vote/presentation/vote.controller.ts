@@ -13,7 +13,7 @@ export class VoteController {
     @Body() dto: VoteRequestDto,
     @User('userId') userId: number,
   ): Promise<ResponseEntity<void>> {
-    await this.voteService.vote(dto, userId);
+    await this.voteService.vote(dto.activityId, userId);
     return ResponseEntity.OK_WITH('투표 성공');
   }
 }

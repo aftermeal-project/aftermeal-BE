@@ -1,24 +1,25 @@
 import { BaseTimeEntity } from '@common/model/base-time.entity';
-import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { ActivityItem } from './activity-item.entity';
-import { ActivityState } from './activity-state.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { ActivityDetail } from './activity-detail.entity';
 
 @Entity()
 export class Activity extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => ActivityItem, {
-    eager: true,
-    nullable: false,
-  })
-  @JoinColumn({ name: 'activity_item_id' })
-  activityItem: ActivityItem;
+  @Column({ default: false })
+  selected: boolean;
 
-  @OneToOne(() => ActivityState, {
+  @OneToOne(() => ActivityDetail, {
     eager: true,
     nullable: false,
   })
-  @JoinColumn({ name: 'activity_status_id' })
-  activityStatus: ActivityState;
+  @JoinColumn({ name: 'activity_detail_id' })
+  activityDetail: ActivityDetail;
 }
