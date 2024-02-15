@@ -12,7 +12,8 @@ import { Generation } from '../../generation/domain/generation.entity';
 import { MemberType } from './member-type';
 import { UserStatus } from './user-status';
 import { UserRole } from './user-role.entity';
-import { genSalt, hash } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcrypt';
+import { InternalServerErrorException } from '@nestjs/common';
 
 @Entity()
 export class User extends BaseTimeEntity {
@@ -103,5 +104,9 @@ export class User extends BaseTimeEntity {
   async hashPassword(): Promise<void> {
     const salt: string = await genSalt();
     this.password = await hash(this.password, salt);
+  }
+
+  async checkPassword(plainPassword: string): Promise<boolean> {
+    return await compare(plainPassword, this.password);
   }
 }

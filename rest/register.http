@@ -1,10 +1,22 @@
-### 로컬
+### 선생님으로 등록
 POST http://localhost:3000/api/v1/users
 Content-Type: application/json
 
 {
-  "name": "김선생",
-  "email": {{email}},
+  "name": "{{name}}",
+  "email": "{{email}}",
   "memberType": "선생님",
-  "password": {{password}}
+  "password": "{{password}}"
+}
+
+### 학생으로 등록
+POST http://localhost:3000/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "{{name}}",
+  "email": "{{school_email}}",
+  "memberType": "학생",
+  "password": "{{password}}",
+  "generationNumber": 7
 }

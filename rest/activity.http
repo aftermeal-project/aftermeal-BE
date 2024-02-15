@@ -1,0 +1,2 @@
+### 최다 득표 활동 조회
+GET http://localhost:3000/api/v1/activities/voting?date=2024-02-14

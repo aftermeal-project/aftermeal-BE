@@ -1,14 +1,23 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { BaseTimeEntity } from '@common/model/base-time.entity';
 import { User } from '../../user/domain/user.entity';
 import { Activity } from '../../activity/domain/activity.entity';
 
 @Entity()
 export class Vote extends BaseTimeEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   userId: number;
 
-  @PrimaryColumn()
+  @Column()
   activityId: number;
 
   @ManyToOne(() => User)

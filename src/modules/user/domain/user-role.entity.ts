@@ -11,7 +11,7 @@ export class UserRole extends BaseTimeEntity {
   @PrimaryColumn()
   userId: number;
 
-  @ManyToOne(() => Role)
+  @ManyToOne(() => Role, { eager: true })
   @JoinColumn({ name: 'role_id' })
   role: Role;
 

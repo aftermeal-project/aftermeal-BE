@@ -5,9 +5,12 @@ import { UserRegisterRequestDto } from '../../modules/user/dto/user-register-req
 
 @Injectable()
 export class MemberTypeValidationPipe
-  implements PipeTransform<UserRegisterRequestDto, Promise<UserRegisterRequestDto>>
+  implements
+    PipeTransform<UserRegisterRequestDto, Promise<UserRegisterRequestDto>>
 {
-  async transform(value: UserRegisterRequestDto): Promise<UserRegisterRequestDto> {
+  async transform(
+    value: UserRegisterRequestDto,
+  ): Promise<UserRegisterRequestDto> {
     const validationOptions: ValidatorOptions = {};
 
     // Determine the validation group based on memberType

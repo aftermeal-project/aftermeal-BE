@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UserRole } from '../domain/user-role.entity';
 import { Role } from '../domain/role.entity';
 import { Generation } from '../../generation/domain/generation.entity';
@@ -11,51 +10,64 @@ import { UserRegisterRequestDto } from '../dto/user-register-request.dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    @InjectRepository(UserRole)
-    private readonly userRoleRepository: Repository<UserRole>,
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
-    @InjectRepository(Generation)
-    private readonly generationRepository: Repository<Generation>,
-  ) {}
+  private readonly userRepository: Repository<User>;
+  private readonly userRoleRepository: Repository<UserRole>;
+  private readonly roleRepository: Repository<Role>;
+  private readonly generationRepository: Repository<Generation>;
+
+  constructor(private readonly dataSource: DataSource) {
+    this.userRepository = this.dataSource.getRepository(User);
+    this.userRoleRepository = this.dataSource.getRepository(UserRole);
+    this.roleRepository = this.dataSource.getRepository(Role);
+    this.generationRepository = this.dataSource.getRepository(Generation);
+  }
 
   async register(
     dto: UserRegisterRequestDto,
   ): Promise<UserRegisterResponseDto> {
-    await this.verifyEmailDuplication(dto.email);
-    let generation: Generation | null = null;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    if (dto.memberType === MemberType.Student) {
-      generation = await this.generationRepository.findOneBy({
-        generationNumber: dto.generationNumber,
+    try {
+      await this.verifyEmailDuplication(dto.email);
+      let generation: Generation | null = null;
+
+      if (dto.memberType === MemberType.Student) {
+        generation = await this.generationRepository.findOneBy({
+          generationNumber: dto.generationNumber,
+        });
+        this.checkGenerationExistence(generation);
+        this.checkIfAlreadyGraduatedGeneration(generation);
+      }
+
+      const user: User = User.newMember(
+        dto.name,
+        dto.email,
+        dto.password,
+        dto.memberType,
+        generation,
+      );
+
+      const role: Role | null = await this.roleRepository.findOneBy({
+        name: 'ROLE_MEMBER',
       });
-      this.checkGenerationExistence(generation);
-      this.checkIfAlreadyGraduatedGeneration(generation);
+      this.checkRoleExistence(role);
+
+      const savedUser: User = await this.userRepository.save(user);
+      const userRole: UserRole = new UserRole();
+      userRole.role = role;
+      userRole.user = savedUser;
+      await this.userRoleRepository.save(userRole);
+
+      await queryRunner.commitTransaction();
+      return new UserRegisterResponseDto(savedUser.id);
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      throw e;
+    } finally {
+      await queryRunner.release();
     }
-
-    const user: User = User.newMember(
-      dto.name,
-      dto.email,
-      dto.password,
-      dto.memberType,
-      generation,
-    );
-    const savedUser: User = await this.userRepository.save(user);
-
-    const role: Role | null = await this.roleRepository.findOneBy({
-      name: 'ROLE_MEMBER',
-    });
-    this.checkRoleExistence(role);
-
-    const userRole: UserRole = new UserRole();
-    userRole.role = role;
-    userRole.user = savedUser;
-    await this.userRoleRepository.save(userRole);
-
-    return new UserRegisterResponseDto(savedUser.id);
   }
 
   async newCandidate(

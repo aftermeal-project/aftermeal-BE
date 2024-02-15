@@ -12,14 +12,16 @@ export class VoteService {
     @InjectRepository(Vote)
     private readonly voteRepository: Repository<Vote>,
   ) {}
+
   async vote(activityId: number, userId: number): Promise<void> {
+    // TODO 현재 투표할 수 있는 상태인지 검증
     const activity: Activity = await this.activityService.getActivity(
       activityId,
     );
 
     const vote: Vote = new Vote();
-    vote.activityId = activity.id;
-    vote.userId = userId;
+    vote.activity.id = activity.id;
+    vote.user.id = userId;
 
     await this.voteRepository.save(vote);
   }

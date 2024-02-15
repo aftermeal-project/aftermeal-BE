@@ -1,4 +1,9 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../user/domain/user.entity';
 import { Repository } from 'typeorm';
@@ -7,13 +12,15 @@ import jwtConfiguration from '@config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { LoginRequestDto } from '../dto/login-request.dto';
 import { LoginResponseDto } from '../dto/login-response.dto';
-import { compare } from 'bcrypt';
+import { UserRole } from '../../user/domain/user-role.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserRole)
+    private readonly userRoleRepository: Repository<UserRole>,
     private readonly jwtService: JwtService,
     @Inject(jwtConfiguration.KEY)
     private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
@@ -23,35 +30,36 @@ export class AuthService {
     const user: User | null = await this.userRepository.findOneBy({
       email: dto.email,
     });
-    this.checkUserExistence(user);
-
-    const isMatch: boolean = await compare(dto.password, user.password);
-    if (!isMatch) {
-      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
-    }
-
-    const accessToken: string = this.generateAccessToken(user);
-
-    return new LoginResponseDto(
-      accessToken,
-      'Bearer',
-      this.jwtConfig.accessToken.expiresIn,
-    );
-  }
-
-  private checkUserExistence(user: User | null): void {
     if (!user) {
       throw new UnauthorizedException('존재하지 않는 사용자입니다.');
     }
+
+    const isCorrectPassword = await user.checkPassword(dto.password);
+    if (!isCorrectPassword) {
+      throw new UnauthorizedException('비밀번호가 올바르지 않습니다.');
+    }
+
+    const accessToken: string = await this.generateAccessToken(user);
+    const timestamp: number = Math.floor(Date.now() / 1000);
+    const exp = timestamp + this.jwtConfig.accessToken.expiresIn;
+    return new LoginResponseDto(accessToken, 'Bearer', exp);
   }
 
-  private generateAccessToken(user: User): string {
+  private async generateAccessToken(user: User): Promise<string> {
+    const userRoles: UserRole[] | null = await this.userRoleRepository.findBy({
+      userId: user.id,
+    });
+    if (!userRoles) {
+      throw new NotFoundException('존재하지 않는 권한입니다.');
+    }
+    const rolesName: string[] = userRoles.map((userRole) => userRole.role.name);
+
     const payload = {
       sub: user.email,
       iss: this.jwtConfig.issuer,
       userId: user.id,
       username: user.name,
-      roles: user.role,
+      roles: rolesName,
     };
     return this.jwtService.sign(payload, {
       secret: this.jwtConfig.accessToken.secret,
