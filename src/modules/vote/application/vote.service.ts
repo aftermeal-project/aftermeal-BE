@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Activity } from '../../activity/domain/activity.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Vote } from '../domain/vote.entity';
 import { ActivityService } from '../../activity/application/activity.service';
+import { Activity } from '../../activity/domain/activity.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class VoteService {
@@ -15,7 +15,7 @@ export class VoteService {
 
   async vote(activityId: number, userId: number): Promise<void> {
     // TODO 현재 투표할 수 있는 상태인지 검증
-    const activity: Activity = await this.activityService.getActivity(
+    const activity: Activity = await this.activityService.getActivityById(
       activityId,
     );
 

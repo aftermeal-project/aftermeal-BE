@@ -15,4 +15,5 @@ export function setNestApp<T extends INestApplication>(app: T): void {
   app.useGlobalPipes(new TransformPipe());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.setGlobalPrefix('api');
+  app.enableCors();
 }

@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { BaseTimeEntity } from '@common/model/base-time.entity';
 import { User } from '../../user/domain/user.entity';
-import { Activity } from '../../activity/domain/activity.entity';
+import { ActivityInfo } from '../../activity/domain/activity-info.entity';
 
 @Entity()
 export class Vote extends BaseTimeEntity {
@@ -24,7 +24,7 @@ export class Vote extends BaseTimeEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Activity)
+  @ManyToOne(() => ActivityInfo)
   @JoinColumn({ name: 'activity_id' })
-  activity: Activity;
+  activity: ActivityInfo;
 }

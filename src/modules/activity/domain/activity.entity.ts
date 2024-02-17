@@ -1,17 +1,24 @@
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { ActivityInfo } from './activity-info.entity';
+import { Participation } from '../../participation/domain/participation.entity';
 import { BaseTimeEntity } from '@common/model/base-time.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Activity extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  name: string;
+  @ManyToOne(() => ActivityInfo, { eager: true })
+  @JoinColumn({ name: 'activity_info_id' })
+  activityInfo: ActivityInfo;
 
-  @Column({ default: 0 })
-  maximumParticipants: number;
-
-  @Column({ default: false })
-  selected: boolean;
+  @OneToMany(() => Participation, (participation) => participation.activity)
+  @JoinColumn({ name: 'participation_id' })
+  participation: Participation;
 }
