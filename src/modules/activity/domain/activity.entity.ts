@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Participation } from '../../participation/domain/participation.entity';
 import { BaseTimeEntity } from '@common/model/base-time.entity';
 
@@ -20,6 +14,5 @@ export class Activity extends BaseTimeEntity {
   maximumParticipants: number;
 
   @OneToMany(() => Participation, (participation) => participation.activity)
-  @JoinColumn({ name: 'participation_id' })
   participation: Participation[];
 }

@@ -1,17 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ActivityInfo } from '../domain/activity-info.entity';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Activity } from '../domain/activity.entity';
+import { Participation } from '../../participation/domain/participation.entity';
+import { ActivityDto } from '../dto/activity.dto';
+import { ActivityRepository } from '../repository/activity.repository';
+import { ActivityRepoDto } from '../dto/activity.repo.dto';
 
 @Injectable()
 export class ActivityService {
   constructor(
-    @InjectRepository(Activity)
-    private readonly activityRepository: Repository<Activity>,
-    @InjectRepository(ActivityInfo)
-    private readonly activityInfoRepository: Repository<ActivityInfo>,
+    private readonly activityRepository: ActivityRepository,
+    @InjectRepository(Participation)
+    private readonly participationRepository: Repository<Participation>,
   ) {}
 
   async getActivityById(activityId: number): Promise<Activity> {
@@ -24,26 +25,18 @@ export class ActivityService {
     return activity;
   }
 
-  async getActivities(): Promise<Activity[]> {
-    return await this.activityRepository.find({
-      select: {
-        activityInfo: {
-          name: true,
-          maximumParticipants: true,
-        },
-      },
-    });
-  }
+  async getActivities(): Promise<ActivityDto[]> {
+    const activitiesWithParticipantCounts: ActivityRepoDto[] =
+      await this.activityRepository.findActivitiesWithParticipantCounts();
 
-  @Cron(CronExpression.MONDAY_TO_FRIDAY_AT_9AM)
-  async createActivityToReceivingParticipation() {
-    const activitiesInfo: ActivityInfo[] =
-      await this.activityInfoRepository.find();
-
-    for (const activityInfo of activitiesInfo) {
-      const activity: Activity = new Activity();
-      activity.activityInfo = activityInfo;
-      await this.activityRepository.save(activity);
-    }
+    return activitiesWithParticipantCounts.map(
+      (activity) =>
+        new ActivityDto(
+          activity.id,
+          activity.name,
+          activity.maximumParticipants,
+          activity.participantsCount,
+        ),
+    );
   }
 }
