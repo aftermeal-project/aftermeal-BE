@@ -27,6 +27,7 @@ export class MysqlProvider implements TypeOrmOptionsFactory {
       synchronize: true,
       logging: true,
       namingStrategy: new SnakeNamingStrategy(),
+      bigNumberStrings: false,
     };
   }
 }
