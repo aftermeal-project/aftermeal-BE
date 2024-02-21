@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ActivityInfo } from './activity-info.entity';
+import { Activity } from './activity.entity';
 
 enum DAY_OF_WEEK {
   MONDAY = '월요일',
@@ -32,10 +32,7 @@ export class ActivitySchedule extends BaseTimeEntity {
   @Column()
   timeSlot: TimeSlot;
 
-  @Column()
-  activityInfoId: number;
-
-  @ManyToOne(() => ActivityInfo)
-  @JoinColumn({ name: 'activity_info_id' })
-  activityInfo: ActivityInfo;
+  @ManyToOne(() => Activity)
+  @JoinColumn({ name: 'activity_id' })
+  activity: Activity;
 }

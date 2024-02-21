@@ -1,11 +1,10 @@
 import {
+  Column,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ActivityInfo } from './activity-info.entity';
 import { Participation } from '../../participation/domain/participation.entity';
 import { BaseTimeEntity } from '@common/model/base-time.entity';
 
@@ -14,11 +13,13 @@ export class Activity extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => ActivityInfo, { eager: true })
-  @JoinColumn({ name: 'activity_info_id' })
-  activityInfo: ActivityInfo;
+  @Column()
+  name: string;
+
+  @Column({ default: 0 })
+  maximumParticipants: number;
 
   @OneToMany(() => Participation, (participation) => participation.activity)
   @JoinColumn({ name: 'participation_id' })
-  participation: Participation;
+  participation: Participation[];
 }
