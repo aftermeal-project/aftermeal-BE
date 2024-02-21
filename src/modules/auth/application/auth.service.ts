@@ -1,8 +1,8 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../user/domain/user.entity';
@@ -31,12 +31,12 @@ export class AuthService {
       email: dto.email,
     });
     if (!user) {
-      throw new UnauthorizedException('존재하지 않는 사용자입니다.');
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
 
     const isCorrectPassword = await user.checkPassword(dto.password);
     if (!isCorrectPassword) {
-      throw new UnauthorizedException('비밀번호가 올바르지 않습니다.');
+      throw new BadRequestException('비밀번호가 올바르지 않습니다.');
     }
 
     const accessToken: string = await this.generateAccessToken(user);
