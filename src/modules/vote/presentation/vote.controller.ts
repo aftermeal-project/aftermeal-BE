@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
 import { VoteService } from '../application/vote.service';
 import { ResponseEntity } from '@common/model/response.entity';
 import { VoteRequestDto } from '../dto/vote-request.dto';
@@ -10,7 +10,7 @@ export class VoteController {
 
   @Post()
   async vote(
-    @Body() dto: VoteRequestDto,
+    @Body(ValidationPipe) dto: VoteRequestDto,
     @User('userId') userId: number,
   ): Promise<ResponseEntity<void>> {
     await this.voteService.vote(dto.activityId, userId);

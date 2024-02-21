@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { ResponseEntity } from '@common/model/response.entity';
 import { LoginRequestDto } from '../dto/login-request.dto';
@@ -12,7 +12,7 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(
-    @Body() dto: LoginRequestDto,
+    @Body(ValidationPipe) dto: LoginRequestDto,
   ): Promise<ResponseEntity<LoginResponseDto>> {
     return ResponseEntity.OK_WITH_DATA(
       '로그인 성공',

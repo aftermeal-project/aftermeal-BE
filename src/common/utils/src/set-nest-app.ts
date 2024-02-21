@@ -1,8 +1,5 @@
 import { ClassSerializerInterceptor, INestApplication } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { useContainer } from 'class-validator';
-import { AppModule } from '../../../app.module';
-import { TransformPipe } from '@common/pipe/transform.pipe';
 
 /**
  * 글로벌 미들웨어 구성을 모아두는 함수입니다.
@@ -12,8 +9,6 @@ import { TransformPipe } from '@common/pipe/transform.pipe';
  */
 export function setNestApp<T extends INestApplication>(app: T): void {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  app.useGlobalPipes(new TransformPipe());
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.setGlobalPrefix('api');
   app.enableCors();
 }
