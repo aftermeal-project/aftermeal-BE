@@ -2199,7 +2199,7 @@ cache-manager-redis-yet@^4.1.2:
     cache-manager "^5.2.2"
     redis "^4.6.7"
 
-cache-manager@^5.2.2:
+cache-manager@^5.2.2, cache-manager@^5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-5.4.0.tgz#cec47dbea8e49e0f6970d117be10172b4e621358"
   integrity sha512-FS7o8vqJosnLpu9rh2gQTo8EOzCRJLF1BJ4XDEUDMqcfvs7SJZs5iuoFTXLauzQ3S5v8sBAST1pCwMaurpyi1A==
