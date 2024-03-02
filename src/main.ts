@@ -9,9 +9,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
   const port: number = config.port;
-  const host: string = config.host;
   setNestApp(app);
-  await app.listen(port, host, async () =>
+  await app.listen(port, async () =>
     Logger.log(`Application is running on: ${await app.getUrl()}`),
   );
 }
