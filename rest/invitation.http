@@ -1,8 +1,0 @@
-### 로컬
-POST http://localhost:3000/api/v1/invitation/member
-Content-Type: application/json
-
-{
-  "inviteeEmail": ["doong3373@gmail.com"],
-  "inviteeMemberType": "선생님"
-}w

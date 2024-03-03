@@ -1,8 +1,0 @@
-### 로컬
-POST http://localhost:3000/api/v1/vote
-Content-Type: application/json
-Authorization: Bearer {{student_access_token}}
-
-{
-  "activityId": 1
-}
