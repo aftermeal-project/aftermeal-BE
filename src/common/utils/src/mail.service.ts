@@ -40,10 +40,10 @@ export class MailService {
   }
 
   async sendInvitation(invitation: Invitation): Promise<void> {
-    const baseUrl = this.appConfig.baseUrl;
+    const host = this.appConfig.host;
     const port = this.appConfig.port;
 
-    const url = `${baseUrl}:${port}/api/v1/invitation-verify?invitationToken=${invitation.code}`;
+    const url = `${host}:${port}/api/v1/invitation-verify?invitationToken=${invitation.code}`;
     const invitationTemplateData: InvitationTemplateData = {
       invitee: '송유현',
       inviter: '관리자',

@@ -19,15 +19,11 @@ class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  BASE_URL: string;
-
-  @IsString()
-  @IsNotEmpty()
-  HOST: string;
+  APP_HOST: string;
 
   @IsNumber()
   @IsNotEmpty()
-  PORT: number;
+  APP_PORT: number;
 
   @IsString()
   @IsNotEmpty()
