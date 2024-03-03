@@ -10,7 +10,7 @@ async function bootstrap() {
   const config = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
   const port: number = config.port;
   setNestApp(app);
-  await app.listen(port, '', async () =>
+  await app.listen(port, async () =>
     Logger.log(`Application is running on: ${await app.getUrl()}`),
   );
 }
