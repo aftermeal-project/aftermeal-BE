@@ -6,7 +6,7 @@ import { ValidationByMemberTypePipe } from '@common/pipe/validation-by-member-ty
 import { UserService } from '../application/user.service';
 import { Public } from '@common/decorator/public.decorator';
 
-@Controller('v1/users')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

@@ -4,7 +4,7 @@ import { ParticipationService } from '../application/participation.service';
 import { ParticipationRequestDto } from '../dto/participation-request.dto';
 import { User } from '@common/decorator/user.decorator';
 
-@Controller('v1/participation')
+@Controller('participation')
 export class ParticipationController {
   constructor(private readonly participationService: ParticipationService) {}
 

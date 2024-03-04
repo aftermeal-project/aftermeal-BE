@@ -6,7 +6,7 @@ import { InvitationMemberService } from '../application/invitation-member.servic
 import { ValidationByMemberTypePipe } from '@common/pipe/validation-by-member-type.pipe';
 import { InviteMember } from '../dto/invite.member';
 
-@Controller('v1/invitation')
+@Controller('invitation')
 export class InvitationController {
   constructor(
     @Inject(InvitationMemberService)

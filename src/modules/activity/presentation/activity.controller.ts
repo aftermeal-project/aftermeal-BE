@@ -4,7 +4,7 @@ import { ResponseEntity } from '@common/model/response.entity';
 import { Public } from '@common/decorator/public.decorator';
 import { ActivityDto } from '../dto/activity.dto';
 
-@Controller('v1/activities')
+@Controller('activities')
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
