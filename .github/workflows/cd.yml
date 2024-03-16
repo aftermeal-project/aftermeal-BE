@@ -1,0 +1,47 @@
+name: CD
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build --if-present
+
+      - name: Test
+        run: yarn test --if-present
+
+      - name: Make Zip File
+        run: zip -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # TBU
+      # - name: Upload artifact to S3
+      #   run: aws s3 cp --region {{secrets.AWS_REGION}} ./$GITHUB_SHA.zip s3://${{ secret.BUCKET_NAME }}/prod/$GITHUB_SHA.zip
+
+      # TBU
+      # - name: Trigger AWS CodeDeploy
+      #   run: aws deploy create-deployment --application-name sikhoo0-codedeploy --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name production --s3-location bucket=${{ secrets.BUCKET_NAME }},bundleType=zip,key=prod/web/$GITHUB_SHA.zip
