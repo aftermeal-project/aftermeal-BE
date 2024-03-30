@@ -34,7 +34,7 @@ jobs:
           target: "/home/ubuntu/sikhoo0"
 
       - name: Deploy application
-        uses: appleboy/ssh-actions
+        uses: appleboy/ssh-actions@1.0.3
         with:
           host: ${{ secrets.HOST }}
           key: ${{ secrets.PRIVATE_KEY }}
