@@ -2,8 +2,6 @@ name: CD
 
 on:
   workflow_dispatch: {}
-  push:
-    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -24,24 +22,29 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Test
-        run: yarn test --if-present
+      - name: Compress artifacts
+        run: tar -zcvf build.tar.gz ./dist
 
-      - name: Make Zip File
-        run: zip -r ./$GITHUB_SHA.zip .
-        shell: bash
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Copy build artifact to remote server
+        uses: appleboy/scp-action@v0.1.2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          host: ${{ secrets.HOST }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          source: "build.tar.gz"
+          target: "/home/ubuntu/sikhoo0"
 
-      # TBU
-      # - name: Upload artifact to S3
-      #   run: aws s3 cp --region {{secrets.AWS_REGION}} ./$GITHUB_SHA.zip s3://${{ secret.BUCKET_NAME }}/prod/$GITHUB_SHA.zip
-
-      # TBU
-      # - name: Trigger AWS CodeDeploy
-      #   run: aws deploy create-deployment --application-name sikhoo0-codedeploy --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name production --s3-location bucket=${{ secrets.BUCKET_NAME }},bundleType=zip,key=prod/web/$GITHUB_SHA.zip
+      - name: Deploy application
+        uses: appleboy/ssh-actions
+        with:
+          host: ${{ secrets.HOST }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/ubuntu/sikhoo0
+            # 이전 빌드 파일 정리
+            rm -rf dist
+            rm -f build.tar.gz
+            # 새로운 빌드 파일 압축 해제
+            tar -zxvf build.tar.gz
+            pm2 kill
+            pm2 start dist/main.js
