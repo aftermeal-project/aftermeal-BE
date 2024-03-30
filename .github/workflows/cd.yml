@@ -29,12 +29,12 @@ jobs:
         uses: appleboy/scp-action@v0.1.2
         with:
           host: ${{ secrets.HOST }}
-          key: ${{ secrets.PRIVATE_KEY }}
+          key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           source: "build.tar.gz"
           target: "/home/ubuntu/sikhoo0"
 
       - name: Deploy application
-        uses: appleboy/ssh-actions@1.0.3
+        uses: appleboy/ssh-action@1.0.3
         with:
           host: ${{ secrets.HOST }}
           key: ${{ secrets.PRIVATE_KEY }}
