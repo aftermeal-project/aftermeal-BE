@@ -44,10 +44,6 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/ubuntu/sikhoo0
-            # 이전 빌드 파일 정리
-            rm -rf dist
-            rm -f build.tar.gz
-            # 새로운 빌드 파일 압축 해제
             tar -zxvf build.tar.gz
             pm2 kill
             pm2 start dist/main.js
