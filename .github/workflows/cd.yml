@@ -44,6 +44,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/ubuntu/sikhoo0
+            touch hi.txt
             nvm --version
             npm --version
             node --version
