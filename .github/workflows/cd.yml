@@ -46,6 +46,7 @@ jobs:
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
             cd /home/ubuntu/sikhoo0
+            git pull
             tar -zxvf build.tar.gz
             pm2 kill
             yarn start:prod
