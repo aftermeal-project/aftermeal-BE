@@ -22,7 +22,7 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Compress artifacts
+      - name: Archive artifacts
         run: tar -zcvf build.tar.gz ./dist
 
       - name: Copy build artifact to remote server
@@ -43,14 +43,9 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
             cd /home/ubuntu/sikhoo0
-            touch hi.txt
-            nvm --version
-            npm --version
-            node --version
-            whereis pm2
-            whereis node
-            whereis npm
             tar -zxvf build.tar.gz
             pm2 kill
             pm2 start dist/main.js
