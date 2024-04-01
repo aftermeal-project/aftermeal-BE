@@ -44,8 +44,12 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/ubuntu/sikhoo0
-            tar -zxvf build.tar.gz
+            nvm --version
+            npm --version
+            node --version
             whereis pm2
             whereis node
+            whereis npm
+            tar -zxvf build.tar.gz
             pm2 kill
             pm2 start dist/main.js
