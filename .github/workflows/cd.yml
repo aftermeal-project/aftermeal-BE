@@ -48,4 +48,4 @@ jobs:
             cd /home/ubuntu/sikhoo0
             tar -zxvf build.tar.gz
             pm2 kill
-            pm2 start dist/main.js
+            yarn start:prod
