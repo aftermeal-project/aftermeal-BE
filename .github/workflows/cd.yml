@@ -21,15 +21,12 @@ jobs:
 
       - name: Build
         run: yarn build
-        
-      - name: Archive artifacts
-        run: tar -zcvf build.tar.gz ./dist
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: sikhoo0
-          path: ./build.tar.gz
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -40,14 +37,17 @@ jobs:
         with:
           name: sikhoo0
 
-      - name: Copy artifact to remote server
+      - name: Tar artifacts
+        run: tar -zcvf build.tar.gz ./dist
+
+      - name: Copy artifacts to remote server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          source: "dist"
+          source: "build.tar.gz"
           target: "/home/ubuntu/sikhoo0"
 
       - name: Deploy application
