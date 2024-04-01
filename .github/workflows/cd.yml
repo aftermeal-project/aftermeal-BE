@@ -45,5 +45,7 @@ jobs:
           script: |
             cd /home/ubuntu/sikhoo0
             tar -zxvf build.tar.gz
+            whereis pm2
+            whereis node
             pm2 kill
             pm2 start dist/main.js
