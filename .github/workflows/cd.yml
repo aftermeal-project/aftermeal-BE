@@ -42,7 +42,9 @@ jobs:
           name: sikhoo0
 
       - name: Zip artifacts
-        run: zip -r $GITHUB_SHA.zip ./dist
+        run: |
+          ls
+          zip -r $GITHUB_SHA.zip ./dist
 
       - name: Copy artifacts to remote server
         uses: appleboy/scp-action@v0.1.7
