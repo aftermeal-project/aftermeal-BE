@@ -41,10 +41,11 @@ jobs:
         with:
           name: dist
 
+      - name: Display structure of downloaded files
+        run: ls -R
+
       - name: Zip artifacts
-        run: |
-          cd ..
-          zip -r $GITHUB_SHA.zip ./dist
+        run: zip -r $GITHUB_SHA.zip ./dist
 
       - name: Copy artifacts to remote server
         uses: appleboy/scp-action@v0.1.7
