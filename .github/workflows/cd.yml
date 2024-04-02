@@ -29,7 +29,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: sikhoo0
+          name: dist
           path: ./dist
 
   deploy:
@@ -39,12 +39,11 @@ jobs:
       - name: Download artifacts from build job
         uses: actions/download-artifact@v4
         with:
-          name: sikhoo0
+          name: dist
 
       - name: Zip artifacts
         run: |
-          pwd
-          ls
+          cd ..
           zip -r $GITHUB_SHA.zip ./dist
 
       - name: Copy artifacts to remote server
