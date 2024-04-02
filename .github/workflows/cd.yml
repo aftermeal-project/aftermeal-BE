@@ -47,7 +47,9 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            export GITHUB_SHA=$GITHUB_SHA
+            echo $GITHUB_SHA
+            export GITHUB_SHA=${{ github.sha }}
+            echo $GITHUB_SHA
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
             ./deploy.sh
