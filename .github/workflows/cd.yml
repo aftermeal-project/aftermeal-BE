@@ -26,11 +26,14 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Zip artifacts
+        run: zip -r $GITHUB_SHA.zip ./dist
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: ./dist
+          path: $GITHUB_SHA.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,9 +46,6 @@ jobs:
 
       - name: Display structure of downloaded files
         run: ls -R
-
-      - name: Zip artifacts
-        run: zip -r $GITHUB_SHA.zip ./dist
 
       - name: Copy artifacts to remote server
         uses: appleboy/scp-action@v0.1.7
