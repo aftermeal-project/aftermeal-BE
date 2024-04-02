@@ -29,9 +29,6 @@ jobs:
       - name: Zip artifacts
         run: zip -r $GITHUB_SHA.zip ./dist
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
       - name: Copy artifacts to remote server
         uses: appleboy/scp-action@v0.1.7
         with:
