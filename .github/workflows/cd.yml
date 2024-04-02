@@ -43,6 +43,7 @@ jobs:
 
       - name: Zip artifacts
         run: |
+          pwd
           ls
           zip -r $GITHUB_SHA.zip ./dist
 
