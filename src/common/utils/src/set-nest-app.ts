@@ -15,4 +15,5 @@ export function setNestApp<T extends INestApplication>(app: T): void {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   app.enableCors();
+  app.enableShutdownHooks();
 }
