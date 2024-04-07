@@ -11,6 +11,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     forceCloseConnections: true,
   });
+  const logger = new Logger('Bootstrap');
   const config = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
   const port: number = config.port;
 
@@ -19,7 +20,7 @@ async function bootstrap() {
 
   await app.listen(port, async () => {
     process.send('ready');
-    Logger.log(`Application is running on: ${await app.getUrl()}`);
+    logger.log(`Application is running on: ${await app.getUrl()}`);
   });
 }
 
