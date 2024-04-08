@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ActivityService } from '../application/activity.service';
-import { ResponseEntity } from '@common/model/response.entity';
-import { Public } from '@common/decorator/public.decorator';
+import { ResponseEntity } from '@common/entities/response.entity';
+import { Public } from '@common/decorators/public.decorator';
 import { ActivityDto } from '../dto/activity.dto';
 
 @Controller('activities')

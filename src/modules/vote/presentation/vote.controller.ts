@@ -1,8 +1,8 @@
 import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
 import { VoteService } from '../application/vote.service';
-import { ResponseEntity } from '@common/model/response.entity';
+import { ResponseEntity } from '@common/entities/response.entity';
 import { VoteRequestDto } from '../dto/vote-request.dto';
-import { User } from '@common/decorator/user.decorator';
+import { User } from '@common/decorators/user.decorator';
 
 @Controller('vote')
 export class VoteController {

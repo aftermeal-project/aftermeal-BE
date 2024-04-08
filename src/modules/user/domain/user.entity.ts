@@ -7,7 +7,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BaseTimeEntity } from '@common/model/base-time.entity';
+import { BaseTimeEntity } from '@common/entities/base-time.entity';
 import { Generation } from '../../generation/domain/generation.entity';
 import { MemberType } from './member-type';
 import { UserStatus } from './user-status';

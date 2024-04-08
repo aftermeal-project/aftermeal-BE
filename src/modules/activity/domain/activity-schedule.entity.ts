@@ -1,4 +1,4 @@
-import { BaseTimeEntity } from '@common/model/base-time.entity';
+import { BaseTimeEntity } from '@common/entities/base-time.entity';
 import {
   Column,
   Entity,

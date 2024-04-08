@@ -1,8 +1,8 @@
 import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
-import { ResponseEntity } from '@common/model/response.entity';
+import { ResponseEntity } from '@common/entities/response.entity';
 import { ParticipationService } from '../application/participation.service';
 import { ParticipationRequestDto } from '../dto/participation-request.dto';
-import { User } from '@common/decorator/user.decorator';
+import { User } from '@common/decorators/user.decorator';
 
 @Controller('participation')
 export class ParticipationController {
