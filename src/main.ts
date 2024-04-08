@@ -3,8 +3,8 @@ import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
 import appConfig from '@config/app.config';
 import { Logger } from '@nestjs/common';
-import { setNestApp } from '@common/utils/src/set-nest-app';
-import { setSwagger } from '@common/utils/src/set-swagger';
+import { setNestApp } from '@common/middlewares/set-nest-app';
+import { setSwagger } from '@common/middlewares/set-swagger';
 import * as process from 'process';
 
 async function bootstrap() {
