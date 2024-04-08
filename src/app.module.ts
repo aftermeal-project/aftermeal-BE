@@ -14,7 +14,7 @@ import { ParticipationModule } from './modules/participation/participation.modul
 import { ActivityModule } from './modules/activity/activity.module';
 import { UserModule } from './modules/user/user.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from '@common/guard/auth.guard';
+import { AuthGuard } from '@common/guards/auth.guard';
 
 @Module({
   imports: [

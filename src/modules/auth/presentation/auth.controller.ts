@@ -1,9 +1,9 @@
 import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
-import { ResponseEntity } from '@common/model/response.entity';
+import { ResponseEntity } from '@common/entities/response.entity';
 import { LoginRequestDto } from '../dto/login-request.dto';
 import { LoginResponseDto } from '../dto/login-response.dto';
-import { Public } from '@common/decorator/public.decorator';
+import { Public } from '@common/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {

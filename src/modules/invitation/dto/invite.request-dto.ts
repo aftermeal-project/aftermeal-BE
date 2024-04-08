@@ -7,7 +7,7 @@ import {
   IsPositive,
 } from 'class-validator';
 import { MemberType } from '../../user/domain/member-type';
-import { IsSchoolEmail } from '@common/decorator/validation/is-school-email.decorator';
+import { IsSchoolEmail } from '@common/decorators/validation/is-school-email.decorator';
 import { School } from '../../user/domain/school';
 
 export class InviteRequestDto {
