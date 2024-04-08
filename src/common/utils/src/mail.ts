@@ -8,7 +8,7 @@ import emailConfiguration from '@config/email.config';
 import { ConfigType } from '@nestjs/config';
 import { createTransport } from 'nodemailer';
 import { Transporter } from 'nodemailer';
-import { HtmlTemplate } from '@common/utils/src/html-template.service';
+import { HtmlTemplate } from '@common/utils/src/html-template';
 import appConfiguration from '@config/app.config';
 import { Invitation } from '../../../modules/invitation/domain/invitation';
 
@@ -19,7 +19,7 @@ interface InvitationTemplateData {
 }
 
 @Injectable()
-export class MailService {
+export class Mail {
   private readonly transporter: Transporter;
 
   constructor(

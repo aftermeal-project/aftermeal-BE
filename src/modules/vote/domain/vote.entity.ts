@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BaseTimeEntity } from '@common/model/base-time.entity';
+import { BaseTimeEntity } from '@common/entities/base-time.entity';
 import { User } from '../../user/domain/user.entity';
 import { Activity } from '../../activity/domain/activity.entity';
 

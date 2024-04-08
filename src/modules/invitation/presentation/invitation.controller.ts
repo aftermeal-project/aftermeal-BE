@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
 import { InvitationService } from '../application/invitation.service';
 import { InviteRequestDto } from '../dto/invite.request-dto';
-import { ResponseEntity } from '@common/model/response.entity';
+import { ResponseEntity } from '@common/entities/response.entity';
 import { InvitationMemberService } from '../application/invitation-member.service';
-import { ValidationByMemberTypePipe } from '@common/pipe/validation-by-member-type.pipe';
+import { ValidationByMemberTypePipe } from '@common/pipes/validation-by-member-type.pipe';
 import { InviteMember } from '../dto/invite.member';
 
 @Controller('invitation')

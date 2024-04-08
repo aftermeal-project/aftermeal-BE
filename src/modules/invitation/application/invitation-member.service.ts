@@ -1,7 +1,7 @@
 import { InvitationService } from './invitation.service';
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { MailService } from '@common/utils/src/mail.service';
+import { Mail } from '@common/utils/src/mail';
 import { Cache } from 'cache-manager';
 import { InviteMember } from '../dto/invite.member';
 import { User } from '../../user/domain/user.entity';
@@ -13,7 +13,7 @@ export class InvitationMemberService implements InvitationService {
   constructor(
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
-    private readonly mailService: MailService,
+    private readonly mailService: Mail,
     private readonly userService: UserService,
   ) {}
 
