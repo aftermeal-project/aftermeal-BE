@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
 import { UserRole } from '../domain/user-role.entity';
@@ -131,7 +135,7 @@ export class UserService {
       },
     });
     if (isMemberExists) {
-      throw new BadRequestException('이미 등록된 이메일입니다.');
+      throw new ConflictException('이미 등록된 이메일입니다.');
     }
   }
 }

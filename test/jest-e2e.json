@@ -9,5 +9,6 @@
   "moduleNameMapper": {
     "^@config(.*)$": "<rootDir>/../src/config$1",
     "^@common(.*)$": "<rootDir>/../src/common$1"
-  }
+  },
+  "testTimeout": 30000
 }
