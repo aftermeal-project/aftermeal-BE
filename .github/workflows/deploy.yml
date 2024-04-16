@@ -1,8 +1,6 @@
-name: CD
+name: Deployment
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch: {}
 
 jobs:
