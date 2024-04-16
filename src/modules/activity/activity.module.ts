@@ -5,7 +5,8 @@ import { ActivityController } from './presentation/activity.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Activity } from './domain/activity.entity';
 import { Participation } from '../participation/domain/participation.entity';
-import { ActivityRepository } from './repository/activity.repository';
+import { ActivityRepositoryImpl } from './domain/activity.repository-impl';
+import { ACTIVITY_REPOSITORY } from '@common/constants';
 
 @Module({
   imports: [
@@ -13,7 +14,10 @@ import { ActivityRepository } from './repository/activity.repository';
     TypeOrmModule.forFeature([Activity, Participation]),
   ],
   controllers: [ActivityController],
-  providers: [ActivityService, ActivityRepository],
+  providers: [
+    ActivityService,
+    { provide: ACTIVITY_REPOSITORY, useClass: ActivityRepositoryImpl },
+  ],
   exports: [ActivityService],
 })
 export class ActivityModule {}

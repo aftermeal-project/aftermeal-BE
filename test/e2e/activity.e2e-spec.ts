@@ -3,7 +3,9 @@ import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { setNestApp } from '@common/middlewares/set-nest-app';
 import { AppModule } from '../../src/app.module';
-import { ActivityRepository } from '../../src/modules/activity/repository/activity.repository';
+import { ActivityRepository } from '../../src/modules/activity/domain/activity.repository';
+import { ACTIVITY_REPOSITORY } from '@common/constants';
+import { Activity } from '../../src/modules/activity/domain/activity.entity';
 
 describe('ActivityController (E2E)', () => {
   let app: INestApplication;
@@ -14,7 +16,7 @@ describe('ActivityController (E2E)', () => {
       imports: [AppModule],
     }).compile();
 
-    activityRepository = moduleRef.get(ActivityRepository);
+    activityRepository = moduleRef.get<ActivityRepository>(ACTIVITY_REPOSITORY);
     app = moduleRef.createNestApplication();
 
     setNestApp(app);
@@ -22,7 +24,7 @@ describe('ActivityController (E2E)', () => {
   });
 
   beforeEach(async () => {
-    await activityRepository.delete({});
+    await activityRepository.delete();
   });
 
   afterAll(async () => {
@@ -31,7 +33,7 @@ describe('ActivityController (E2E)', () => {
 
   describe('GET /v1/activities', () => {
     it('활동 목록을 반환해야 합니다.', async () => {
-      const activity = activityRepository.create({
+      const activity: Activity = activityRepository.create({
         name: '배드민턴',
         maximumParticipants: 10,
       });
