@@ -1,12 +1,16 @@
 import { Activity } from './activity.entity';
-import { ActivityRepoDto } from '../dto/activity.repo.dto';
+import { ActivityDto } from '../dto/activity.dto';
 import { Injectable } from '@nestjs/common';
 import { ActivityRepository } from './activity.repository';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ActivityRepositoryImpl implements ActivityRepository {
-  constructor(private readonly activityRepository: Repository<Activity>) {}
+  constructor(
+    @InjectRepository(Activity)
+    private readonly activityRepository: Repository<Activity>,
+  ) {}
 
   create(activity: Activity): Activity {
     return this.activityRepository.create(activity);
@@ -16,13 +20,13 @@ export class ActivityRepositoryImpl implements ActivityRepository {
     return await this.activityRepository.save(activity);
   }
 
-  async findOneById(activityId: number): Promise<Activity> {
+  async findOneByActivityId(activityId: number): Promise<Activity> {
     return await this.activityRepository.findOneBy({
       id: activityId,
     });
   }
 
-  async findActivitiesWithParticipantCounts(): Promise<ActivityRepoDto[]> {
+  async findActivityDto(): Promise<ActivityDto[]> {
     return await this.activityRepository
       .createQueryBuilder('activity')
       .leftJoinAndSelect('activity.participation', 'participation')
