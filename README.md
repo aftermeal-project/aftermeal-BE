@@ -4,9 +4,10 @@
 <p align="center">교내 식후 활동 관리 서비스입니다.</p>
     <p align="center">
 
-## Set up
+## Set up Node.js
 ```bash
 $ nvm install
+$ nvm use
 ```
 
 ## Installation
