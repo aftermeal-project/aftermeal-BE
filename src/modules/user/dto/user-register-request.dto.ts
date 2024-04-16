@@ -6,6 +6,7 @@ import {
   IsString,
   IsStrongPassword,
   Length,
+  MaxLength,
 } from 'class-validator';
 import { IsSchoolEmail } from '@common/decorators/validation/is-school-email.decorator';
 import { School } from '../domain/school';
@@ -14,12 +15,10 @@ import { MemberType } from '../domain/member-type';
 export class UserRegisterRequestDto {
   @IsSchoolEmail(School.GSM, { groups: [MemberType.Student] })
   @IsEmail({}, { always: true })
-  @IsString({ always: true })
   @IsNotEmpty({ always: true })
   email: string;
 
-  @Length(2, 10, { always: true })
-  @IsString({ always: true })
+  @MaxLength(40, { always: true })
   @IsNotEmpty({ always: true })
   name: string;
 
