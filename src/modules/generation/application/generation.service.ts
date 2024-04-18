@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Generation } from '../domain/generation.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class GenerationService {
@@ -11,9 +10,21 @@ export class GenerationService {
     private readonly generationRepository: Repository<Generation>,
   ) {}
 
-  @Cron(CronExpression.EVERY_YEAR)
-  async updateGeneration() {
-    const thisYear: number = new Date().getFullYear();
-    // TODO
+  async getOneByGenerationNumber(
+    generationNumber: number,
+  ): Promise<Generation> {
+    const generation: Generation | null =
+      await this.generationRepository.findOneBy({
+        generationNumber: generationNumber,
+      });
+    if (!generation) {
+      throw new NotFoundException('존재하지 않는 기수입니다.');
+    }
+    return generation;
   }
+
+  // @Cron(CronExpression.EVERY_YEAR)
+  // async updateGeneration() {
+  //   const thisYear: number = new Date().getFullYear();
+  // }
 }
