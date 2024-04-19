@@ -13,36 +13,9 @@ import { MemberType } from './member-type';
 import { UserStatus } from './user-status';
 import { UserRole } from './user-role.entity';
 import { compare, genSalt, hash } from 'bcrypt';
-import { InternalServerErrorException } from '@nestjs/common';
 
 @Entity()
 export class User extends BaseTimeEntity {
-  constructor();
-  constructor(
-    name: string,
-    email: string,
-    password: string,
-    memberType: MemberType,
-    status: UserStatus,
-    generation: Generation | null,
-  );
-  constructor(
-    name?: string,
-    email?: string,
-    password?: string,
-    memberType?: MemberType,
-    status?: UserStatus,
-    generation?: Generation | null,
-  ) {
-    super();
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.memberType = memberType;
-    this.status = status;
-    this.generation = generation;
-  }
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -71,16 +44,14 @@ export class User extends BaseTimeEntity {
   static newCandidate(
     email: string,
     memberType: MemberType,
-    generation: Generation | null,
+    generation?: Generation,
   ): User {
-    return new User(
-      null,
-      email,
-      null,
-      memberType,
-      UserStatus.Candidate,
-      generation,
-    );
+    const user: User = new User();
+    user.email = email;
+    user.memberType = memberType;
+    user.generation = generation;
+    user.status = UserStatus.Candidate;
+    return user;
   }
 
   static newMember(
@@ -88,16 +59,19 @@ export class User extends BaseTimeEntity {
     email: string,
     password: string,
     memberType: MemberType,
-    generation: Generation | null,
+    generation?: Generation,
   ): User {
-    return new User(
-      name,
-      email,
-      password,
-      memberType,
-      UserStatus.Activate,
-      generation,
-    );
+    if (memberType === MemberType.Student && !generation) {
+      throw Error('generation must be provided');
+    }
+    const user: User = new User();
+    user.name = name;
+    user.email = email;
+    user.memberType = memberType;
+    user.password = password;
+    user.status = UserStatus.Activate;
+    user.generation = generation;
+    return user;
   }
 
   @BeforeInsert()
