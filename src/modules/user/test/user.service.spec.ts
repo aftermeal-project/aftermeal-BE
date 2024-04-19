@@ -7,7 +7,6 @@ import { MemberType } from '../domain/member-type';
 import { Generation } from '../../generation/domain/generation.entity';
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { GenerationService } from '../../generation/application/generation.service';
-import { UserRole } from '../domain/user-role.entity';
 import { RoleService } from '../../role/application/role.service';
 import { UserRegisterResponseDto } from '../dto/user-register-response.dto';
 
@@ -20,7 +19,6 @@ const mockGenerationService = {
   getOneByGenerationNumber: jest.fn(),
 };
 const mockRoleService = { getOneByName: jest.fn() };
-const mockUserRoleRepository = { save: jest.fn() };
 const mockDataSource = {
   createQueryRunner: jest.fn(() => mockQueryRunner()),
 };
@@ -52,10 +50,6 @@ describe('UserService', () => {
         {
           provide: RoleService,
           useValue: mockRoleService,
-        },
-        {
-          provide: getRepositoryToken(UserRole),
-          useValue: mockUserRoleRepository,
         },
         {
           provide: getDataSourceToken(),

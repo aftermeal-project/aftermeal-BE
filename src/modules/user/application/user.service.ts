@@ -21,8 +21,6 @@ export class UserService {
     private readonly dataSource: DataSource,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(UserRole)
-    private readonly userRoleRepository: Repository<UserRole>,
     private readonly roleService: RoleService,
     private readonly generationService: GenerationService,
   ) {}
@@ -63,7 +61,9 @@ export class UserService {
       const userRole: UserRole = new UserRole();
       userRole.role = role;
       userRole.user = savedUser;
-      await this.userRoleRepository.save(userRole);
+
+      user.role = [userRole];
+      await this.userRepository.save(user);
 
       await queryRunner.commitTransaction();
       return new UserRegisterResponseDto(savedUser.id);
