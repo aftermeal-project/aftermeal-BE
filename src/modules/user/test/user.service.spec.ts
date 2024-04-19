@@ -5,11 +5,11 @@ import { User } from '../domain/user.entity';
 import { getDataSourceToken, getRepositoryToken } from '@nestjs/typeorm';
 import { MemberType } from '../domain/member-type';
 import { Generation } from '../../generation/domain/generation.entity';
-import { Role } from '../domain/role.entity';
-import { ConflictException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { GenerationService } from '../../generation/application/generation.service';
 import { UserRole } from '../domain/user-role.entity';
 import { RoleService } from '../../role/application/role.service';
+import { UserRegisterResponseDto } from '../dto/user-register-response.dto';
 
 const mockUserRepository = {
   findOneBy: jest.fn(),
@@ -35,7 +35,6 @@ const mockQueryRunner = () => ({
 describe('UserService', () => {
   let userService: UserService;
   let generationService: GenerationService;
-  let roleService: RoleService;
   let userRepository: Repository<User>;
 
   beforeAll(async () => {
@@ -68,18 +67,22 @@ describe('UserService', () => {
     userService = moduleRef.get<UserService>(UserService);
     generationService = moduleRef.get<GenerationService>(GenerationService);
     userRepository = moduleRef.get<Repository<User>>(getRepositoryToken(User));
-    roleService = moduleRef.get<RoleService>(RoleService);
   });
 
   describe('register', () => {
-    it('새로운 선생님이 등록한다.', async () => {
-      const user: User = createTeacher();
-      const role: Role = createMemberRole();
+    it('UserRegisterResponseDto를 반환해야 한다.', async () => {
+      // given
+      const user: User = new User();
+      user.id = 1;
+      user.name = '테스트';
+      user.email = 'test@example.com';
+      user.memberType = MemberType.Teacher;
+      user.password = 'G$K9Vss9-wNX6jOvY';
 
       jest.spyOn(userRepository, 'exist').mockResolvedValueOnce(false);
       jest.spyOn(userRepository, 'save').mockResolvedValueOnce(user);
-      jest.spyOn(roleService, 'getOneByName').mockResolvedValueOnce(role);
 
+      // when
       const result = await userService.register({
         email: user.email,
         name: user.name,
@@ -87,89 +90,69 @@ describe('UserService', () => {
         password: user.password,
       });
 
-      expect(result.id).toBe(user.id);
-    });
-
-    it('새로운 학생이 등록한다.', async () => {
-      const user: User = createStudent();
-      const role: Role = createMemberRole();
-
-      jest.spyOn(userRepository, 'exist').mockResolvedValueOnce(false);
-      jest.spyOn(userRepository, 'save').mockResolvedValueOnce(user);
-      jest.spyOn(roleService, 'getOneByName').mockResolvedValueOnce(role);
-      jest
-        .spyOn(generationService, 'getOneByGenerationNumber')
-        .mockResolvedValueOnce(user.generation);
-
-      const result = await userService.register({
-        email: user.email,
-        name: user.name,
-        memberType: user.memberType,
-        password: user.password,
-        generationNumber: user.generation.generationNumber,
-      });
-
-      expect(result.id).toBe(user.id);
+      // then
+      expect(result).toStrictEqual(UserRegisterResponseDto.from(user));
     });
   });
 
-  it('이미 등록된 이메일이 있다면 ConflictException을 반환해야 합니다.', async () => {
-    const user: User = createTeacher();
+  it('이미 등록된 이메일이 있다면 ConflictException을 반환해야 한다.', async () => {
+    // given
+    const user: User = new User();
+    user.id = 1;
+    user.name = '테스트';
+    user.email = 'test@example.com';
+    user.memberType = MemberType.Teacher;
+    user.password = 'G$K9Vss9-wNX6jOvY';
 
     jest.spyOn(userRepository, 'exist').mockResolvedValueOnce(true);
 
+    // when
     const result = async () => {
       await userService.register({
-        email: user.email,
         name: user.name,
+        email: user.email,
         memberType: user.memberType,
         password: user.password,
       });
     };
 
+    // then
     await expect(result).rejects.toThrow(ConflictException);
   });
+
+  it('학생이 졸업한 기수라면 BadRequestException을 반환해야 한다.', async () => {
+    // given
+    const generation: Generation = new Generation();
+    generation.generationNumber = 1;
+    generation.isGraduated = true;
+    generation.yearOfAdmission = 2017;
+
+    const user: User = new User();
+    user.id = 1;
+    user.name = '테스트';
+    user.email = 's20041@gsm.hs.kr';
+    user.memberType = MemberType.Student;
+    user.password = 'G$K9Vss9-wNX6jOvY';
+    user.generation = generation;
+
+    jest.spyOn(userRepository, 'exist').mockResolvedValueOnce(false);
+    jest
+      .spyOn(generationService, 'getOneByGenerationNumber')
+      .mockResolvedValueOnce(generation);
+    jest.spyOn(userRepository, 'save').mockResolvedValueOnce(user);
+
+    // when
+    const result = async () => {
+      await userService.register({
+        name: user.name,
+        email: user.email,
+        memberType: user.memberType,
+        password: user.password,
+        generationNumber: user.generation.generationNumber,
+      });
+    };
+
+    // then
+    await expect(result).rejects.toThrow(BadRequestException);
+  });
 });
-
-function createTeacher(
-  name = '테스트',
-  email = 'test@example.com',
-  memberType = MemberType.Teacher,
-  password = 'G$K9Vss9-wNX6jOvY',
-): User {
-  const user: User = new User();
-  user.id = 1;
-  user.name = name;
-  user.email = email;
-  user.memberType = memberType;
-  user.password = password;
-  return user;
-}
-
-function createStudent(
-  generation: Generation = {
-    generationNumber: 8,
-    isGraduated: false,
-    yearOfAdmission: 2023,
-  },
-  name = '테스트',
-  email = 's20041@gsm.hs.kr',
-  memberType = MemberType.Student,
-  password = 'G$K9Vss9-wNX6jOvY',
-): User {
-  const user: User = new User();
-  user.id = 1;
-  user.name = name;
-  user.email = email;
-  user.memberType = memberType;
-  user.password = password;
-  user.generation = generation;
-  return user;
-}
-
-function createMemberRole(name = 'ROLE_MEMBER'): Role {
-  const role: Role = new Role();
-  role.id = 1;
-  role.name = name;
-  return role;
-}
