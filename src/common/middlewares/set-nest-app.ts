@@ -4,6 +4,10 @@ import {
   VersioningType,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import {
+  initializeTransactionalContext,
+  StorageDriver,
+} from 'typeorm-transactional';
 
 /**
  * 글로벌 미들웨어 구성을 모아두는 함수입니다.
@@ -16,4 +20,5 @@ export function setNestApp<T extends INestApplication>(app: T): void {
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   app.enableCors();
   app.enableShutdownHooks();
+  initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
 }
