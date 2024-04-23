@@ -12,7 +12,7 @@ class MockActivityRepository {
 }
 
 describe('ActivityService', () => {
-  let activityService: ActivityService;
+  let sut: ActivityService;
   let activityRepository: ActivityRepository;
 
   beforeAll(async () => {
@@ -23,13 +23,12 @@ describe('ActivityService', () => {
       ],
     }).compile();
 
-    activityService = moduleRef.get<ActivityService>(ActivityService);
+    sut = moduleRef.get<ActivityService>(ActivityService);
     activityRepository = moduleRef.get(ACTIVITY_REPOSITORY);
   });
 
   describe('getActivityById', () => {
     it('존재하는 활동이 있다면 활동을 반환해야 합니다.', async () => {
-      const userId = 1;
       const existingActivity = new Activity();
       existingActivity.id = 1;
       existingActivity.name = '배드민턴';
@@ -38,23 +37,23 @@ describe('ActivityService', () => {
         .spyOn(activityRepository, 'findOneByActivityId')
         .mockResolvedValue(existingActivity);
 
-      const result = await activityService.getOneByActivityId(userId);
+      const actual = await sut.getOneByActivityId(1);
 
-      expect(result.id).toBe(userId);
-      expect(result.name).toBeDefined();
-      expect(result.maximumParticipants).toBeDefined();
+      expect(actual.id).toBe(1);
+      expect(actual.name).toBeDefined();
+      expect(actual.maximumParticipants).toBeDefined();
     });
 
     it('존재하는 활동이 없다면 예외를 반환해야 합니다.', async () => {
-      const userId = 1;
       jest
         .spyOn(activityRepository, 'findOneByActivityId')
         .mockResolvedValue(null);
 
-      const result = async () =>
-        await activityService.getOneByActivityId(userId);
+      const actual = async () => {
+        await sut.getOneByActivityId(1);
+      };
 
-      await expect(result).rejects.toThrowError(
+      await expect(actual).rejects.toThrowError(
         new NotFoundException('존재하지 않는 활동입니다.'),
       );
     });
@@ -70,9 +69,12 @@ describe('ActivityService', () => {
         .spyOn(activityRepository, 'findActivityDto')
         .mockResolvedValue(existingActivity);
 
-      const result: ActivityDto[] = await activityService.getAll();
+      const actual: ActivityDto[] = await sut.getAll();
 
-      expect(result).toStrictEqual(existingActivity);
+      expect(actual).toBe([
+        new ActivityDto(1, '배드민턴', 8, 8),
+        new ActivityDto(2, '배구', 18, 12),
+      ]);
     });
   });
 });
