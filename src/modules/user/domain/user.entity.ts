@@ -29,7 +29,7 @@ export class User extends BaseTimeEntity {
   status: UserStatus;
 
   @Column()
-  memberType: MemberType;
+  type: MemberType;
 
   @Column()
   password: string;
@@ -41,35 +41,20 @@ export class User extends BaseTimeEntity {
   @JoinColumn({ name: 'generation_number' })
   generation: Generation | null;
 
-  static newCandidate(
-    email: string,
-    memberType: MemberType,
-    generation?: Generation,
-  ): User {
-    const user: User = new User();
-    user.email = email;
-    user.memberType = memberType;
-    user.generation = generation;
-    user.status = UserStatus.Candidate;
-    return user;
-  }
-
   static newMember(
     name: string,
     email: string,
-    password: string,
+    status: UserStatus,
     memberType: MemberType,
+    password: string,
     generation?: Generation,
   ): User {
-    if (memberType === MemberType.Student && !generation) {
-      throw Error('generation must be provided');
-    }
     const user: User = new User();
     user.name = name;
     user.email = email;
-    user.memberType = memberType;
+    user.status = status;
+    user.type = memberType;
     user.password = password;
-    user.status = UserStatus.Activate;
     user.generation = generation;
     return user;
   }
