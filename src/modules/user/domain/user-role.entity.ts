@@ -18,4 +18,11 @@ export class UserRole extends BaseTimeEntity {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  static create(role: Role, user: User): UserRole {
+    const userRole: UserRole = new UserRole();
+    userRole.role = role;
+    userRole.user = user;
+    return userRole;
+  }
 }

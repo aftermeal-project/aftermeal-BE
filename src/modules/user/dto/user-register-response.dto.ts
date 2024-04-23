@@ -14,6 +14,6 @@ export class UserRegisterResponseDto {
   }
 
   static from(user: User): UserRegisterResponseDto {
-    return new this(user.id);
+    return new UserRegisterResponseDto(user.id);
   }
 }
