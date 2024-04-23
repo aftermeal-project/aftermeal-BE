@@ -3,7 +3,7 @@ import {
   ConflictException,
   Injectable,
 } from '@nestjs/common';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
 import { UserRole } from '../domain/user-role.entity';
 import { Role } from '../domain/role.entity';
@@ -14,21 +14,25 @@ import { UserRegisterRequestDto } from '../dto/user-register-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GenerationService } from '../../generation/application/generation.service';
 import { RoleService } from '../../role/application/role.service';
+import { Transactional } from 'typeorm-transactional';
+import { UserStatus } from '../domain/user-status';
 
 @Injectable()
 export class UserService {
   constructor(
-    private readonly dataSource: DataSource,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserRole)
+    private readonly userRoleRepository: Repository<UserRole>,
     private readonly roleService: RoleService,
     private readonly generationService: GenerationService,
   ) {}
 
+  @Transactional()
   async register(
     dto: UserRegisterRequestDto,
   ): Promise<UserRegisterResponseDto> {
-    await this.verifyEmailDuplication(dto.email);
+    await this.validateEmailDuplication(dto.email);
     let generation: Generation | null = null;
 
     if (dto.memberType === MemberType.Student) {
@@ -40,39 +44,21 @@ export class UserService {
       }
     }
 
-    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const user: User = User.newMember(
+      dto.name,
+      dto.email,
+      UserStatus.Activate,
+      dto.memberType,
+      dto.password,
+      generation,
+    );
+    const savedUser: User = await this.userRepository.save(user);
 
-    try {
-      const user: User = User.newMember(
-        dto.name,
-        dto.email,
-        dto.password,
-        dto.memberType,
-        generation,
-      );
-      const savedUser: User = await this.userRepository.save(user);
+    const role: Role = await this.roleService.getOneByName('ROLE_MEMBER');
+    const userRole: UserRole = UserRole.create(role, savedUser);
+    await this.userRoleRepository.save(userRole);
 
-      const role: Role | null = await this.roleService.getOneByName(
-        'ROLE_MEMBER',
-      );
-
-      const userRole: UserRole = new UserRole();
-      userRole.role = role;
-      userRole.user = savedUser;
-
-      user.role = [userRole];
-      await this.userRepository.save(user);
-
-      await queryRunner.commitTransaction();
-      return new UserRegisterResponseDto(savedUser.id);
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+    return new UserRegisterResponseDto(savedUser.id);
   }
 
   // async newCandidate(
@@ -80,7 +66,7 @@ export class UserService {
   //   memberType: MemberType,
   //   generationNumber?: number | null,
   // ): Promise<User> {
-  //   await this.verifyEmailDuplication(email);
+  //   await this.validateEmailDuplication(email);
   //   let generation: Generation | null = null;
   //
   //   if (memberType === MemberType.Student) {
@@ -111,7 +97,7 @@ export class UserService {
   //   return savedUser;
   // }
 
-  private async verifyEmailDuplication(email: string): Promise<void> {
+  private async validateEmailDuplication(email: string): Promise<void> {
     const isMemberExists: boolean = await this.userRepository.exist({
       where: {
         email: email,

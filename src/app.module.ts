@@ -15,6 +15,8 @@ import { ActivityModule } from './modules/activity/activity.module';
 import { UserModule } from './modules/user/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from '@common/guards/auth.guard';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -37,6 +39,12 @@ import { AuthGuard } from '@common/guards/auth.guard';
       imports: [ConfigModule.forFeature(databaseConfiguration)],
       inject: [databaseConfiguration.KEY],
       useClass: MysqlProvider,
+      dataSourceFactory: async (options) => {
+        if (!options) {
+          throw new Error('Invalid options passed');
+        }
+        return addTransactionalDataSource(new DataSource(options));
+      },
     }),
     UserModule,
     AuthModule,
