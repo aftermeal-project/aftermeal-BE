@@ -18,24 +18,24 @@ export class InvitationMemberService implements InvitationService {
   ) {}
 
   async invite(inviteMember: InviteMember): Promise<void> {
-    for (const inviteeEmail of inviteMember.email) {
-      const { id }: User = await this.userService.newCandidate(
-        inviteeEmail,
-        inviteMember.memberType,
-        inviteMember?.generationNumber,
-      );
-
-      const invitation: Invitation = Invitation.issue(
-        {
-          userId: id,
-        },
-        {
-          duration: Invitation.DEFAULT_EXPIRED_DAYS,
-          email: inviteeEmail,
-        },
-      );
-      await this.issueInvitation(invitation);
-    }
+    // for (const inviteeEmail of inviteMember.email) {
+    //   const { id }: User = await this.userService.newCandidate(
+    //     inviteeEmail,
+    //     inviteMember.memberType,
+    //     inviteMember?.generationNumber,
+    //   );
+    //
+    //   const invitation: Invitation = Invitation.issue(
+    //     {
+    //       userId: id,
+    //     },
+    //     {
+    //       duration: Invitation.DEFAULT_EXPIRED_DAYS,
+    //       email: inviteeEmail,
+    //     },
+    //   );
+    //   await this.issueInvitation(invitation);
+    // }
   }
 
   async getByTarget(target: Target): Promise<Invitation | null> {

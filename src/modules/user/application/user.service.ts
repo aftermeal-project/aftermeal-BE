@@ -61,42 +61,6 @@ export class UserService {
     return new UserRegisterResponseDto(savedUser.id);
   }
 
-  // async newCandidate(
-  //   email: string,
-  //   memberType: MemberType,
-  //   generationNumber?: number | null,
-  // ): Promise<User> {
-  //   await this.validateEmailDuplication(email);
-  //   let generation: Generation | null = null;
-  //
-  //   if (memberType === MemberType.Student) {
-  //     generation = await this.generationRepository.findOneBy({
-  //       generationNumber: generationNumber,
-  //     });
-  //     this.checkGenerationExistence(generation);
-  //     this.checkIfAlreadyGraduatedGeneration(generation);
-  //   }
-  //
-  //   const candidateMember: User = User.newCandidate(
-  //     email,
-  //     memberType,
-  //     generation,
-  //   );
-  //   const savedUser: User = await this.userRepository.save(candidateMember);
-  //
-  //   const role: Role | null = await this.roleRepository.findOneBy({
-  //     name: 'ROLE_MEMBER',
-  //   });
-  //   this.checkRoleExistence(role);
-  //
-  //   const userRole: UserRole = new UserRole();
-  //   userRole.role = role;
-  //   userRole.user = savedUser;
-  //   await this.userRoleRepository.save(userRole);
-  //
-  //   return savedUser;
-  // }
-
   private async validateEmailDuplication(email: string): Promise<void> {
     const isMemberExists: boolean = await this.userRepository.exist({
       where: {
