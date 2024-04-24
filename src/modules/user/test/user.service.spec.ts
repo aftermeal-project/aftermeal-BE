@@ -15,7 +15,7 @@ import { UserRegisterRequestDto } from '../dto/user-register-request.dto';
 const mockUserRepository = {
   findOneBy: jest.fn(),
   save: jest.fn(),
-  exist: jest.fn().mockReturnValue(false),
+  exist: jest.fn(),
 };
 const mockUserRoleRepository = {
   save: jest.fn(),
@@ -63,9 +63,9 @@ describe('UserService', () => {
 
   describe('register', () => {
     it('성공하면 UserRegisterResponseDto를 반환해야 한다.', async () => {
+      // given
       const savedUser: User = new User();
       savedUser.id = 1;
-
       jest
         .spyOn(userRepository, 'save')
         .mockImplementation(async () => savedUser);
@@ -101,7 +101,6 @@ describe('UserService', () => {
     it('학생이 졸업한 기수라면 BadRequestException을 반환해야 한다.', async () => {
       // given
       const generation: Generation = Generation.create(1, 2017, true);
-
       jest
         .spyOn(generationService, 'getOneByGenerationNumber')
         .mockResolvedValueOnce(generation);
