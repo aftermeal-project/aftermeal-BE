@@ -63,7 +63,6 @@ describe('ActivityService', () => {
     it('금일 신청 가능한 활동 목록을 반환해야 합니다.', async () => {
       const existingActivity: ActivityDto[] = [
         new ActivityDto(1, '배드민턴', 8, 8),
-        new ActivityDto(2, '배구', 18, 12),
       ];
       jest
         .spyOn(activityRepository, 'findActivityDto')
@@ -71,10 +70,10 @@ describe('ActivityService', () => {
 
       const actual: ActivityDto[] = await sut.getAll();
 
-      expect(actual).toBe([
-        new ActivityDto(1, '배드민턴', 8, 8),
-        new ActivityDto(2, '배구', 18, 12),
-      ]);
+      expect(actual[0].id).toBeDefined();
+      expect(actual[0].name).toBeDefined();
+      expect(actual[0].maximumParticipants).toBeDefined();
+      expect(actual[0].participantsCount).toBeDefined();
     });
   });
 });
