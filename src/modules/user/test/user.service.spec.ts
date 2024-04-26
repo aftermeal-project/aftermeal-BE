@@ -80,7 +80,7 @@ describe('UserService', () => {
       expect(actual).toStrictEqual(UserRegisterResponseDto.from(user));
     });
 
-    it('이미 등록된 이메일이 있다면 ConflictException을 반환해야 한다.', async () => {
+    it('이미 등록된 이메일이 있다면 실패한다.', async () => {
       // given
       jest.spyOn(userRepository, 'exist').mockResolvedValueOnce(true);
 
@@ -98,7 +98,7 @@ describe('UserService', () => {
       await expect(actual).rejects.toThrow(ConflictException);
     });
 
-    it('학생이 졸업한 기수라면 BadRequestException을 반환해야 한다.', async () => {
+    it('학생이 졸업한 기수라면 실패한다.', async () => {
       // given
       const generation: Generation = Generation.create(1, 2017, true);
       jest
