@@ -1,11 +1,6 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
-import { UserRole } from '../domain/user-role.entity';
 import { Role } from '../domain/role.entity';
 import { Generation } from '../../generation/domain/generation.entity';
 import { MemberType } from '../domain/member-type';
@@ -22,8 +17,6 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(UserRole)
-    private readonly userRoleRepository: Repository<UserRole>,
     private readonly roleService: RoleService,
     private readonly generationService: GenerationService,
   ) {}
@@ -39,25 +32,19 @@ export class UserService {
       generation = await this.generationService.getOneByGenerationNumber(
         dto.generationNumber,
       );
-      if (generation.isGraduated) {
-        throw new BadRequestException('이미 졸업한 기수입니다.');
-      }
     }
 
-    const user: User = User.newMember(
+    const role: Role = await this.roleService.getOneByName('ROLE_MEMBER');
+    const user: User = User.create(
       dto.name,
       dto.email,
-      UserStatus.Activate,
       dto.memberType,
+      role,
+      UserStatus.Activate,
       dto.password,
       generation,
     );
     const savedUser: User = await this.userRepository.save(user);
-
-    const role: Role = await this.roleService.getOneByName('ROLE_MEMBER');
-    const userRole: UserRole = UserRole.create(role, savedUser);
-    await this.userRoleRepository.save(userRole);
-
     return new UserRegisterResponseDto(savedUser.id);
   }
 

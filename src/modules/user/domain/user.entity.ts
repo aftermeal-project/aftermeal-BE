@@ -13,6 +13,7 @@ import { MemberType } from './member-type';
 import { UserStatus } from './user-status';
 import { UserRole } from './user-role.entity';
 import { compare, genSalt, hash } from 'bcrypt';
+import { Role } from './role.entity';
 
 @Entity()
 export class User extends BaseTimeEntity {
@@ -35,25 +36,27 @@ export class User extends BaseTimeEntity {
   password: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
-  role: UserRole[];
+  userRoles: UserRole[];
 
   @OneToOne(() => Generation, { nullable: true })
   @JoinColumn({ name: 'generation_number' })
   generation: Generation | null;
 
-  static newMember(
+  static create(
     name: string,
     email: string,
+    type: MemberType,
+    role: Role,
     status: UserStatus,
-    memberType: MemberType,
     password: string,
     generation?: Generation,
   ): User {
     const user: User = new User();
     user.name = name;
     user.email = email;
+    user.type = type;
+    user.userRoles = [UserRole.create(role, user)];
     user.status = status;
-    user.type = memberType;
     user.password = password;
     user.generation = generation;
     return user;
