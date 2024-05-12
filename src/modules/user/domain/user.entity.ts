@@ -9,18 +9,19 @@ import {
 } from 'typeorm';
 import { BaseTimeEntity } from '@common/entities/base-time.entity';
 import { Generation } from '../../generation/domain/generation.entity';
-import { MemberType } from './member-type';
+import { EUserType } from './user-type';
 import { UserStatus } from './user-status';
 import { UserRole } from './user-role.entity';
 import { compare, genSalt, hash } from 'bcrypt';
 import { Role } from './role.entity';
+import { UserTypeTransformer } from './user-type.transformer';
 
 @Entity()
 export class User extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
+  @Column()
   name: string;
 
   @Column({ unique: true })
@@ -29,8 +30,11 @@ export class User extends BaseTimeEntity {
   @Column()
   status: UserStatus;
 
-  @Column()
-  type: MemberType;
+  @Column({
+    type: 'varchar',
+    transformer: new UserTypeTransformer(),
+  })
+  type: EUserType;
 
   @Column()
   password: string;
@@ -45,7 +49,7 @@ export class User extends BaseTimeEntity {
   static create(
     name: string,
     email: string,
-    type: MemberType,
+    type: EUserType,
     role: Role,
     status: UserStatus,
     password: string,

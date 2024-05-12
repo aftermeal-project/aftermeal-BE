@@ -1,27 +1,31 @@
-import { Injectable, ValidationPipe } from '@nestjs/common';
-import { validate, ValidationError, ValidatorOptions } from 'class-validator';
-import { MemberType } from '../../modules/user/domain/member-type';
+import {
+  ArgumentMetadata,
+  BadRequestException,
+  Injectable,
+  PipeTransform,
+  ValidationPipe,
+} from '@nestjs/common';
+import { validate, ValidationError } from 'class-validator';
+import { EUserType } from '../../modules/user/domain/user-type';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ValidationByMemberTypePipe extends ValidationPipe {
-  override async validate(value: any): Promise<ValidationError[]> {
-    const validationOptions: ValidatorOptions = {};
-
+  async transform(
+    value: any,
+    { metatype }: ArgumentMetadata,
+  ): Promise<ValidationError[]> {
     // Determine the validation group based on memberType
-    if (value.memberType === MemberType.Student) {
-      validationOptions.groups = [MemberType.Student];
-    }
+    if (value.memberType === EUserType.STUDENT.name) {
+      const object = plainToInstance(metatype, value);
+      const errors: ValidationError[] = await validate(object, {
+        strictGroups: true,
+        groups: [EUserType.STUDENT.enumName],
+      });
 
-    const errors: ValidationError[] = await validate(value, {
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      forbidUnknownValues: true,
-      strictGroups: true,
-      ...validationOptions,
-    });
-
-    if (errors.length > 0) {
-      throw await this.exceptionFactory(errors);
+      if (errors.length > 0) {
+        throw await this.exceptionFactory(errors);
+      }
     }
     return value;
   }

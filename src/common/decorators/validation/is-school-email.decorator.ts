@@ -5,7 +5,7 @@ import {
   ValidationArguments,
   ValidationOptions,
 } from 'class-validator';
-import { School } from '../../../modules/user/domain/school';
+import { ESchool } from '../../../modules/user/domain/school';
 
 /**
  * @param school
@@ -13,7 +13,7 @@ import { School } from '../../../modules/user/domain/school';
  * @description 학교 이메일인지 검증하는 데코레이터입니다.
  */
 export function IsSchoolEmail(
-  school: School,
+  school: ESchool,
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return function (target: object, propertyKey: string) {
@@ -28,7 +28,7 @@ export function IsSchoolEmail(
           value: unknown,
           validationArguments: ValidationArguments,
         ): Promise<boolean> | boolean {
-          const { emailFormat }: School = validationArguments?.constraints[0];
+          const { emailFormat }: ESchool = validationArguments?.constraints[0];
           return typeof value === 'string' && matches(value, emailFormat);
         },
         defaultMessage: buildMessage(

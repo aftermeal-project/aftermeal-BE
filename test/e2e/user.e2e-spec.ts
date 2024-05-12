@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { setNestApp } from '@common/middlewares/set-nest-app';
 import * as request from 'supertest';
-import { MemberType } from '../../src/modules/user/domain/member-type';
+import { EUserType } from '../../src/modules/user/domain/user-type';
 import { Role } from '../../src/modules/user/domain/role.entity';
 import { Generation } from '../../src/modules/generation/domain/generation.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
@@ -77,7 +77,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: 's20041@gsm.hs.kr',
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Student,
+          memberType: EUserType.STUDENT,
           generationNumber: generation.generationNumber,
         });
 
@@ -92,7 +92,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: 'test@example.com',
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Teacher,
+          memberType: EUserType.TEACHER,
         });
 
       expect(response.status).toBe(201);
@@ -106,7 +106,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: null,
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Teacher,
+          memberType: EUserType.TEACHER,
         });
 
       expect(response.status).toBe(400);
@@ -119,7 +119,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: 'test@examplecom',
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Teacher,
+          memberType: EUserType.TEACHER,
         });
 
       expect(response.status).toBe(400);
@@ -132,7 +132,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: 'test@example!.com',
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Teacher,
+          memberType: EUserType.TEACHER,
         });
 
       expect(response.status).toBe(400);
@@ -143,7 +143,7 @@ describe('UserController (E2E)', () => {
         name: '테스트',
         email: 'test@example.com',
         password: 'G$K9Vss9-wNX6jOvY',
-        memberType: MemberType.Teacher,
+        memberType: EUserType.TEACHER,
       };
 
       await request(app.getHttpServer()).post('/v1/users').send(data);
@@ -161,7 +161,7 @@ describe('UserController (E2E)', () => {
           name: null,
           email: 'test@example.com',
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Teacher,
+          memberType: EUserType.TEACHER,
         });
 
       expect(response.status).toBe(400);
@@ -174,7 +174,7 @@ describe('UserController (E2E)', () => {
           name: '타우마타와카탕이항아코아우아우오타마테아투리푸카카피키마웅아호로누쿠포카이웨누아키타나타후',
           email: 'test@example.com',
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Teacher,
+          memberType: EUserType.TEACHER,
         });
 
       expect(response.status).toBe(400);
@@ -187,7 +187,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: 'test@example.com',
           password: null,
-          memberType: MemberType.Teacher,
+          memberType: EUserType.TEACHER,
         });
 
       expect(response.status).toBe(400);
@@ -200,7 +200,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: 'test@example.com',
           password: '1234',
-          memberType: MemberType.Teacher,
+          memberType: EUserType.TEACHER,
         });
 
       expect(response.status).toBe(400);
@@ -239,7 +239,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: 'test@example.com',
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Student,
+          memberType: EUserType.STUDENT,
         });
 
       expect(response.status).toBe(400);
@@ -259,7 +259,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: 'test@example.com',
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Student,
+          memberType: EUserType.STUDENT,
           generationNumber: generation.generationNumber,
         });
 
@@ -280,7 +280,7 @@ describe('UserController (E2E)', () => {
           name: '테스트',
           email: 's20041@gsm.hs.kr',
           password: 'G$K9Vss9-wNX6jOvY',
-          memberType: MemberType.Student,
+          memberType: EUserType.STUDENT,
           generationNumber: generation.generationNumber,
         });
 

@@ -39,7 +39,7 @@ import { DataSource } from 'typeorm';
       imports: [ConfigModule.forFeature(databaseConfiguration)],
       inject: [databaseConfiguration.KEY],
       useClass: MysqlProvider,
-      dataSourceFactory: async (options) => {
+      dataSourceFactory: async (options): Promise<DataSource> => {
         if (!options) {
           throw new Error('Invalid options passed');
         }

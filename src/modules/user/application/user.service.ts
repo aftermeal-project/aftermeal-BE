@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
 import { Role } from '../domain/role.entity';
 import { Generation } from '../../generation/domain/generation.entity';
-import { MemberType } from '../domain/member-type';
+import { EUserType } from '../domain/user-type';
 import { UserRegisterResponseDto } from '../dto/user-register-response.dto';
 import { UserRegisterRequestDto } from '../dto/user-register-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,7 +28,7 @@ export class UserService {
     await this.validateEmailDuplication(dto.email);
     let generation: Generation | null = null;
 
-    if (dto.memberType === MemberType.Student) {
+    if (dto.memberType === EUserType.STUDENT) {
       generation = await this.generationService.getOneByGenerationNumber(
         dto.generationNumber,
       );

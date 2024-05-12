@@ -3,7 +3,7 @@ import { UserService } from '../application/user.service';
 import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { MemberType } from '../domain/member-type';
+import { EUserType } from '../domain/user-type';
 import { Generation } from '../../generation/domain/generation.entity';
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { GenerationService } from '../../generation/application/generation.service';
@@ -89,7 +89,7 @@ describe('UserService', () => {
         await sut.register({
           name: '테스트',
           email: 'test@example.com',
-          memberType: MemberType.Teacher,
+          memberType: EUserType.TEACHER,
           password: 'password',
         });
       };
@@ -107,7 +107,7 @@ describe('UserService', () => {
 
       // when
       const request = new UserRegisterRequestDto();
-      request.memberType = MemberType.Student;
+      request.memberType = EUserType.STUDENT;
       const actual = async () => {
         await sut.register(request);
       };

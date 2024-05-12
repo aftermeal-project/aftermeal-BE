@@ -6,23 +6,23 @@ import {
   IsNotEmpty,
   IsPositive,
 } from 'class-validator';
-import { MemberType } from '../../user/domain/member-type';
+import { EUserType } from '../../user/domain/user-type';
 import { IsSchoolEmail } from '@common/decorators/validation/is-school-email.decorator';
-import { School } from '../../user/domain/school';
+import { ESchool } from '../../user/domain/school';
 
 export class InviteRequestDto {
-  @IsSchoolEmail(School.GSM, { each: true, groups: [MemberType.Student] })
+  // @IsSchoolEmail(School.GSM, { each: true, groups: [MemberType.STUDENT] })
   @ArrayUnique({ always: true })
   @IsEmail({}, { each: true, always: true })
   @IsArray({ always: true })
   @IsNotEmpty({ always: true })
   inviteeEmail: string[];
 
-  @IsEnum(MemberType, { always: true })
+  @IsEnum(EUserType, { always: true })
   @IsNotEmpty({ always: true })
-  inviteeMemberType: MemberType;
+  inviteeMemberType: EUserType;
 
-  @IsPositive({ groups: [MemberType.Student] })
-  @IsNotEmpty({ groups: [MemberType.Student] })
+  // @IsPositive({ groups: [MemberType.STUDENT] })
+  // @IsNotEmpty({ groups: [MemberType.STUDENT] })
   inviteeGenerationNumber?: number;
 }
