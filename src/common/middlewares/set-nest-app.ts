@@ -1,7 +1,6 @@
 import {
   ClassSerializerInterceptor,
   INestApplication,
-  ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -12,14 +11,6 @@ import { Reflector } from '@nestjs/core';
  * @param {INestApplication} app
  */
 export function setNestApp<T extends INestApplication>(app: T): void {
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     whitelist: true,
-  //     forbidNonWhitelisted: true,
-  //     forbidUnknownValues: true,
-  //     strictGroups: true,
-  //   }),
-  // );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   app.enableCors();

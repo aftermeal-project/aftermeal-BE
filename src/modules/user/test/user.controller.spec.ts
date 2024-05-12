@@ -6,7 +6,6 @@ import { INestApplication } from '@nestjs/common';
 import { Generation } from '../../generation/domain/generation.entity';
 import * as request from 'supertest';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
 import { Role } from '../domain/role.entity';
 import { setNestApp } from '@common/middlewares/set-nest-app';
@@ -26,10 +25,6 @@ const mockRoleRepository = {
 
 describe('UserController (Unit)', () => {
   let app: INestApplication;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let generationRepository: Repository<Generation>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let roleRepository: Repository<Role>;
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -53,21 +48,11 @@ describe('UserController (Unit)', () => {
         },
       ],
     }).compile();
-    generationRepository = moduleRef.get(getRepositoryToken(Generation));
-    roleRepository = moduleRef.get(getRepositoryToken(Role));
     app = moduleRef.createNestApplication();
 
     setNestApp(app);
     await app.init();
   });
-
-  // beforeEach(async () => {
-  //   const role: Role = Role.create('ROLE_MEMBER');
-  //   await roleRepository.save(role);
-  //
-  //   const generation: Generation = Generation.create(8, 2024, false);
-  //   await generationRepository.save(generation);
-  // });
 
   it('신규 사용자가 등록한다.', async () => {
     // when

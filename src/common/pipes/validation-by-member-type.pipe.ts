@@ -1,10 +1,4 @@
-import {
-  ArgumentMetadata,
-  BadRequestException,
-  Injectable,
-  PipeTransform,
-  ValidationPipe,
-} from '@nestjs/common';
+import { ArgumentMetadata, Injectable, ValidationPipe } from '@nestjs/common';
 import { validate, ValidationError } from 'class-validator';
 import { EUserType } from '../../modules/user/domain/user-type';
 import { plainToInstance } from 'class-transformer';
