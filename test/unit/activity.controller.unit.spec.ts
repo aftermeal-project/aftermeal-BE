@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ActivityService } from '../../../src/modules/activity/application/activity.service';
-import { ActivityController } from '../../../src/modules/activity/presentation/activity.controller';
+import { ActivityService } from '../../src/modules/activity/application/activity.service';
+import { ActivityController } from '../../src/modules/activity/presentation/activity.controller';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { setNestApp } from '@common/middlewares/set-nest-app';

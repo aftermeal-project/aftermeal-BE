@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from '../../../src/modules/user/application/user.service';
+import { UserService } from '../../src/modules/user/application/user.service';
 import { DataSource, Repository } from 'typeorm';
-import { User } from '../../../src/modules/user/domain/user.entity';
+import { User } from '../../src/modules/user/domain/user.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { EUserType } from '../../../src/modules/user/domain/user-type';
+import { EUserType } from '../../src/modules/user/domain/user-type';
 import { ConflictException } from '@nestjs/common';
-import { UserRole } from '../../../src/modules/user/domain/user-role.entity';
-import { Role } from '../../../src/modules/user/domain/role.entity';
-import { getTestMysqlModule } from '../../get-test-mysql.module';
+import { UserRole } from '../../src/modules/user/domain/user-role.entity';
+import { Role } from '../../src/modules/user/domain/role.entity';
+import { getTestMysqlModule } from '../get-test-mysql.module';
 import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
-import { UserModule } from '../../../src/modules/user/user.module';
+import { UserModule } from '../../src/modules/user/user.module';
 
 describe('UserService (Integration)', () => {
   let sut: UserService;
