@@ -12,7 +12,7 @@ export class ActivityController {
   @Get()
   async getActivities(): Promise<ResponseEntity<ActivityDto[]>> {
     return ResponseEntity.OK_WITH_DATA(
-      '활동 전체 조회에 성공하였습니다.',
+      '활동 목록 조회에 성공하였습니다.',
       await this.activityService.getAll(),
     );
   }
