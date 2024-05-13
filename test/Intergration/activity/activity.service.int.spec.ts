@@ -17,6 +17,7 @@ import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
+import { NotFoundException } from '@nestjs/common';
 
 describe('ActivityService (Integration)', () => {
   let sut: ActivityService;
@@ -57,18 +58,9 @@ describe('ActivityService (Integration)', () => {
   describe('getAll', () => {
     it('활동 목록을 반환한다.', async () => {
       // given
-      const activity1 = Activity.create({
-        name: '배구',
-        maximumParticipants: 18,
-      });
-      const activity2 = Activity.create({
-        name: '배드민턴',
-        maximumParticipants: 12,
-      });
-      const activity3 = Activity.create({
-        name: '농구',
-        maximumParticipants: 8,
-      });
+      const activity1: Activity = new Activity('배구', 18);
+      const activity2: Activity = new Activity('배드민턴', 12);
+      const activity3: Activity = new Activity('농구', 8);
       await activityRepository.saveAll([activity1, activity2, activity3]);
 
       const user1: User = createUser('test1@example.com');
@@ -102,6 +94,22 @@ describe('ActivityService (Integration)', () => {
       expect(actual[2].name).toBe('농구');
       expect(actual[2].maximumParticipants).toBe(8);
       expect(actual[2].participantsCount).toBe(0);
+    });
+  });
+
+  describe('getOneByActivityId', () => {
+    it('활동을 가져온다.', async () => {
+      // given
+      const activity: Activity = new Activity('배구', 18);
+      const { id } = await activityRepository.save(activity);
+
+      // when
+      const actual: Activity = await sut.getOneByActivityId(id);
+
+      // then
+      expect(actual.id).toBeDefined();
+      expect(actual.name).toBe('배구');
+      expect(actual.maximumParticipants).toBe(18);
     });
   });
 });
