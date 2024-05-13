@@ -29,11 +29,7 @@ describe('ActivityService (Integration)', () => {
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [
-        getTestMysqlModule(),
-        ActivityModule,
-        TypeOrmModule.forFeature([Activity, User]),
-      ],
+      imports: [getTestMysqlModule(), ActivityModule],
     }).compile();
 
     sut = moduleRef.get<ActivityService>(ActivityService);
