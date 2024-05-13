@@ -112,6 +112,22 @@ describe('ActivityService (Integration)', () => {
       expect(actual.maximumParticipants).toBe(18);
     });
   });
+
+  it('존재하지 않는 활동이면 오류가 발생한다.', async () => {
+    // given
+    const activity: Activity = new Activity('배구', 18);
+    const { id } = await activityRepository.save(activity);
+
+    // when
+    const actual = async () => {
+      await sut.getOneByActivityId(id + 1);
+    };
+
+    // then
+    await expect(actual).rejects.toThrowError(
+      new NotFoundException('존재하지 않는 활동입니다.'),
+    );
+  });
 });
 
 function createUser(email: string): User {
