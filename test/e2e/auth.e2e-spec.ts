@@ -5,7 +5,7 @@ import { AppModule } from '../../src/app.module';
 import { setNestApp } from '@common/middlewares/set-nest-app';
 import * as request from 'supertest';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { MemberType } from '../../src/modules/user/domain/member-type';
+import { EUserType } from '../../src/modules/user/domain/user-type';
 import { UserRole } from '../../src/modules/user/domain/user-role.entity';
 import { Role } from '../../src/modules/user/domain/role.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
@@ -57,7 +57,7 @@ describe('AuthController (E2E)', () => {
       name: '테스트',
       email: 'test@example.com',
       password: 'G$K9Vss9-wNX6jOvY',
-      memberType: MemberType.Teacher,
+      memberType: EUserType.TEACHER,
     });
   });
 

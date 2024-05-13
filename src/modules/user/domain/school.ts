@@ -1,8 +1,8 @@
 import { Enum, EnumType } from 'ts-jenum';
 
-@Enum('code')
-export class School extends EnumType<School>() {
-  static readonly GSM = new School(
+@Enum('_code')
+export class ESchool extends EnumType<ESchool>() {
+  static readonly GSM = new ESchool(
     'GSM',
     '광주 소프트웨어 마이스터 고등학교',
     new RegExp('s[0-9]{5}@gsm\\.hs\\.kr'),
@@ -26,20 +26,5 @@ export class School extends EnumType<School>() {
 
   get emailFormat(): RegExp {
     return this._emailFormat;
-  }
-
-  static findByCode(code: string) {
-    return this.values().find((element) => element.equals(code));
-  }
-
-  equals(code: string): boolean {
-    return this.code === code;
-  }
-
-  toCodeName() {
-    return {
-      code: this.code,
-      name: this.name,
-    };
   }
 }

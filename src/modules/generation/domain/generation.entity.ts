@@ -11,4 +11,16 @@ export class Generation extends BaseTimeEntity {
 
   @Column()
   isGraduated: boolean;
+
+  static create(
+    generationNumber: number,
+    yearOfAdmission: number,
+    isGraduated: boolean,
+  ): Generation {
+    const generation: Generation = new Generation();
+    generation.generationNumber = generationNumber;
+    generation.yearOfAdmission = yearOfAdmission;
+    generation.isGraduated = isGraduated;
+    return generation;
+  }
 }

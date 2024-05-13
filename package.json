@@ -1,5 +1,5 @@
 {
-  "name": "intersection",
+  "name": "sikhoo0",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -43,11 +43,12 @@
     "mysql2": "^3.6.5",
     "nodemailer": "6.9.9",
     "redis": "^4.6.12",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.2.2",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "ts-jenum": "^2.2.2",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "typeorm-transactional": "^0.5.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.2.1",
@@ -81,7 +82,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -89,11 +90,11 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^@config(.*)$": "<rootDir>/config$1",
-      "^@common(.*)$": "<rootDir>/common$1"
+      "^@config(.*)$": "<rootDir>/src/config$1",
+      "^@common(.*)$": "<rootDir>/src/common$1"
     }
   }
 }

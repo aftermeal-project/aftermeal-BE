@@ -2,11 +2,11 @@ import { CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 
 export abstract class BaseTimeEntity {
   @CreateDateColumn({ type: 'datetime' })
-  createdAt: Date;
+  createdAt?: Date;
 
   @UpdateDateColumn({ type: 'datetime' })
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @DeleteDateColumn({ type: 'datetime' })
-  deletedAt: Date;
+  deletedAt?: Date;
 }

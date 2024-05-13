@@ -5,11 +5,17 @@ import appConfig from '@config/app.config';
 import { Logger } from '@nestjs/common';
 import { setNestApp } from '@common/middlewares/set-nest-app';
 import { setSwagger } from '@common/middlewares/set-swagger';
+import {
+  initializeTransactionalContext,
+  StorageDriver,
+} from 'typeorm-transactional';
 import * as process from 'process';
 
 async function bootstrap() {
+  initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
   const app = await NestFactory.create(AppModule, {
     forceCloseConnections: true,
+    abortOnError: true,
   });
   const logger = new Logger('Bootstrap');
   const config = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
@@ -19,7 +25,9 @@ async function bootstrap() {
   setSwagger(app);
 
   await app.listen(port, async () => {
-    process.send('ready');
+    if (process.send) {
+      process.send('ready');
+    }
     logger.log(`Application is running on: ${await app.getUrl()}`);
   });
 }

@@ -14,7 +14,7 @@ export class ParticipationService {
   ) {}
 
   async apply(activityId: number, userId: number): Promise<void> {
-    const activity: Activity = await this.activityService.getActivityById(
+    const activity: Activity = await this.activityService.getOneByActivityId(
       activityId,
     );
 

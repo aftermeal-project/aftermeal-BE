@@ -12,10 +12,6 @@ export class MysqlProvider implements TypeOrmOptionsFactory {
   ) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
-    const entityPath: string = join(
-      __dirname,
-      '../../**/domain/*.entity{.ts,.js}',
-    );
     return {
       type: 'mysql',
       host: this.dbConfig.host,
@@ -23,7 +19,7 @@ export class MysqlProvider implements TypeOrmOptionsFactory {
       username: this.dbConfig.user,
       password: this.dbConfig.password,
       database: this.dbConfig.name,
-      entities: [entityPath],
+      entities: [join(__dirname, '../**/domain/*.entity{.ts,.js}')],
       synchronize: false,
       logging: false,
       namingStrategy: new SnakeNamingStrategy(),

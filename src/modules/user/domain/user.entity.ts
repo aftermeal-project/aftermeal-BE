@@ -9,44 +9,19 @@ import {
 } from 'typeorm';
 import { BaseTimeEntity } from '@common/entities/base-time.entity';
 import { Generation } from '../../generation/domain/generation.entity';
-import { MemberType } from './member-type';
+import { EUserType } from './user-type';
 import { UserStatus } from './user-status';
 import { UserRole } from './user-role.entity';
 import { compare, genSalt, hash } from 'bcrypt';
-import { InternalServerErrorException } from '@nestjs/common';
+import { Role } from './role.entity';
+import { UserTypeTransformer } from './user-type.transformer';
 
 @Entity()
 export class User extends BaseTimeEntity {
-  constructor();
-  constructor(
-    name: string,
-    email: string,
-    password: string,
-    memberType: MemberType,
-    status: UserStatus,
-    generation: Generation | null,
-  );
-  constructor(
-    name?: string,
-    email?: string,
-    password?: string,
-    memberType?: MemberType,
-    status?: UserStatus,
-    generation?: Generation | null,
-  ) {
-    super();
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.memberType = memberType;
-    this.status = status;
-    this.generation = generation;
-  }
-
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
+  @Column()
   name: string;
 
   @Column({ unique: true })
@@ -55,49 +30,40 @@ export class User extends BaseTimeEntity {
   @Column()
   status: UserStatus;
 
-  @Column()
-  memberType: MemberType;
+  @Column({
+    type: 'varchar',
+    transformer: new UserTypeTransformer(),
+  })
+  type: EUserType;
 
   @Column()
   password: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
-  role: UserRole[];
+  userRoles: UserRole[];
 
   @OneToOne(() => Generation, { nullable: true })
   @JoinColumn({ name: 'generation_number' })
   generation: Generation | null;
 
-  static newCandidate(
-    email: string,
-    memberType: MemberType,
-    generation: Generation | null,
-  ): User {
-    return new User(
-      null,
-      email,
-      null,
-      memberType,
-      UserStatus.Candidate,
-      generation,
-    );
-  }
-
-  static newMember(
+  static create(
     name: string,
     email: string,
+    type: EUserType,
+    role: Role,
+    status: UserStatus,
     password: string,
-    memberType: MemberType,
-    generation: Generation | null,
+    generation?: Generation,
   ): User {
-    return new User(
-      name,
-      email,
-      password,
-      memberType,
-      UserStatus.Activate,
-      generation,
-    );
+    const user: User = new User();
+    user.name = name;
+    user.email = email;
+    user.type = type;
+    user.userRoles = [UserRole.create(role, user)];
+    user.status = status;
+    user.password = password;
+    user.generation = generation;
+    return user;
   }
 
   @BeforeInsert()

@@ -8,4 +8,10 @@ export class Role extends BaseTimeEntity {
 
   @Column()
   name: string;
+
+  static create(name: string): Role {
+    const role: Role = new Role();
+    role.name = name;
+    return role;
+  }
 }
