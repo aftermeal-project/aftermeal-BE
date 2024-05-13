@@ -12,7 +12,15 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(
-    @Body(ValidationPipe) dto: LoginRequestDto,
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        forbidUnknownValues: true,
+        transform: true,
+      }),
+    )
+    dto: LoginRequestDto,
   ): Promise<ResponseEntity<LoginResponseDto>> {
     return ResponseEntity.OK_WITH_DATA(
       '로그인 성공',

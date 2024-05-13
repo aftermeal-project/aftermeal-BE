@@ -25,9 +25,19 @@ export class UserService {
     private readonly generationService: GenerationService,
   ) {}
 
-  async getOne(userId: number): Promise<User> {
+  async getOneById(userId: number): Promise<User> {
     const user: User | undefined = await this.userRepository.findOneBy({
       id: userId,
+    });
+    if (!user) {
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
+    }
+    return user;
+  }
+
+  async getOneByEmail(email: string): Promise<User> {
+    const user: User | undefined = await this.userRepository.findOneBy({
+      email: email,
     });
     if (!user) {
       throw new NotFoundException('존재하지 않는 사용자입니다.');

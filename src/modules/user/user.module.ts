@@ -12,5 +12,6 @@ import { Generation } from '../generation/domain/generation.entity';
   imports: [TypeOrmModule.forFeature([User, Role, Generation])],
   controllers: [UserController],
   providers: [UserService, RoleService, GenerationService],
+  exports: [UserService],
 })
 export class UserModule {}
