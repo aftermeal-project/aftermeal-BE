@@ -4,24 +4,25 @@ import { Participation } from '../domain/participation.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ActivityService } from '../../activity/application/activity.service';
 import { Activity } from '../../activity/domain/activity.entity';
+import { UserService } from '../../user/application/user.service';
+import { User } from '../../user/domain/user.entity';
 
 @Injectable()
 export class ParticipationService {
   constructor(
-    private readonly activityService: ActivityService,
     @InjectRepository(Participation)
     private readonly participationRepository: Repository<Participation>,
+    private readonly activityService: ActivityService,
+    private readonly userService: UserService,
   ) {}
 
   async apply(activityId: number, userId: number): Promise<void> {
+    const user: User = await this.userService.getOne(userId);
     const activity: Activity = await this.activityService.getOneByActivityId(
       activityId,
     );
 
-    const participation: Participation = new Participation();
-    participation.activityId = activity.id;
-    participation.userId = userId;
-
+    const participation: Participation = new Participation(user, activity);
     await this.participationRepository.save(participation);
   }
 }

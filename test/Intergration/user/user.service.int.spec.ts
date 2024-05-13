@@ -7,7 +7,7 @@ import { EUserType } from '../../../src/modules/user/domain/user-type';
 import { ConflictException } from '@nestjs/common';
 import { UserRole } from '../../../src/modules/user/domain/user-role.entity';
 import { Role } from '../../../src/modules/user/domain/role.entity';
-import { getTestMysqlModule } from '../../util/get-test-mysql.module';
+import { getTestMysqlModule } from '../../get-test-mysql.module';
 import {
   initializeTransactionalContext,
   StorageDriver,

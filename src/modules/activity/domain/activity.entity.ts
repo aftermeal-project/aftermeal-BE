@@ -15,4 +15,12 @@ export class Activity extends BaseTimeEntity {
 
   @OneToMany(() => Participation, (participation) => participation.activity)
   participation: Participation[];
+
+  constructor();
+  constructor(name: string, maximumParticipants: number);
+  constructor(name?: string, maximumParticipants?: number) {
+    super();
+    this.name = name;
+    this.maximumParticipants = maximumParticipants;
+  }
 }

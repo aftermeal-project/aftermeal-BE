@@ -21,11 +21,12 @@ export function getTestMysqlModule(): DynamicModule {
         password: 'test',
         database: 'test',
         entities: [
-          join(__dirname, '../..//src/modules/**/domain/*.entity{.ts,.js}'),
+          join(__dirname, '../src/modules/**/domain/*.entity{.ts,.js}'),
         ],
         synchronize: true,
-        logging: true,
+        logging: false,
         namingStrategy: new SnakeNamingStrategy(),
+        bigNumberStrings: false,
       };
     },
     dataSourceFactory: async (options): Promise<DataSource> => {
