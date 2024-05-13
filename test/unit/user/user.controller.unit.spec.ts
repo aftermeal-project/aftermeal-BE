@@ -3,26 +3,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from '../../../src/modules/user/presentation/user.controller';
 import { EUserType } from '../../../src/modules/user/domain/user-type';
 import { INestApplication } from '@nestjs/common';
-import { Generation } from '../../../src/modules/generation/domain/generation.entity';
 import * as request from 'supertest';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../../../src/modules/user/domain/user.entity';
-import { Role } from '../../../src/modules/user/domain/role.entity';
 import { setNestApp } from '@common/middlewares/set-nest-app';
 
 const mockUserService = {
   register: jest.fn(),
 };
-const mockUserRepository = {
-  save: jest.fn(),
-};
-const mockGenerationRepository = {
-  save: jest.fn(),
-};
-const mockRoleRepository = {
-  save: jest.fn(),
-};
-
 describe('UserController (Unit)', () => {
   let app: INestApplication;
 
@@ -34,18 +20,6 @@ describe('UserController (Unit)', () => {
           provide: UserService,
           useValue: mockUserService,
         },
-        {
-          provide: getRepositoryToken(User),
-          useValue: mockUserRepository,
-        },
-        {
-          provide: getRepositoryToken(Generation),
-          useValue: mockGenerationRepository,
-        },
-        {
-          provide: getRepositoryToken(Role),
-          useValue: mockRoleRepository,
-        },
       ],
     }).compile();
     app = moduleRef.createNestApplication();
@@ -54,7 +28,7 @@ describe('UserController (Unit)', () => {
     await app.init();
   });
 
-  it('신규 사용자가 등록한다.', async () => {
+  it('신규 사용자를 등록한다.', async () => {
     // when
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 'test@example.com',
