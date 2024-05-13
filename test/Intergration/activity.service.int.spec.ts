@@ -1,18 +1,18 @@
-import { ActivityService } from '../../../src/modules/activity/application/activity.service';
+import { ActivityService } from '../../src/modules/activity/application/activity.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getTestMysqlModule } from '../../get-test-mysql.module';
-import { ActivityModule } from '../../../src/modules/activity/activity.module';
+import { getTestMysqlModule } from '../get-test-mysql.module';
+import { ActivityModule } from '../../src/modules/activity/activity.module';
 import { DataSource, Repository } from 'typeorm';
-import { ActivityRepository } from '../../../src/modules/activity/domain/activity.repository';
+import { ActivityRepository } from '../../src/modules/activity/domain/activity.repository';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
-import { ActivityDto } from '../../../src/modules/activity/dto/activity.dto';
-import { Activity } from '../../../src/modules/activity/domain/activity.entity';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { Participation } from '../../../src/modules/participation/domain/participation.entity';
-import { User } from '../../../src/modules/user/domain/user.entity';
-import { EUserType } from '../../../src/modules/user/domain/user-type';
-import { UserStatus } from '../../../src/modules/user/domain/user-status';
-import { Role } from '../../../src/modules/user/domain/role.entity';
+import { ActivityDto } from '../../src/modules/activity/dto/activity.dto';
+import { Activity } from '../../src/modules/activity/domain/activity.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Participation } from '../../src/modules/participation/domain/participation.entity';
+import { User } from '../../src/modules/user/domain/user.entity';
+import { EUserType } from '../../src/modules/user/domain/user-type';
+import { UserStatus } from '../../src/modules/user/domain/user-status';
+import { Role } from '../../src/modules/user/domain/role.entity';
 import {
   initializeTransactionalContext,
   StorageDriver,

@@ -1,7 +1,7 @@
-import { UserService } from '../../../src/modules/user/application/user.service';
+import { UserService } from '../../src/modules/user/application/user.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from '../../../src/modules/user/presentation/user.controller';
-import { EUserType } from '../../../src/modules/user/domain/user-type';
+import { UserController } from '../../src/modules/user/presentation/user.controller';
+import { EUserType } from '../../src/modules/user/domain/user-type';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { setNestApp } from '@common/middlewares/set-nest-app';
