@@ -1,13 +1,13 @@
-import { UserService } from '../application/user.service';
+import { UserService } from '../../../src/modules/user/application/user.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from '../presentation/user.controller';
-import { EUserType } from '../domain/user-type';
+import { UserController } from '../../../src/modules/user/presentation/user.controller';
+import { EUserType } from '../../../src/modules/user/domain/user-type';
 import { INestApplication } from '@nestjs/common';
-import { Generation } from '../../generation/domain/generation.entity';
+import { Generation } from '../../../src/modules/generation/domain/generation.entity';
 import * as request from 'supertest';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../domain/user.entity';
-import { Role } from '../domain/role.entity';
+import { User } from '../../../src/modules/user/domain/user.entity';
+import { Role } from '../../../src/modules/user/domain/role.entity';
 import { setNestApp } from '@common/middlewares/set-nest-app';
 
 const mockUserService = {
@@ -169,7 +169,7 @@ describe('UserController (Unit)', () => {
     expect(response.body.message[0]).toBe('password is not strong enough');
   });
 
-  it('신규 사용자를 등록할 때 회원 유형은 필수값이다..', async () => {
+  it('신규 사용자를 등록할 때 회원 유형은 필수값이다.', async () => {
     // when
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 'test@example.com',
