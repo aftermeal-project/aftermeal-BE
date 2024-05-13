@@ -12,12 +12,12 @@ export class ActivityRepositoryImpl implements ActivityRepository {
     private readonly activityRepository: Repository<Activity>,
   ) {}
 
-  create(activity: Activity): Activity {
-    return this.activityRepository.create(activity);
-  }
-
   async save(activity: Activity): Promise<Activity> {
     return await this.activityRepository.save(activity);
+  }
+
+  async saveAll(activities: Activity[]): Promise<Activity[]> {
+    return await this.activityRepository.save(activities);
   }
 
   async findOneByActivityId(activityId: number): Promise<Activity> {
@@ -38,7 +38,7 @@ export class ActivityRepositoryImpl implements ActivityRepository {
       .getRawMany();
   }
 
-  async delete(): Promise<void> {
+  async clear(): Promise<void> {
     await this.activityRepository.delete({});
   }
 }

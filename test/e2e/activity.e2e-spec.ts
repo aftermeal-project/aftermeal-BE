@@ -24,7 +24,7 @@ describe('ActivityController (E2E)', () => {
   });
 
   beforeEach(async () => {
-    await activityRepository.delete();
+    await activityRepository.clear();
   });
 
   afterAll(async () => {
@@ -33,7 +33,7 @@ describe('ActivityController (E2E)', () => {
 
   describe('GET /v1/activities', () => {
     it('활동 목록을 반환해야 합니다.', async () => {
-      const activity: Activity = activityRepository.create({
+      const activity: Activity = Activity.create({
         name: '배드민턴',
         maximumParticipants: 10,
       });

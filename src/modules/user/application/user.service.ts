@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
 import { Role } from '../domain/role.entity';
@@ -20,6 +24,16 @@ export class UserService {
     private readonly roleService: RoleService,
     private readonly generationService: GenerationService,
   ) {}
+
+  async getOne(userId: number): Promise<User> {
+    const user: User | undefined = await this.userRepository.findOneBy({
+      id: userId,
+    });
+    if (!user) {
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
+    }
+    return user;
+  }
 
   @Transactional()
   async register(
