@@ -6,7 +6,8 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
   ) {}
 
   async getOneByName(name: string): Promise<Role> {
