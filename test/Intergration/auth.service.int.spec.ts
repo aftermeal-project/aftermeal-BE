@@ -45,7 +45,7 @@ describe('AuthService (Integration)', () => {
     dataSource = moduleRef.get(DataSource);
   });
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await userRoleRepository.delete({});
     await roleRepository.delete({});
     await userRepository.delete({});
