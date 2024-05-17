@@ -13,6 +13,7 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 import { UserModule } from '../../src/modules/user/user.module';
+import { UserStatus } from '../../src/modules/user/domain/user-status';
 
 describe('UserService (Integration)', () => {
   let sut: UserService;
@@ -70,20 +71,26 @@ describe('UserService (Integration)', () => {
 
     it('이미 등록된 이메일은 가입할 수 없다.', async () => {
       // given
+      const email = 'test@example.com';
+
       const role: Role = Role.create('ROLE_MEMBER');
       await roleRepository.save(role);
 
+      const user: User = User.create(
+        '송유현',
+        email,
+        EUserType.TEACHER,
+        role,
+        UserStatus.Activate,
+        'password',
+      );
+      await userRepository.save(user);
+
       // when
-      await sut.register({
-        name: '테스트',
-        email: 'test@example.com',
-        memberType: EUserType.TEACHER,
-        password: 'password',
-      });
       const actual = async () => {
         await sut.register({
           name: '테스트',
-          email: 'test@example.com',
+          email: email,
           memberType: EUserType.TEACHER,
           password: 'password',
         });
