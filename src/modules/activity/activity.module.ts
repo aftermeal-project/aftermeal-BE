@@ -5,11 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Activity } from './domain/activity.entity';
 import { ActivityRepositoryImpl } from './domain/activity.repository-impl';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
-import { User } from '../user/domain/user.entity';
-import { Participation } from '../participation/domain/participation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Activity, User, Participation])],
+  imports: [TypeOrmModule.forFeature([Activity])],
   controllers: [ActivityController],
   providers: [
     ActivityService,
