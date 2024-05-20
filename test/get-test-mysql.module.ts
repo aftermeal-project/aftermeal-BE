@@ -24,7 +24,7 @@ export function getTestMysqlModule(): DynamicModule {
           join(__dirname, '../src/modules/**/domain/*.entity{.ts,.js}'),
         ],
         synchronize: true,
-        logging: false,
+        logging: true,
         namingStrategy: new SnakeNamingStrategy(),
         bigNumberStrings: false,
       };
