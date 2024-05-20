@@ -45,7 +45,7 @@ describe('ActivityService (Integration)', () => {
     dataSource = moduleRef.get<DataSource>(DataSource);
   });
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await participationRepository.delete({});
     await activityRepository.clear();
     await userRepository.delete({});

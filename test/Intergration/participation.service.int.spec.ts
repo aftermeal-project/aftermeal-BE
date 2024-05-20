@@ -39,17 +39,11 @@ describe('ParticipationService (Integration)', () => {
     dataSource = moduleRef.get<DataSource>(DataSource);
   });
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await participationRepository.delete({});
     await activityRepository.clear();
     await userRepository.delete({});
   });
-
-  // afterEach(async () => {
-  //   await participationRepository.delete({});
-  //   await activityRepository.clear();
-  //   await userRepository.delete({});
-  // });
 
   afterAll(async () => {
     await dataSource.destroy();
