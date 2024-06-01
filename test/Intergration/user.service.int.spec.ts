@@ -67,7 +67,7 @@ describe('UserService (Integration)', () => {
 
       // then
       const user: User = await sut.getOneById(actual.id);
-      await expect(user.id).toBeDefined();
+      expect(user.id).toBeDefined();
     });
 
     it('이미 등록된 이메일은 가입할 수 없다.', async () => {
