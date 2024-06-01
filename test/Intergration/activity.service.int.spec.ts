@@ -7,7 +7,7 @@ import { ActivityRepository } from '../../src/modules/activity/domain/activity.r
 import { ACTIVITY_REPOSITORY } from '@common/constants';
 import { ActivityDto } from '../../src/modules/activity/dto/activity.dto';
 import { Activity } from '../../src/modules/activity/domain/activity.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
 import { EUserType } from '../../src/modules/user/domain/user-type';
@@ -29,7 +29,11 @@ describe('ActivityService (Integration)', () => {
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [getTestMysqlModule(), ActivityModule],
+      imports: [
+        getTestMysqlModule(),
+        ActivityModule,
+        TypeOrmModule.forFeature([User, Participation]),
+      ],
     }).compile();
 
     sut = moduleRef.get<ActivityService>(ActivityService);
@@ -41,7 +45,7 @@ describe('ActivityService (Integration)', () => {
     dataSource = moduleRef.get<DataSource>(DataSource);
   });
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await participationRepository.delete({});
     await activityRepository.clear();
     await userRepository.delete({});
@@ -107,22 +111,22 @@ describe('ActivityService (Integration)', () => {
       expect(actual.name).toBe('배구');
       expect(actual.maximumParticipants).toBe(18);
     });
-  });
 
-  it('존재하지 않는 활동이면 오류가 발생한다.', async () => {
-    // given
-    const activity: Activity = new Activity('배구', 18);
-    const { id } = await activityRepository.save(activity);
+    it('존재하지 않는 활동이면 오류가 발생한다.', async () => {
+      // given
+      const activity: Activity = new Activity('배구', 18);
+      await activityRepository.save(activity);
 
-    // when
-    const actual = async () => {
-      await sut.getOneByActivityId(id + 1);
-    };
+      // when
+      const actual = async () => {
+        await sut.getOneByActivityId(0);
+      };
 
-    // then
-    await expect(actual).rejects.toThrowError(
-      new NotFoundException('존재하지 않는 활동입니다.'),
-    );
+      // then
+      await expect(actual).rejects.toThrowError(
+        new NotFoundException('존재하지 않는 활동입니다.'),
+      );
+    });
   });
 });
 
