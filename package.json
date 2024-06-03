@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "start": "nest start",
+    "start": "NODE_ENV=development nest start",
     "start:prod": "pm2 start ecosystem.config.js --env production",
     "reload:prod": "pm2 reload ecosystem.config.js --env production",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
