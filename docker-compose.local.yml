@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_USER=test
+      - MYSQL_PASSWORD=test
+      - MYSQL_DATABASE=test
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 20s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env.development
+    environment:
+      DB_HOST: db
+      NODE_ENV: development
+    depends_on:
+        db:
+          condition: service_healthy
+    ports:
+      - "3000:3000"
