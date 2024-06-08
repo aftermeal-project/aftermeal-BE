@@ -17,7 +17,9 @@
     "test:e2e": "NODE_ENV=development jest --config test/jest-e2e.config.json --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "docker:up:local": "docker-compose -f docker-compose.local.yml up -d",
+    "docker:down:local": "docker-compose -f docker-compose.local.yml down -d"
   },
   "dependencies": {
     "@js-joda/core": "^5.6.1",
