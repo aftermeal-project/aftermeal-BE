@@ -11,6 +11,7 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
  * @returns {DynamicModule}
  */
 export function getTestMysqlModule(): DynamicModule {
+  const logging: boolean = process.env.TYPEORM_LOGGING === 'true';
   return TypeOrmModule.forRootAsync({
     useFactory: () => {
       return {
@@ -24,7 +25,7 @@ export function getTestMysqlModule(): DynamicModule {
           join(__dirname, '../src/modules/**/domain/*.entity{.ts,.js}'),
         ],
         synchronize: true,
-        logging: true,
+        logging: logging,
         namingStrategy: new SnakeNamingStrategy(),
         bigNumberStrings: false,
       };
