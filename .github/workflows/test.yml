@@ -61,7 +61,7 @@ jobs:
         run: yarn test
         env:
           DB_HOST: mysql
-          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          ACCESS_TOKEN_EXPIRY_TIME: ${{ secrets.ACCESS_TOKEN_EXPIRY_TIME }}
-          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
-          REFRESH_TOKEN_EXPIRY_TIME: ${{ secrets.REFRESH_TOKEN_EXPIRY_TIME }}
+          ACCESS_TOKEN_SECRET: test
+          ACCESS_TOKEN_EXPIRY_TIME: 3600
+          REFRESH_TOKEN_SECRET: test
+          REFRESH_TOKEN_EXPIRY_TIME: 3600
