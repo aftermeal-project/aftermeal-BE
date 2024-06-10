@@ -44,9 +44,6 @@ class EnvironmentVariables {
   @IsNumber()
   REFRESH_TOKEN_EXPIRY_TIME: number;
 
-  @IsString()
-  JWT_ISSUER: string;
-
   @IsNumber()
   INVITATION_EXPIRY_TIME: number;
 

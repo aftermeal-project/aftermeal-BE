@@ -4,34 +4,36 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build
-        run: yarn build
-
-      - name: Copy artifacts to remote server
-        uses: appleboy/scp-action@v0.1.7
+      - name: Build and Push
+        uses: docker/build-push-action@v5
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
-          source: ./dist
-          target: "/home/ubuntu/sikhoo0"
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sikhoo0:latest
 
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
       - name: Deploy application
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -39,7 +41,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          script: |
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
-            ./deploy.sh
+          script: ./deploy.sh

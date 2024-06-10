@@ -9,5 +9,4 @@ export default registerAs('jwt', () => ({
     secret: process.env.REFRESH_TOKEN_SECRET,
     expiresIn: parseInt(process.env.REFRESH_TOKEN_EXPIRY_TIME),
   },
-  issuer: process.env.JWT_ISSUER,
 }));

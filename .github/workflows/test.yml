@@ -1,0 +1,67 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: test
+          MYSQL_DATABASE: test
+          MYSQL_USER: test
+          MYSQL_PASSWORD: test
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 3306:3306
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Use Yarn Berry
+        run: |
+          corepack enable
+          yarn set version berry
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Run TypeScript compiler
+        run: yarn exec tsc --noEmit
+
+      - name: Test
+        run: yarn test
+        env:
+          DB_HOST: mysql
+          ACCESS_TOKEN_SECRET: test
+          ACCESS_TOKEN_EXPIRY_TIME: 3600
+          REFRESH_TOKEN_SECRET: test
+          REFRESH_TOKEN_EXPIRY_TIME: 3600
