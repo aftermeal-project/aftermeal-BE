@@ -4,8 +4,9 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -27,6 +28,12 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sikhoo0:latest
 
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
       - name: Deploy application
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -34,7 +41,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          script: |
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
-            ./deploy.sh
+          script: ./deploy.sh
