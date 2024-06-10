@@ -1,15 +1,22 @@
-name: Build
+name: Test
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    environment: development
 
     services:
-      postgres:
+      mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: test
@@ -34,13 +41,25 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'yarn'
 
+      - name: Use Yarn Berry
+        run: |
+          corepack enable
+          yarn set version berry
+
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Lint
         run: yarn lint
+
+      - name: Run TypeScript compiler
+        run: yarn exec tsc -- --noEmit
 
       - name: Test
         run: yarn test
         env:
           DB_HOST: mysql
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          ACCESS_TOKEN_EXPIRY_TIME: ${{ secrets.ACCESS_TOKEN_EXPIRY_TIME }}
+          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+          REFRESH_TOKEN_EXPIRY_TIME: ${{ secrets.REFRESH_TOKEN_EXPIRY_TIME }}
