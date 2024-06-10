@@ -13,7 +13,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    environment: development
 
     services:
       mysql:
@@ -56,7 +55,7 @@ jobs:
         run: yarn lint
 
       - name: Run TypeScript compiler
-        run: yarn exec tsc -- --noEmit
+        run: yarn exec tsc --noEmit
 
       - name: Test
         run: yarn test
