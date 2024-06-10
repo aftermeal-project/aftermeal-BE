@@ -43,7 +43,6 @@ export class AuthService {
     const rolesName: string[] = userRoles.map((userRole) => userRole.role.name);
     const payload = {
       sub: user.email,
-      iss: this.jwtConfig.issuer,
       userId: user.id,
       username: user.name,
       roles: rolesName,
