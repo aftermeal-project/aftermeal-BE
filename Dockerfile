@@ -6,7 +6,6 @@ RUN ["yarn", "install"]
 
 COPY ["tsconfig.json", "tsconfig.build.json", "./"]
 COPY ["nest-cli.json", "./"]
-COPY ["ecosystem.config.js", "./"]
 COPY ["src/", "./src/"]
 RUN ["yarn", "build"]
 
