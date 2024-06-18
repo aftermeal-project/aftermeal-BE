@@ -60,7 +60,7 @@ class EnvironmentVariables {
   EMAIL_AUTH_USER: string;
 
   @IsString()
-  EMAIL_AUTH_PASSWORD: string;
+  EMAIL_AUTH_PW: string;
 }
 
 export const validate = (

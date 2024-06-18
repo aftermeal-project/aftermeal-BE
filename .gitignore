@@ -35,14 +35,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # env
-.env.*
+.env.development
 /rest/http-client.private.env.json
-
-# yarn
-.yarn/*
-!.yarn/cache
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
