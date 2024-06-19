@@ -30,11 +30,12 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - 3000:3000
+            - 3000:${APP_PORT}
         env_file:
             - .env.production
         environment:
             - NODE_ENV=production
+            - APP_PORT=${APP_PORT}
 
 volumes:
     certbot-etc:
