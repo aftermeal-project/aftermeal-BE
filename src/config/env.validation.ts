@@ -1,14 +1,21 @@
 import { plainToClass } from 'class-transformer';
-import { IsEnum, validateSync, ValidationError } from 'class-validator';
+import {
+  IsEnum,
+  IsOptional,
+  validateSync,
+  ValidationError,
+} from 'class-validator';
 import { IsNumber, IsString } from 'class-validator';
 
 enum NodeEnvironment {
   Development = 'development',
   Production = 'production',
+  CI = 'ci',
 }
 
 class EnvironmentVariables {
   @IsEnum(NodeEnvironment)
+  @IsOptional()
   NODE_ENV: NodeEnvironment;
 
   @IsString()
