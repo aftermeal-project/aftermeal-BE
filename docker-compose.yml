@@ -1,0 +1,39 @@
+services:
+    nginx:
+    image: nginx:1.19
+    ports:
+        - "80:80"
+        - "443:443"
+    volumes:
+        - ./nginx/conf.d/prod.conf:/etc/nginx/conf.d/prod.conf
+        - certbot-etc:/etc/letsencrypt
+        - certbot-var:/var/www/letsencrypt
+
+    certbot:
+        image: certbot/certbot
+        volumes:
+            - certbot-etc:/etc/letsencrypt
+            - certbot-var:/var/www/letsencrypt
+        command: >
+            certonly
+            --webroot
+            --webroot-path=/var/www/letsencrypt
+            --non-interactive
+            --agree-tos
+            --email=doong3373@gmail.com
+            -d api.sikhoo0.online
+        depends_on:
+            - nginx
+
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+        restart: always
+        env_file:
+            - ../env/.env.production
+            - ../env/.env
+
+volumes:
+    certbot-etc:
+    certbot-var:
