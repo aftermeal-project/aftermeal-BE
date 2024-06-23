@@ -5,7 +5,7 @@ services:
         - "80:80"
         - "443:443"
     volumes:
-        - ./nginx/conf.d/prod.conf:/etc/nginx/conf.d/prod.conf
+        - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
         - certbot-etc:/etc/letsencrypt
         - certbot-var:/var/www/letsencrypt
 
@@ -28,7 +28,7 @@ services:
     app:
         build:
             context: .
-            dockerfile: Dockerfile.prod
+            dockerfile: Dockerfile
         restart: always
         env_file:
             - ../env/.env.production
