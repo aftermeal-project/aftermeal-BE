@@ -18,16 +18,10 @@ import { AuthGuard } from '@common/guards/auth.guard';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
 
-function getEnvFilePath(): string[] {
-  const env: string = process.env.NODE_ENV || 'local';
-  return [`./env/.env.${env}`, './env/.env'];
-}
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       cache: true,
-      envFilePath: getEnvFilePath(),
       load: [
         appConfiguration,
         databaseConfiguration,
