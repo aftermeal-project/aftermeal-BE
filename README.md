@@ -16,6 +16,12 @@ $ nvm use
 $ yarn install
 ```
 
+## Set up Database
+
+```bash
+$ docker compose up -d
+```
+
 ## Running the app
 
 ```bash
