@@ -1,39 +1,11 @@
 services:
-    nginx:
-    image: nginx:1.19
+  db:
+    container_name: db
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
     ports:
-        - "80:80"
-        - "443:443"
-    volumes:
-        - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
-        - certbot-etc:/etc/letsencrypt
-        - certbot-var:/var/www/letsencrypt
-
-    certbot:
-        image: certbot/certbot
-        volumes:
-            - certbot-etc:/etc/letsencrypt
-            - certbot-var:/var/www/letsencrypt
-        command: >
-            certonly
-            --webroot
-            --webroot-path=/var/www/letsencrypt
-            --non-interactive
-            --agree-tos
-            --email=doong3373@gmail.com
-            -d api.sikhoo0.online
-        depends_on:
-            - nginx
-
-    app:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        restart: always
-        env_file:
-            - ../env/.env.production
-            - ../env/.env
-
-volumes:
-    certbot-etc:
-    certbot-var:
+      - 3306:3306
