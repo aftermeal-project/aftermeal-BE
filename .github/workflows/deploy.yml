@@ -53,8 +53,9 @@ jobs:
 
       - name: Set up SSH for Docker Context
         run: |
-          $ eval $(ssh-agent -s)
-          ssh-add ~/.ssh/${{ secrets.SSH_PRIVATE_KEY }}
+          eval $(ssh-agent -s)
+          mkdir -p ~/.ssh
+          ssh-add ~/.ssh/${{ secrets.KEY }}
 
       - name: Create Docker Context
         run: |

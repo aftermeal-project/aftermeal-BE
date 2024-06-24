@@ -4,6 +4,9 @@
 <p align="center">교내 식후 활동 관리 서비스입니다.</p>
     <p align="center">
 
+[![Test](https://github.com/sikhoo0/sikhoo0-server/actions/workflows/test.yml/badge.svg)](https://github.com/sikhoo0/sikhoo0-server/actions/workflows/test.yml)
+[![Deployment](https://github.com/sikhoo0/sikhoo0-server/actions/workflows/deploy.yml/badge.svg)](https://github.com/sikhoo0/sikhoo0-server/actions/workflows/deploy.yml)
+
 ## Set up Node.js
 ```bash
 $ nvm install
