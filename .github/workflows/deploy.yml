@@ -51,12 +51,6 @@ jobs:
           echo ACCESS_TOKEN_EXPIRY_TIME=${{ secrets.ACCESS_TOKEN_EXPIRY_TIME }} >> .env
           echo REFRESH_TOKEN_EXPIRY_TIME=${{ secrets.REFRESH_TOKEN_EXPIRY_TIME }} >> .env
 
-      - name: Set up SSH for Docker Context
-        run: |
-          eval $(ssh-agent -s)
-          mkdir -p ~/.ssh
-          ssh-add ~/.ssh/${{ secrets.KEY }}
-
       - name: Create Docker Context
         run: |
           docker context create sikhoo0-server-context \
@@ -65,11 +59,18 @@ jobs:
 
       - name: Deploy application
         run: |
+          eval $(ssh-agent -s)
+          mkdir -p ~/.ssh
+          echo "${{ secrets.KEY }}" >> ~/.ssh/sikhoo0-server.pem
+          chmod 400 ~/.ssh/sikhoo0-server.pem
+          ssh-add ~/.ssh/sikhoo0-server.pem
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
           docker pull ${{ secrets.DOCKER_USERNAME }}/sikhoo0-server:latest
 
-          if [ $(docker ps -q app) ]; then
+          if [ $(docker ps -q -f name=app) ]; then
             docker compose -f docker-compose.prod.yml build app
-            docker compose -f docker-compose.prod.yml --no-deps up -d app
+            docker compose -f docker-compose.prod.yml up --no-deps -d app
+          else
+            docker compose -f docker-compose.prod.yml up -d
           fi
-
-          docker compose -f docker-compose.prod.yml up -d
