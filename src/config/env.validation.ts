@@ -1,66 +1,67 @@
 import { plainToClass } from 'class-transformer';
-import { IsEnum, validateSync, ValidationError } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  validateSync,
+  ValidationError,
+} from 'class-validator';
 import { IsNumber, IsString } from 'class-validator';
 
 enum NodeEnvironment {
   Development = 'development',
   Production = 'production',
+  CI = 'ci',
 }
 
 class EnvironmentVariables {
   @IsEnum(NodeEnvironment)
+  @IsOptional()
   NODE_ENV: NodeEnvironment;
 
   @IsString()
+  @IsNotEmpty()
   APP_HOST: string;
 
   @IsNumber()
+  @IsNotEmpty()
   APP_PORT: number;
 
   @IsString()
+  @IsNotEmpty()
   DB_HOST: string;
 
   @IsNumber()
+  @IsNotEmpty()
   DB_PORT: number;
 
   @IsString()
+  @IsNotEmpty()
   DB_USER: string;
 
+  @IsNotEmpty()
   @IsString()
   DB_PW: string;
 
+  @IsNotEmpty()
   @IsString()
   DB_NAME: string;
 
   @IsString()
+  @IsNotEmpty()
   ACCESS_TOKEN_SECRET: string;
 
+  @IsNotEmpty()
   @IsNumber()
   ACCESS_TOKEN_EXPIRY_TIME: number;
 
+  @IsNotEmpty()
   @IsString()
   REFRESH_TOKEN_SECRET: string;
 
+  @IsNotEmpty()
   @IsNumber()
   REFRESH_TOKEN_EXPIRY_TIME: number;
-
-  @IsNumber()
-  INVITATION_EXPIRY_TIME: number;
-
-  @IsString()
-  CACHE_HOST: string;
-
-  @IsNumber()
-  CACHE_PORT: number;
-
-  @IsString()
-  EMAIL_SERVICE: string;
-
-  @IsString()
-  EMAIL_AUTH_USER: string;
-
-  @IsString()
-  EMAIL_AUTH_PASSWORD: string;
 }
 
 export const validate = (

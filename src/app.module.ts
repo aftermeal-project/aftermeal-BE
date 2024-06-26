@@ -22,10 +22,6 @@ import { DataSource } from 'typeorm';
   imports: [
     ConfigModule.forRoot({
       cache: true,
-      envFilePath:
-        process.env.NODE_ENV == 'production'
-          ? '.env.production'
-          : '.env.development',
       load: [
         appConfiguration,
         databaseConfiguration,
