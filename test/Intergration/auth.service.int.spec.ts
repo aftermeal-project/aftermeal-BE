@@ -26,16 +26,7 @@ describe('AuthService (Integration)', () => {
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [
-        getTestMysqlModule(),
-        ConfigModule.forRoot({
-          envFilePath:
-            process.env.NODE_ENV == 'production'
-              ? '.env.production'
-              : '.env.development',
-        }),
-        AuthModule,
-      ],
+      imports: [getTestMysqlModule(), ConfigModule.forRoot(), AuthModule],
     }).compile();
 
     sut = moduleRef.get(AuthService);
