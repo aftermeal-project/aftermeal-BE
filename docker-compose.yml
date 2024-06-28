@@ -1,7 +1,7 @@
 services:
     db:
         container_name: db
-        image: mysql:8.0
+        image: mysql
         environment:
             MYSQL_ROOT_PASSWORD: test
             MYSQL_DATABASE: test
@@ -11,6 +11,7 @@ services:
             - 3306:3306
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-            interval: 10s
+            interval: 5s
             timeout: 5s
-            retries: 5
+            retries: 10
+            start_period: 10s
