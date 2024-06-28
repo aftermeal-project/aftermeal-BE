@@ -68,8 +68,6 @@ jobs:
           ssh-add ~/.ssh/sikhoo0-server.pem
           ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
-          docker pull ${{ secrets.DOCKER_USERNAME }}/sikhoo0-server:latest
-
           if [ $(docker ps -q -f name=app) ]; then
             docker compose -f docker-compose.prod.yml build app
             docker compose -f docker-compose.prod.yml up --no-deps -d app
