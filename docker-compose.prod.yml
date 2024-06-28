@@ -1,9 +1,7 @@
 services:
-    nginx:
-        container_name: nginx
-        build:
-            context: ./nginx
-            dockerfile: Dockerfile
+    reverse-proxy:
+        container_name: reverse-proxy
+        image: sikhoo0/reverse-proxy
         ports:
             - "80:80"
             - "443:443"
@@ -16,9 +14,7 @@ services:
 
     app:
         container_name: app
-        build:
-            context: .
-            dockerfile: Dockerfile
+        image: sikhoo0/app
         restart: always
         environment:
             - NODE_ENV=production
