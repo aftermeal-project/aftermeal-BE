@@ -24,6 +24,6 @@ jobs:
               uses: docker/build-push-action@v6
               with:
                   context: ./nginx
-                  file: ./Dockerfile
+                  file: Dockerfile
                   push: true
                   tags: ${{ vars.DOCKER_USERNAME }}/reverse-proxy:latest
