@@ -1,4 +1,4 @@
-FROM node:20-alpine as staged
+FROM node:20-alpine AS staged
 WORKDIR /opt/app
 
 COPY ["package.json", "yarn.lock", "./"]
@@ -9,7 +9,7 @@ COPY ["nest-cli.json", "./"]
 COPY ["src/", "./src/"]
 RUN ["yarn", "build"]
 
-FROM node:20-alpine as completed
+FROM node:20-alpine AS completed
 WORKDIR /opt/app
 COPY --from=staged /opt/app ./
 
