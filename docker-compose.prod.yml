@@ -1,7 +1,7 @@
 services:
     reverse-proxy:
         container_name: reverse-proxy
-        image: sikhoo0/reverse-proxy
+        image: fire337/reverse-proxy
         ports:
             - "80:80"
             - "443:443"
@@ -14,7 +14,7 @@ services:
 
     app:
         container_name: app
-        image: sikhoo0/app
+        image: fire337/app
         restart: always
         environment:
             - NODE_ENV=production
