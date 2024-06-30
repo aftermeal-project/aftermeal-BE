@@ -15,9 +15,8 @@ export class VoteService {
 
   async vote(activityId: number, userId: number): Promise<void> {
     // TODO 현재 투표할 수 있는 상태인지 검증
-    const activity: Activity = await this.activityService.getOneByActivityId(
-      activityId,
-    );
+    const activity: Activity =
+      await this.activityService.getOneByActivityId(activityId);
 
     const vote: Vote = new Vote();
     vote.activity.id = activity.id;

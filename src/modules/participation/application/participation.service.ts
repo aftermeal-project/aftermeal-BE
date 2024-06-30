@@ -18,9 +18,8 @@ export class ParticipationService {
 
   async apply(activityId: number, userId: number): Promise<void> {
     const user: User = await this.userService.getOneById(userId);
-    const activity: Activity = await this.activityService.getOneByActivityId(
-      activityId,
-    );
+    const activity: Activity =
+      await this.activityService.getOneByActivityId(activityId);
 
     const participation: Participation = new Participation(user, activity);
     await this.participationRepository.save(participation);
