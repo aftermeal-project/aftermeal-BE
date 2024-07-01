@@ -2,7 +2,7 @@ FROM node:20-alpine AS staged
 WORKDIR /opt/app
 
 COPY ["package.json", "yarn.lock", "./"]
-RUN ["yarn", "install", "--frozen-lockfile"]
+RUN ["yarn", "install", "--frozen-lockfile", "--non-interactive", "--production"]
 
 COPY ["tsconfig.json", "tsconfig.build.json", "./"]
 COPY ["nest-cli.json", "./"]
