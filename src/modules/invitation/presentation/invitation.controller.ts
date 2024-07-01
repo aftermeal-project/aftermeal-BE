@@ -33,6 +33,7 @@ export class InvitationController {
   async invitationVerify(
     @Query('invitationCode') invitationCode: string,
   ): Promise<void> {
+    console.log(invitationCode);
     // TODO: verify code
     // TODO: redirect to sign-up page
   }

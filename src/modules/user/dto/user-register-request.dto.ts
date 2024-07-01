@@ -10,7 +10,6 @@ import {
 import { IsSchoolEmail } from '@common/decorators/validation/is-school-email.decorator';
 import { ESchool } from '../domain/school';
 import { EUserType } from '../domain/user-type';
-import { Transform } from 'class-transformer';
 
 export class UserRegisterRequestDto {
   @IsSchoolEmail(ESchool.GSM, { groups: [EUserType.STUDENT.enumName] })

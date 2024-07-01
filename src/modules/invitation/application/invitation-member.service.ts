@@ -1,10 +1,9 @@
 import { InvitationService } from './invitation.service';
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Mail } from '@common/utils/src/mail';
 import { Cache } from 'cache-manager';
 import { InviteMember } from '../dto/invite.member';
-import { User } from '../../user/domain/user.entity';
 import { Invitation, Target } from '../domain/invitation';
 import { UserService } from '../../user/application/user.service';
 
@@ -36,6 +35,7 @@ export class InvitationMemberService implements InvitationService {
     //   );
     //   await this.issueInvitation(invitation);
     // }
+    console.log(inviteMember);
   }
 
   async getByTarget(target: Target): Promise<Invitation | null> {
@@ -49,7 +49,7 @@ export class InvitationMemberService implements InvitationService {
     return this.getByTarget(target);
   }
 
-  private async issueInvitation(invitation): Promise<void> {
+  private async issueInvitation(invitation: Invitation): Promise<void> {
     await this.saveInvitation(invitation);
     await this.mailService.sendInvitation(invitation);
   }

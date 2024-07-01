@@ -4,11 +4,8 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
-  IsPositive,
 } from 'class-validator';
 import { EUserType } from '../../user/domain/user-type';
-import { IsSchoolEmail } from '@common/decorators/validation/is-school-email.decorator';
-import { ESchool } from '../../user/domain/school';
 
 export class InviteRequestDto {
   // @IsSchoolEmail(School.GSM, { each: true, groups: [MemberType.STUDENT] })
