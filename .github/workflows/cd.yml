@@ -1,4 +1,4 @@
-name: Continuous Delivery
+name: Deployment
 
 on:
   workflow_dispatch: {}
@@ -100,6 +100,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.HOST }}
         run: |
+          mkdir -p ~/.ssh
           eval $(ssh-agent -s)
           echo "$SSH_PRIVATE_KEY" | ssh-add -
           echo "$SSH_AUTH_SOCK" >> $GITHUB_ENV
