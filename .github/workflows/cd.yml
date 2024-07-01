@@ -1,4 +1,4 @@
-name: Deployment
+name: Continuous Delivery
 
 on:
   workflow_dispatch: {}
@@ -24,12 +24,11 @@ jobs:
 
       - name: Check Nginx changes
         id: nginx-changes
-        run: |
-          if [git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^nginx/"]; then
-            echo "::set-output name=changed::true"
-          else
-            echo "::set-output name=changed::false"
-          fi
+        run: >
+          echo "changed=$(
+            git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^nginx/'
+            && echo 'true' || echo 'false'
+          )" >> $GITHUB_OUTPUT
 
       - name: Build and Push Reverse Proxy
         if: steps.nginx-changes.outputs.changed == 'true'
@@ -95,33 +94,41 @@ jobs:
           echo DB_PORT=$DB_PORT >> .env
           echo DB_USER=$DB_USER >> .env
           echo DB_PASSWORD=$DB_PASSWORD >> .env
-          echo DB_DATABASE=$DB_DATABASE >> .env
+          echo DB_NAME=$DB_NAME >> .env
           echo ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET >> .env
           echo REFRESH_TOKEN_SECRET=$REFRESH_TOKEN_SECRET >> .env
           echo ACCESS_TOKEN_EXPIRY_TIME=$ACCESS_TOKEN_EXPIRY_TIME >> .env
           echo REFRESH_TOKEN_EXPIRY_TIME=$REFRESH_TOKEN_EXPIRY_TIME >> .env
 
       - name: Set up SSH key
-        run: |
-            mkdir -p ~/.ssh
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" >> ~/.ssh/sikhoo0-server.pem
-            chmod 400 ~/.ssh/sikhoo0-server.pem
-
-      - name: Create Docker Context
-        run: |
-            docker context create sikhoo0-server-context \
-              --docker "host=ssh://${{ secrets.USERNAME }}@${{ secrets.HOST }}"
-            docker context use sikhoo0-server-context
-
-      - name: Deploy application
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.HOST }}
         run: |
             eval $(ssh-agent -s)
-            ssh-add ~/.ssh/sikhoo0-server.pem
-            ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-    
-            if [ $(docker ps -q -f name=app) ]; then
-              docker compose -f docker-compose.prod.yml build app
-              docker compose -f docker-compose.prod.yml up --no-deps -d app
-            else
-              docker compose -f docker-compose.prod.yml up -d
-            fi
+            echo "$SSH_PRIVATE_KEY" | ssh-add -
+            echo "$SSH_AUTH_SOCK" >> $GITHUB_ENV
+            ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+
+      - name: Deploy application
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          HOST: ${{ secrets.HOST }}
+          SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
+        run: |
+          docker context create sikhoo0-server-context --docker "host=ssh://$USERNAME@$HOST"
+          docker context use sikhoo0-server-context
+
+          if [ $(docker ps -q -f name=app) ]; then
+            docker compose -f docker-compose.prod.yml build app
+            docker compose -f docker-compose.prod.yml up --no-deps -d app
+          else
+            docker compose -f docker-compose.prod.yml up -d
+          fi
+
+          if [ $(docker ps -q -f name=reverse-proxy) ]; then
+            docker compose -f docker-compose.prod.yml build reverse-proxy
+            docker compose -f docker-compose.prod.yml up --no-deps -d reverse-proxy
+          else
+            docker compose -f docker-compose.prod.yml up -d
+          fi
