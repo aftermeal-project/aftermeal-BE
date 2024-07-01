@@ -41,7 +41,7 @@ class EnvironmentVariables {
 
   @IsNotEmpty()
   @IsString()
-  DB_PW: string;
+  DB_PASSWORD: string;
 
   @IsNotEmpty()
   @IsString()
