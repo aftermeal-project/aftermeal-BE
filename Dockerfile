@@ -9,11 +9,11 @@ COPY ["nest-cli.json", "./"]
 COPY ["src/", "./src/"]
 RUN ["yarn", "build"]
 
-RUN ["/bin/sh", "-c", "find . ! -name dist ! -name node_modules -maxdepth 1 -mindepth 1 -exec rm -rf {} \\\\;"]
+RUN ["/bin/sh", "-c", "find . ! -name dist ! -name node_modules -maxdepth 1 -mindepth 1 -exec rm -rf {} \\;"]
 
 FROM node:20-alpine AS completed
 WORKDIR /opt/app
 COPY --from=staged /opt/app ./
 
-ENTRYPOINT ["yarn", "run", "start:prod"]
+ENTRYPOINT ["node", "dist/main"]
 EXPOSE 3000
