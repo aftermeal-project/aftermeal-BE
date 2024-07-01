@@ -103,7 +103,7 @@ jobs:
           mkdir -p ~/.ssh
           eval $(ssh-agent -s)
           echo "$SSH_PRIVATE_KEY" | ssh-add -
-          echo "$SSH_AUTH_SOCK" >> $GITHUB_ENV
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
 
       - name: Deploy application
