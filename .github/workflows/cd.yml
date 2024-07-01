@@ -21,11 +21,12 @@ jobs:
 
       - name: Check Nginx changes
         id: nginx-changes
-        run: >
-          echo "changed=$(
-            git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^nginx/'
-            && echo 'true' || echo 'false'
-          )" >> $GITHUB_OUTPUT
+        run: |
+          if [ git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^nginx/' ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build and Push Reverse Proxy
         if: steps.nginx-changes.outputs.changed == 'true'
@@ -99,10 +100,10 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.HOST }}
         run: |
-            eval $(ssh-agent -s)
-            echo "$SSH_PRIVATE_KEY" | ssh-add -
-            echo "$SSH_AUTH_SOCK" >> $GITHUB_ENV
-            ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+          eval $(ssh-agent -s)
+          echo "$SSH_PRIVATE_KEY" | ssh-add -
+          echo "$SSH_AUTH_SOCK" >> $GITHUB_ENV
+          ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
 
       - name: Deploy application
         env:
