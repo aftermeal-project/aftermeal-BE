@@ -112,8 +112,8 @@ jobs:
           HOST: ${{ secrets.HOST }}
           SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         run: |
-          docker context create sikhoo0-server-context --docker "host=ssh://$USERNAME@$HOST"
-          docker context use sikhoo0-server-context
+          docker context create aftermeal-server-context --docker "host=ssh://$USERNAME@$HOST"
+          docker context use aftermeal-server-context
 
           if [ $(docker ps -q -f name=app) ]; then
             docker compose -f docker-compose.prod.yml build app
