@@ -116,15 +116,15 @@ jobs:
           docker context use aftermeal-server-context
 
           if [ $(docker ps -q -f name=app) ]; then
-            docker compose -f docker-compose.prod.yml build app
-            docker compose -f docker-compose.prod.yml up --no-deps -d app
+            docker compose -f compose.prod.yml build app
+            docker compose -f compose.prod.yml up --no-deps -d app
           else
-            docker compose -f docker-compose.prod.yml up -d
+            docker compose -f compose.prod.yml up -d
           fi
 
           if [ $(docker ps -q -f name=reverse-proxy) ]; then
-            docker compose -f docker-compose.prod.yml build reverse-proxy
-            docker compose -f docker-compose.prod.yml up --no-deps -d reverse-proxy
+            docker compose -f compose.prod.yml build reverse-proxy
+            docker compose -f compose.prod.yml up --no-deps -d reverse-proxy
           else
-            docker compose -f docker-compose.prod.yml up -d
+            docker compose -f compose.prod.yml up -d
           fi
