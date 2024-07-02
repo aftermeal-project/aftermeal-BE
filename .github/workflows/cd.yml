@@ -22,7 +22,7 @@ jobs:
       - name: Check Nginx changes
         id: nginx-changes
         run: |
-          if [ git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^nginx/' ]; then
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^nginx/'; then
             echo "changed=true" >> $GITHUB_OUTPUT
           else
             echo "changed=false" >> $GITHUB_OUTPUT
