@@ -41,8 +41,11 @@ $ yarn run start:prod
 ## Test
 
 ```bash
-# unit & integration tests
+# unit tests
 $ yarn run test
+
+# integration tests
+$ yarn run test:integration
 
 # e2e tests
 $ yarn run test:e2e

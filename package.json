@@ -13,9 +13,9 @@
     "start:prod": "node dist/main",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest --runInBand",
-    "test:ci":  "docker compose up -d --wait && yarn test && docker compose down",
-    "test:e2e": "jest --config test/jest-e2e.config.json --passWithNoTests",
+    "test": "jest test/unit",
+    "test:integration":  "jest test/integration --runInBand",
+    "test:e2e": "jest test/e2e --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"

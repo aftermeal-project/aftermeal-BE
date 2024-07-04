@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Build and Test
 
 on:
   push:
@@ -11,7 +11,26 @@ on:
       - reopened
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build
+
   lint:
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -30,6 +49,7 @@ jobs:
         run: yarn lint
 
   test:
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -44,30 +64,5 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Create .env file
-        run: |
-          echo ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }} >> .env
-          echo REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }} >> .env
-          echo ACCESS_TOKEN_EXPIRY_TIME=${{ secrets.ACCESS_TOKEN_EXPIRY_TIME }} >> .env
-          echo REFRESH_TOKEN_EXPIRY_TIME=${{ secrets.REFRESH_TOKEN_EXPIRY_TIME }} >> .env
-
-      - name: Test
-        run: yarn test:ci
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Build
-        run: yarn build
+      - name: Unit Test
+        run: yarn test
