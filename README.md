@@ -4,8 +4,8 @@
 <p align="center">교내 식후 활동 관리 서비스입니다.</p>
     <p align="center">
 
-[![CI](https://github.com/after-meal/aftermeal-BE/actions/workflows/ci.yml/badge.svg)](https://github.com/after-meal/aftermeal-BE/actions/workflows/ci.yml)
-[![CD](https://github.com/after-meal/aftermeal-BE/actions/workflows/cd.yml/badge.svg)](https://github.com/after-meal/aftermeal-BE/actions/workflows/cd.yml)
+[![Build and Test](https://github.com/after-meal/aftermeal-BE/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/after-meal/aftermeal-BE/actions/workflows/build-and-test.yml)
+[![Deploy](https://github.com/after-meal/aftermeal-BE/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/after-meal/aftermeal-BE/actions/workflows/deploy.yml)
 
 ## Set up Node.js
 ```bash
