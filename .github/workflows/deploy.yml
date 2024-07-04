@@ -75,6 +75,7 @@ jobs:
           ACCESS_TOKEN_EXPIRY_TIME: ${{ secrets.ACCESS_TOKEN_EXPIRY_TIME }}
           REFRESH_TOKEN_EXPIRY_TIME: ${{ secrets.REFRESH_TOKEN_EXPIRY_TIME }}
         run: |
+          echo DOCKER_REGISTRY=$DOCKER_REGISTRY >> .env
           echo APP_HOST=$APP_HOST >> .env
           echo APP_PORT=$APP_PORT >> .env
           echo DB_HOST=$DB_HOST >> .env
