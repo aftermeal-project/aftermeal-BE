@@ -7,6 +7,7 @@
 [![Build and Test](https://github.com/after-meal/aftermeal-BE/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/after-meal/aftermeal-BE/actions/workflows/build-and-test.yml)
 [![Deploy](https://github.com/after-meal/aftermeal-BE/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/after-meal/aftermeal-BE/actions/workflows/deploy.yml)
 
+# How to Start
 ## Set up Node.js
 ```bash
 $ nvm install
@@ -53,3 +54,8 @@ $ yarn run test:e2e
 # test coverage
 $ yarn run test:cov
 ```
+
+# Architecture
+
+![에프터밀_구조도-서버 구조도 drawio](https://github.com/after-meal/aftermeal-BE/assets/68471917/01b7db96-069d-4681-8937-f33ad00504ea)
+
