@@ -1,7 +1,7 @@
 services:
     reverse-proxy:
         container_name: reverse-proxy
-        image: ${DOCKER_REGISTRY}/reverse-proxy
+        image: nginx:alpine
         restart: unless-stopped
         ports:
             - "80:80"
