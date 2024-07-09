@@ -24,7 +24,6 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          build-args: NODE_ENV=production
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/app:latest,${{ secrets.DOCKERHUB_USERNAME }}/app:${{ github.sha }}
@@ -88,3 +87,5 @@ jobs:
 
           docker compose -f compose.prod.yml pull app
           docker compose -f compose.prod.yml up -d --no-deps --build app
+
+          docker system prune -f
