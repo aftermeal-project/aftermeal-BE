@@ -7,17 +7,12 @@ import {
   ValidationError,
 } from 'class-validator';
 import { IsNumber, IsString } from 'class-validator';
-
-enum NodeEnvironment {
-  Development = 'development',
-  Production = 'production',
-  CI = 'ci',
-}
+import { ENVIRONMENT } from '@common/constants';
 
 class EnvironmentVariables {
-  @IsEnum(NodeEnvironment)
+  @IsEnum(ENVIRONMENT)
   @IsOptional()
-  NODE_ENV: NodeEnvironment;
+  NODE_ENV: ENVIRONMENT;
 
   @IsString()
   @IsNotEmpty()
