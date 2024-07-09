@@ -10,6 +10,7 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 import * as process from 'process';
+import { ENVIRONMENT } from '@common/constants';
 
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
@@ -22,7 +23,9 @@ async function bootstrap() {
   const port: number = config.port;
 
   setNestApp(app);
-  setSwagger(app);
+  if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+    setSwagger(app);
+  }
 
   await app.listen(port, async () => {
     if (process.send) {
