@@ -85,7 +85,7 @@ jobs:
           docker context create aftermeal-server-context --docker "host=ssh://$USERNAME@$HOST"
           docker context use aftermeal-server-context
 
-          docker compose -f compose.prod.yml pull app
+          docker compose -f compose.prod.yml pull
           docker compose -f compose.prod.yml up -d --no-deps --build app
 
           docker system prune -f
