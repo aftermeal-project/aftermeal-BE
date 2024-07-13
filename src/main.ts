@@ -18,20 +18,20 @@ async function bootstrap() {
     forceCloseConnections: true,
     abortOnError: true,
   });
-  const logger = new Logger('Bootstrap');
-  const config = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
-  const port: number = config.port;
 
   setNestApp(app);
   if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
     setSwagger(app);
   }
 
+  const config = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
+  const port: number = config.port;
+
   await app.listen(port, async () => {
     if (process.send) {
       process.send('ready');
     }
-    logger.log(`Application is running on: ${await app.getUrl()}`);
+    Logger.log(`Application is running on: ${await app.getUrl()}`);
   });
 }
 
