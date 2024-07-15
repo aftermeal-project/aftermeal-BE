@@ -98,7 +98,7 @@ describe('ActivityService (Integration)', () => {
   });
 
   describe('getOneByActivityId', () => {
-    it('활동을 가져온다.', async () => {
+    it('Id와 일치하는 활동을 가져온다.', async () => {
       // given
       const activity: Activity = new Activity('배구', 18);
       const { id } = await activityRepository.save(activity);
@@ -112,7 +112,7 @@ describe('ActivityService (Integration)', () => {
       expect(actual.maximumParticipants).toBe(18);
     });
 
-    it('존재하지 않는 활동이면 오류가 발생한다.', async () => {
+    it('존재하지 않는 활동이면 예외가 발생한다.', async () => {
       // given
       const activity: Activity = new Activity('배구', 18);
       await activityRepository.save(activity);

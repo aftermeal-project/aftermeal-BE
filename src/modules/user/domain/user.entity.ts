@@ -62,7 +62,7 @@ export class User extends BaseTimeEntity {
       if (!generation) {
         throw new Error('학생은 기수가 존재해야 합니다.');
       }
-      if (ESchool.GSM.emailFormat.test(email)) {
+      if (!ESchool.GSM.emailFormat.test(email)) {
         throw new Error('학생은 학교 이메일을 사용해야 합니다.');
       }
     }
