@@ -2,7 +2,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { EUserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/user-type';
 import { UserRole } from '../../src/modules/user/domain/user-role.entity';
 import { Role } from '../../src/modules/user/domain/role.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -57,9 +57,9 @@ describe('AuthService (Integration)', () => {
       const user: User = User.create(
         '송유현',
         'test@example.com',
-        EUserType.TEACHER,
+        UserType.TEACHER,
         role,
-        UserStatus.Activate,
+        UserStatus.ACTIVATE,
         'password',
       );
       await userRepository.save(user);
@@ -102,9 +102,9 @@ describe('AuthService (Integration)', () => {
     const user: User = User.create(
       '송유현',
       'test@example.com',
-      EUserType.TEACHER,
+      UserType.TEACHER,
       role,
-      UserStatus.Activate,
+      UserStatus.ACTIVATE,
       'password',
     );
     await userRepository.save(user);

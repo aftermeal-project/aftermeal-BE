@@ -3,7 +3,7 @@ import { UserService } from '../../src/modules/user/application/user.service';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../../src/modules/user/domain/user.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { EUserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/user-type';
 import { ConflictException } from '@nestjs/common';
 import { UserRole } from '../../src/modules/user/domain/user-role.entity';
 import { Role } from '../../src/modules/user/domain/role.entity';
@@ -61,7 +61,7 @@ describe('UserService (Integration)', () => {
       const actual = await sut.register({
         name: '테스트',
         email: 'test@example.com',
-        memberType: EUserType.TEACHER,
+        userType: UserType.TEACHER,
         password: 'password',
       });
 
@@ -80,9 +80,9 @@ describe('UserService (Integration)', () => {
       const user: User = User.create(
         '송유현',
         email,
-        EUserType.TEACHER,
+        UserType.TEACHER,
         role,
-        UserStatus.Activate,
+        UserStatus.ACTIVATE,
         'password',
       );
       await userRepository.save(user);
@@ -92,7 +92,7 @@ describe('UserService (Integration)', () => {
         await sut.register({
           name: '테스트',
           email: email,
-          memberType: EUserType.TEACHER,
+          userType: UserType.TEACHER,
           password: 'password',
         });
       };

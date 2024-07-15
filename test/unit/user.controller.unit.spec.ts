@@ -1,7 +1,7 @@
 import { UserService } from '../../src/modules/user/application/user.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from '../../src/modules/user/presentation/user.controller';
-import { EUserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/user-type';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { setNestApp } from '@common/middlewares/set-nest-app';
@@ -33,7 +33,7 @@ describe('UserController (Unit)', () => {
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 'test@example.com',
       name: '테스트',
-      memberType: EUserType.TEACHER.name,
+      memberType: UserType.TEACHER,
       password: 'G$K9Vss9-wNX6jOvY',
     });
 
@@ -47,7 +47,7 @@ describe('UserController (Unit)', () => {
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: '',
       name: '테스트',
-      memberType: EUserType.TEACHER.name,
+      memberType: UserType.TEACHER,
       password: 'G$K9Vss9-wNX6jOvY',
     });
 
@@ -61,7 +61,7 @@ describe('UserController (Unit)', () => {
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 'email',
       name: '테스트',
-      memberType: EUserType.TEACHER.name,
+      memberType: UserType.TEACHER,
       password: 'G$K9Vss9-wNX6jOvY',
     });
 
@@ -75,7 +75,7 @@ describe('UserController (Unit)', () => {
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 'test@gmail.com',
       name: '테스트',
-      memberType: EUserType.STUDENT.name,
+      memberType: UserType.STUDENT,
       password: 'G$K9Vss9-wNX6jOvY',
       generationNumber: 8,
     });
@@ -90,7 +90,7 @@ describe('UserController (Unit)', () => {
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 'test@example.com',
       name: '',
-      memberType: EUserType.TEACHER.name,
+      memberType: UserType.TEACHER,
       password: 'G$K9Vss9-wNX6jOvY',
     });
 
@@ -104,7 +104,7 @@ describe('UserController (Unit)', () => {
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 'test@example.com',
       name: '타우마타와카탕이항아코아우아우오타마테아투리푸카카피키마웅아호로누쿠포카이웨누아키타나타후',
-      memberType: EUserType.TEACHER.name,
+      memberType: UserType.TEACHER,
       password: 'G$K9Vss9-wNX6jOvY',
     });
 
@@ -120,7 +120,7 @@ describe('UserController (Unit)', () => {
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 'test@example.com',
       name: '테스트',
-      memberType: EUserType.TEACHER.name,
+      memberType: UserType.TEACHER,
       password: '',
     });
 
@@ -134,7 +134,7 @@ describe('UserController (Unit)', () => {
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 'test@example.com',
       name: '테스트',
-      memberType: EUserType.TEACHER.name,
+      memberType: UserType.TEACHER,
       password: '1234',
     });
 
@@ -180,7 +180,7 @@ describe('UserController (Unit)', () => {
     const response = await request(app.getHttpServer()).post('/v1/users').send({
       email: 's20041@gsm.hs.kr',
       name: '테스트',
-      memberType: EUserType.STUDENT.name,
+      memberType: UserType.STUDENT,
       password: 'G$K9Vss9-wNX6jOvY',
     });
 

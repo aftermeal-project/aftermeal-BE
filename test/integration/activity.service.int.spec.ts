@@ -10,7 +10,7 @@ import { Activity } from '../../src/modules/activity/domain/activity.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { EUserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/user-type';
 import { UserStatus } from '../../src/modules/user/domain/user-status';
 import { Role } from '../../src/modules/user/domain/role.entity';
 import {
@@ -134,9 +134,9 @@ function createUser(email: string): User {
   return User.create(
     '송유현',
     email,
-    EUserType.TEACHER,
+    UserType.TEACHER,
     Role.create('ROLE_MEMBER'),
-    UserStatus.Activate,
+    UserStatus.ACTIVATE,
     'password',
   );
 }

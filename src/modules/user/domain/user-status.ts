@@ -1,5 +1,5 @@
 export enum UserStatus {
-  Activate = '활성화',
-  Deactivate = '비활성화',
-  Candidate = '임시 가입 상태',
+  ACTIVATE = '활성화',
+  DEACTIVATE = '비활성화',
+  CANDIDATE = '임시 가입 상태',
 }
