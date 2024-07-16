@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
 import { Role } from '../domain/role.entity';
@@ -15,6 +11,7 @@ import { GenerationService } from '../../generation/application/generation.servi
 import { RoleService } from '../../role/application/role.service';
 import { Transactional } from 'typeorm-transactional';
 import { UserStatus } from '../domain/user-status';
+import { NotFoundException } from '@common/exceptions/not-found.exception';
 
 @Injectable()
 export class UserService {
@@ -52,7 +49,7 @@ export class UserService {
     await this.validateEmailDuplication(dto.email);
     let generation: Generation | null = null;
 
-    if (dto.userType === UserType.STUDENT) {
+    if (dto.type === UserType.STUDENT) {
       generation = await this.generationService.getOneByGenerationNumber(
         dto.generationNumber,
       );
@@ -62,7 +59,7 @@ export class UserService {
     const user: User = User.create(
       dto.name,
       dto.email,
-      dto.userType,
+      dto.type,
       role,
       UserStatus.ACTIVATE,
       dto.password,
@@ -73,7 +70,7 @@ export class UserService {
   }
 
   private async validateEmailDuplication(email: string): Promise<void> {
-    const isMemberExists: boolean = await this.userRepository.exist({
+    const isMemberExists: boolean = await this.userRepository.exists({
       where: {
         email: email,
       },

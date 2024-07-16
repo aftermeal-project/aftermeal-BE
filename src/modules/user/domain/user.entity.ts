@@ -15,6 +15,8 @@ import { UserRole } from './user-role.entity';
 import { compare, genSalt, hash } from 'bcrypt';
 import { Role } from './role.entity';
 import { ESchool } from './school';
+import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
+import { isStrongPassword } from 'class-validator';
 
 @Entity()
 export class User extends BaseTimeEntity {
@@ -53,17 +55,24 @@ export class User extends BaseTimeEntity {
     generation: Generation | null = null,
   ): User {
     if (name.length > 40) {
-      throw new Error('이름은 40자 이하여야 합니다.');
+      throw new IllegalArgumentException('이름은 40자 이하여야 합니다.');
     }
     if (password.length > 20) {
-      throw new Error('비밀번호는 20자 이하여야 합니다.');
+      throw new IllegalArgumentException('비밀번호는 20자 이하여야 합니다.');
+    }
+    if (!isStrongPassword(password)) {
+      throw new IllegalArgumentException(
+        '비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
+      );
     }
     if (type === UserType.STUDENT) {
       if (!generation) {
-        throw new Error('학생은 기수가 존재해야 합니다.');
+        throw new IllegalArgumentException('학생은 기수가 존재해야 합니다.');
       }
       if (!ESchool.GSM.emailFormat.test(email)) {
-        throw new Error('학생은 학교 이메일을 사용해야 합니다.');
+        throw new IllegalArgumentException(
+          '학생은 학교 이메일을 사용해야 합니다.',
+        );
       }
     }
     const user: User = new User();
@@ -84,6 +93,10 @@ export class User extends BaseTimeEntity {
   }
 
   async checkPassword(plainPassword: string): Promise<boolean> {
-    return await compare(plainPassword, this.password);
+    const isPasswordCorrect = await compare(plainPassword, this.password);
+    if (!isPasswordCorrect) {
+      throw new IllegalArgumentException('비밀번호가 올바르지 않습니다.');
+    }
+    return isPasswordCorrect;
   }
 }
