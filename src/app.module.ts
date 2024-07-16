@@ -9,7 +9,6 @@ import cacheConfiguration from '@config/cache.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MysqlProvider } from './database/mysql.provider';
 import { AuthModule } from './modules/auth/auth.module';
-import { VoteModule } from './modules/vote/vote.module';
 import { ParticipationModule } from './modules/participation/participation.module';
 import { ActivityModule } from './modules/activity/activity.module';
 import { UserModule } from './modules/user/user.module';
@@ -45,7 +44,6 @@ import { DataSource } from 'typeorm';
     UserModule,
     AuthModule,
     ActivityModule,
-    VoteModule,
     ParticipationModule,
   ],
   providers: [
