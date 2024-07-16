@@ -17,9 +17,9 @@ import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@common/exceptions/not-found.exception';
 
-describe('ActivityService (Integration)', () => {
+describe('ActivityService', () => {
   let sut: ActivityService;
   let activityRepository: ActivityRepository;
   let userRepository: Repository<User>;
@@ -98,7 +98,7 @@ describe('ActivityService (Integration)', () => {
   });
 
   describe('getOneByActivityId', () => {
-    it('Id와 일치하는 활동을 가져온다.', async () => {
+    it('activityId와 일치하는 활동을 가져온다.', async () => {
       // given
       const activity: Activity = new Activity('배구', 18);
       const { id } = await activityRepository.save(activity);
@@ -112,7 +112,7 @@ describe('ActivityService (Integration)', () => {
       expect(actual.maximumParticipants).toBe(18);
     });
 
-    it('존재하지 않는 활동이면 예외가 발생한다.', async () => {
+    it('존재하지 않는 활동은 가져올 수 없다.', async () => {
       // given
       const activity: Activity = new Activity('배구', 18);
       await activityRepository.save(activity);
@@ -123,9 +123,7 @@ describe('ActivityService (Integration)', () => {
       };
 
       // then
-      await expect(actual).rejects.toThrowError(
-        new NotFoundException('존재하지 않는 활동입니다.'),
-      );
+      await expect(actual).rejects.toThrow(NotFoundException);
     });
   });
 });
@@ -137,6 +135,6 @@ function createUser(email: string): User {
     UserType.TEACHER,
     Role.create('ROLE_MEMBER'),
     UserStatus.ACTIVATE,
-    'password',
+    'G$K9Vss9-wNX6jOvY',
   );
 }

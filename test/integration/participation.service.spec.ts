@@ -17,7 +17,7 @@ import {
 import { ParticipationService } from '../../src/modules/participation/application/participation.service';
 import { ParticipationModule } from '../../src/modules/participation/participation.module';
 
-describe('ParticipationService (Integration)', () => {
+describe('ParticipationService', () => {
   let sut: ParticipationService;
   let participationRepository: Repository<Participation>;
   let userRepository: Repository<User>;
@@ -50,7 +50,7 @@ describe('ParticipationService (Integration)', () => {
   });
 
   describe('apply', () => {
-    it('활동에 참가 신청을 한다.', async () => {
+    it('활동에 참가를 신청한다.', async () => {
       // given
       const activity: Activity = new Activity('배구', 18);
       const savedActivity: Activity = await activityRepository.save(activity);
@@ -61,7 +61,7 @@ describe('ParticipationService (Integration)', () => {
         UserType.TEACHER,
         Role.create('ROLE_MEMBER'),
         UserStatus.ACTIVATE,
-        'password',
+        'G$K9Vss9-wNX6jOvY',
       );
       const savedUser: User = await userRepository.save(user);
 
@@ -82,15 +82,6 @@ describe('ParticipationService (Integration)', () => {
           relations: {
             user: true,
             activity: true,
-          },
-          select: {
-            id: false,
-            activity: {
-              id: true,
-            },
-            user: {
-              id: true,
-            },
           },
         });
 

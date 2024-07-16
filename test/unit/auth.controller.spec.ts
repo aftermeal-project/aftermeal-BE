@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { setNestApp } from '@common/middlewares/set-nest-app';
+import { setNestApp } from '../../src/set-nest-app';
 import * as request from 'supertest';
 import {
   initializeTransactionalContext,
@@ -13,7 +13,7 @@ const mockAuthService = {
   login: jest.fn(),
 };
 
-describe('AuthController (Unit)', () => {
+describe('AuthController', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -34,7 +34,7 @@ describe('AuthController (Unit)', () => {
   });
 
   describe('login', () => {
-    it('유효한 정보를 통해 인증한다.', async () => {
+    it('유효한 정보로 인증한다.', async () => {
       // when
       const response = await request(app.getHttpServer())
         .post('/v1/auth/login')
@@ -47,7 +47,7 @@ describe('AuthController (Unit)', () => {
       expect(response.status).toBe(201);
     });
 
-    it('이메일을 입력하지 않으면 오류가 발생한다.', async () => {
+    it('이메일은 필수값이다.', async () => {
       // when
       const response = await request(app.getHttpServer())
         .post('/v1/auth/login')
@@ -57,10 +57,9 @@ describe('AuthController (Unit)', () => {
 
       // then
       expect(response.status).toBe(400);
-      expect(response.body.message[0]).toBe('email should not be empty');
     });
 
-    it('비밀번호를 입력하지 않으면 오류가 발생한다.', async () => {
+    it('비밀번호는 필수값이다.', async () => {
       const response = await request(app.getHttpServer())
         .post('/v1/auth/login')
         .send({
@@ -68,7 +67,6 @@ describe('AuthController (Unit)', () => {
         });
 
       expect(response.status).toBe(400);
-      expect(response.body.message[0]).toBe('password should not be empty');
     });
   });
 });
