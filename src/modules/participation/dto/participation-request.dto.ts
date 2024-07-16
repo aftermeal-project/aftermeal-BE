@@ -1,6 +1,6 @@
-import { IsNumber } from 'class-validator';
+import { IsPositive } from 'class-validator';
 
 export class ParticipationRequestDto {
-  @IsNumber()
+  @IsPositive({ message: '활동 ID는 양수여야 합니다.' })
   activityId: number;
 }
