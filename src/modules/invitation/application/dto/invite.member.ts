@@ -1,4 +1,4 @@
-import { UserType } from '../../user/domain/user-type';
+import { UserType } from '../../../user/domain/user-type';
 
 export class InviteMember {
   private readonly _email: string[];

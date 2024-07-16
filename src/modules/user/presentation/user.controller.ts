@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { UserRegisterRequestDto } from '../dto/user-register-request.dto';
-import { UserRegisterResponseDto } from '../dto/user-register-response.dto';
+import { UserRegisterRequestDto } from './dto/user-register-request.dto';
+import { UserRegisterResponseDto } from './dto/user-register-response.dto';
 import { ResponseEntity } from '@common/entities/response.entity';
 import { UserService } from '../application/user.service';
 import { Public } from '@common/decorators/public.decorator';

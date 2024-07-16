@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Mail } from '@common/utils/src/mail';
 import { Cache } from 'cache-manager';
-import { InviteMember } from '../dto/invite.member';
+import { InviteMember } from './dto/invite.member';
 import { Invitation, Target } from '../domain/invitation';
 import { UserService } from '../../user/application/user.service';
 

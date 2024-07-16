@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Activity } from '../domain/activity.entity';
 import { ActivityRepository } from '../domain/activity.repository';
-import { ActivityDto } from '../dto/activity.dto';
+import { ActivityDto } from './dto/activity.dto';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 

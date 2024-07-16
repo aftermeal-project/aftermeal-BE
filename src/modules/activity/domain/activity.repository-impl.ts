@@ -1,5 +1,5 @@
 import { Activity } from './activity.entity';
-import { ActivityDto } from '../dto/activity.dto';
+import { ActivityDto } from '../application/dto/activity.dto';
 import { Injectable } from '@nestjs/common';
 import { ActivityRepository } from './activity.repository';
 import { Repository } from 'typeorm';
