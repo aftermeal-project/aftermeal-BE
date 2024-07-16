@@ -3,8 +3,8 @@ import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
 import appConfig from '@config/app.config';
 import { Logger } from '@nestjs/common';
-import { setNestApp } from '@common/middlewares/set-nest-app';
-import { setSwagger } from '@common/middlewares/set-swagger';
+import { setNestApp } from './set-nest-app';
+import { setSwagger } from './set-swagger';
 import {
   initializeTransactionalContext,
   StorageDriver,

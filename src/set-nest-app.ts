@@ -5,6 +5,7 @@ import {
   VersioningType,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { BaseExceptionFilter } from '@common/filters/base-exception.filter';
 
 /**
  * 글로벌 미들웨어 구성을 모아두는 함수입니다.
@@ -21,6 +22,7 @@ export function setNestApp<T extends INestApplication>(app: T): void {
       transform: true,
     }),
   );
+  app.useGlobalFilters(new BaseExceptionFilter());
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   app.enableCors();
   app.enableShutdownHooks();
