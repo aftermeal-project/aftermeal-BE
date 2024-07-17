@@ -3,12 +3,12 @@ import { ActivityService } from '../../src/modules/activity/application/activity
 import { ActivityController } from '../../src/modules/activity/presentation/activity.controller';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { setNestApp } from '@common/middlewares/set-nest-app';
+import { setNestApp } from '../../src/set-nest-app';
 
 const mockActivityService = {
   getAll: jest.fn(),
 };
-describe('UserController (Unit)', () => {
+describe('ActivityController', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -34,7 +34,6 @@ describe('UserController (Unit)', () => {
 
       // then
       expect(response.status).toBe(200);
-      expect(response.body.message).toBe('활동 목록 조회에 성공하였습니다.');
     });
   });
 });

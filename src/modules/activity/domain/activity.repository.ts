@@ -1,4 +1,4 @@
-import { ActivityDto } from '../dto/activity.dto';
+import { ActivityDto } from '../application/dto/activity.dto';
 import { Activity } from './activity.entity';
 
 export interface ActivityRepository {

@@ -3,7 +3,7 @@ import { UserService } from '../../src/modules/user/application/user.service';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../../src/modules/user/domain/user.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { EUserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/user-type';
 import { ConflictException } from '@nestjs/common';
 import { UserRole } from '../../src/modules/user/domain/user-role.entity';
 import { Role } from '../../src/modules/user/domain/role.entity';
@@ -15,7 +15,7 @@ import {
 import { UserModule } from '../../src/modules/user/user.module';
 import { UserStatus } from '../../src/modules/user/domain/user-status';
 
-describe('UserService (Integration)', () => {
+describe('UserService', () => {
   let sut: UserService;
   let userRepository: Repository<User>;
   let roleRepository: Repository<Role>;
@@ -52,7 +52,7 @@ describe('UserService (Integration)', () => {
   });
 
   describe('register', () => {
-    it('새로운 사용자를 등록할 수 있다.', async () => {
+    it('신규 사용자를 등록한다.', async () => {
       // given
       const role: Role = Role.create('ROLE_MEMBER');
       await roleRepository.save(role);
@@ -61,8 +61,8 @@ describe('UserService (Integration)', () => {
       const actual = await sut.register({
         name: '테스트',
         email: 'test@example.com',
-        memberType: EUserType.TEACHER,
-        password: 'password',
+        type: UserType.TEACHER,
+        password: 'G$K9Vss9-wNX6jOvY',
       });
 
       // then
@@ -70,7 +70,7 @@ describe('UserService (Integration)', () => {
       expect(user.id).toBeDefined();
     });
 
-    it('이미 등록된 이메일은 가입할 수 없다.', async () => {
+    it('이미 등록된 이메일으로는 등록할 수 없다.', async () => {
       // given
       const email = 'test@example.com';
 
@@ -80,10 +80,10 @@ describe('UserService (Integration)', () => {
       const user: User = User.create(
         '송유현',
         email,
-        EUserType.TEACHER,
+        UserType.TEACHER,
         role,
-        UserStatus.Activate,
-        'password',
+        UserStatus.ACTIVATE,
+        'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);
 
@@ -92,15 +92,13 @@ describe('UserService (Integration)', () => {
         await sut.register({
           name: '테스트',
           email: email,
-          memberType: EUserType.TEACHER,
-          password: 'password',
+          type: UserType.TEACHER,
+          password: 'G$K9Vss9-wNX6jOvY',
         });
       };
 
       // then
-      await expect(actual).rejects.toThrowError(
-        new ConflictException('이미 등록된 이메일입니다.'),
-      );
+      await expect(actual).rejects.toThrow(ConflictException);
     });
   });
 });

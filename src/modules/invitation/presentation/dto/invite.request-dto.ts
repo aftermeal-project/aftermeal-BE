@@ -5,7 +5,7 @@ import {
   IsEnum,
   IsNotEmpty,
 } from 'class-validator';
-import { EUserType } from '../../user/domain/user-type';
+import { UserType } from '../../../user/domain/user-type';
 
 export class InviteRequestDto {
   // @IsSchoolEmail(School.GSM, { each: true, groups: [MemberType.STUDENT] })
@@ -15,9 +15,9 @@ export class InviteRequestDto {
   @IsNotEmpty({ always: true })
   inviteeEmail: string[];
 
-  @IsEnum(EUserType, { always: true })
+  @IsEnum(UserType, { always: true })
   @IsNotEmpty({ always: true })
-  inviteeMemberType: EUserType;
+  inviteeMemberType: UserType;
 
   // @IsPositive({ groups: [MemberType.STUDENT] })
   // @IsNotEmpty({ groups: [MemberType.STUDENT] })

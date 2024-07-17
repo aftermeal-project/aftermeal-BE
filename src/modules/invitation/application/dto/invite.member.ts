@@ -1,13 +1,13 @@
-import { EUserType } from '../../user/domain/user-type';
+import { UserType } from '../../../user/domain/user-type';
 
 export class InviteMember {
   private readonly _email: string[];
-  private readonly _memberType: EUserType;
+  private readonly _memberType: UserType;
   private readonly _generationNumber?: number | null;
 
   constructor(
     email: string[],
-    memberType: EUserType,
+    memberType: UserType,
     generationNumber?: number,
   ) {
     this._email = email;
@@ -19,7 +19,7 @@ export class InviteMember {
     return this._email;
   }
 
-  get memberType(): EUserType {
+  get memberType(): UserType {
     return this._memberType;
   }
 

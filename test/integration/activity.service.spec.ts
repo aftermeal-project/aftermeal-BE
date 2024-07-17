@@ -5,21 +5,21 @@ import { ActivityModule } from '../../src/modules/activity/activity.module';
 import { DataSource, Repository } from 'typeorm';
 import { ActivityRepository } from '../../src/modules/activity/domain/activity.repository';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
-import { ActivityDto } from '../../src/modules/activity/dto/activity.dto';
+import { ActivityDto } from '../../src/modules/activity/application/dto/activity.dto';
 import { Activity } from '../../src/modules/activity/domain/activity.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { EUserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/user-type';
 import { UserStatus } from '../../src/modules/user/domain/user-status';
 import { Role } from '../../src/modules/user/domain/role.entity';
 import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@common/exceptions/not-found.exception';
 
-describe('ActivityService (Integration)', () => {
+describe('ActivityService', () => {
   let sut: ActivityService;
   let activityRepository: ActivityRepository;
   let userRepository: Repository<User>;
@@ -98,7 +98,7 @@ describe('ActivityService (Integration)', () => {
   });
 
   describe('getOneByActivityId', () => {
-    it('활동을 가져온다.', async () => {
+    it('activityId와 일치하는 활동을 가져온다.', async () => {
       // given
       const activity: Activity = new Activity('배구', 18);
       const { id } = await activityRepository.save(activity);
@@ -112,7 +112,7 @@ describe('ActivityService (Integration)', () => {
       expect(actual.maximumParticipants).toBe(18);
     });
 
-    it('존재하지 않는 활동이면 오류가 발생한다.', async () => {
+    it('존재하지 않는 활동은 가져올 수 없다.', async () => {
       // given
       const activity: Activity = new Activity('배구', 18);
       await activityRepository.save(activity);
@@ -123,9 +123,7 @@ describe('ActivityService (Integration)', () => {
       };
 
       // then
-      await expect(actual).rejects.toThrowError(
-        new NotFoundException('존재하지 않는 활동입니다.'),
-      );
+      await expect(actual).rejects.toThrow(NotFoundException);
     });
   });
 });
@@ -134,9 +132,9 @@ function createUser(email: string): User {
   return User.create(
     '송유현',
     email,
-    EUserType.TEACHER,
+    UserType.TEACHER,
     Role.create('ROLE_MEMBER'),
-    UserStatus.Activate,
-    'password',
+    UserStatus.ACTIVATE,
+    'G$K9Vss9-wNX6jOvY',
   );
 }

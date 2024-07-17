@@ -1,8 +1,8 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { ResponseEntity } from '@common/entities/response.entity';
-import { LoginRequestDto } from '../dto/login-request.dto';
-import { LoginResponseDto } from '../dto/login-response.dto';
+import { LoginRequestDto } from './dto/login-request.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 import { Public } from '@common/decorators/public.decorator';
 
 @Controller('auth')
@@ -12,15 +12,7 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(
-    @Body(
-      new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        forbidUnknownValues: true,
-        transform: true,
-      }),
-    )
-    dto: LoginRequestDto,
+    @Body() dto: LoginRequestDto,
   ): Promise<ResponseEntity<LoginResponseDto>> {
     return ResponseEntity.OK_WITH_DATA(
       '로그인 성공',

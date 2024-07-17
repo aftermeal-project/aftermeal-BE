@@ -1,4 +1,4 @@
-import { InviteMember } from '../dto/invite.member';
+import { InviteMember } from './dto/invite.member';
 import { Invitation, Target } from '../domain/invitation';
 
 export interface InvitationService {

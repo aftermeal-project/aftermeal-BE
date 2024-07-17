@@ -1,9 +1,11 @@
 import {
   ClassSerializerInterceptor,
   INestApplication,
+  ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { BaseExceptionFilter } from '@common/filters/base-exception.filter';
 
 /**
  * 글로벌 미들웨어 구성을 모아두는 함수입니다.
@@ -12,6 +14,15 @@ import { Reflector } from '@nestjs/core';
  */
 export function setNestApp<T extends INestApplication>(app: T): void {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
+      transform: true,
+    }),
+  );
+  app.useGlobalFilters(new BaseExceptionFilter());
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   app.enableCors();
   app.enableShutdownHooks();

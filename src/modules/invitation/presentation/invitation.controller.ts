@@ -1,10 +1,9 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
 import { InvitationService } from '../application/invitation.service';
-import { InviteRequestDto } from '../dto/invite.request-dto';
+import { InviteRequestDto } from './dto/invite.request-dto';
 import { ResponseEntity } from '@common/entities/response.entity';
 import { InvitationMemberService } from '../application/invitation-member.service';
-import { ValidationByMemberTypePipe } from '@common/pipes/validation-by-member-type.pipe';
-import { InviteMember } from '../dto/invite.member';
+import { InviteMember } from '../application/dto/invite.member';
 
 @Controller('invitation')
 export class InvitationController {
@@ -16,7 +15,7 @@ export class InvitationController {
   // TODO: @UseGuards(AuthGuard)
   @Post('member')
   async invite(
-    @Body(ValidationByMemberTypePipe) dto: InviteRequestDto,
+    @Body() dto: InviteRequestDto,
     // TODO @User() user: User,
   ): Promise<ResponseEntity<void>> {
     await this.invitationService.invite(

@@ -7,7 +7,7 @@ import { Activity } from '../../src/modules/activity/domain/activity.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { EUserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/user-type';
 import { UserStatus } from '../../src/modules/user/domain/user-status';
 import { Role } from '../../src/modules/user/domain/role.entity';
 import {
@@ -17,7 +17,7 @@ import {
 import { ParticipationService } from '../../src/modules/participation/application/participation.service';
 import { ParticipationModule } from '../../src/modules/participation/participation.module';
 
-describe('ParticipationService (Integration)', () => {
+describe('ParticipationService', () => {
   let sut: ParticipationService;
   let participationRepository: Repository<Participation>;
   let userRepository: Repository<User>;
@@ -50,7 +50,7 @@ describe('ParticipationService (Integration)', () => {
   });
 
   describe('apply', () => {
-    it('활동에 참가 신청을 한다.', async () => {
+    it('활동에 참가를 신청한다.', async () => {
       // given
       const activity: Activity = new Activity('배구', 18);
       const savedActivity: Activity = await activityRepository.save(activity);
@@ -58,10 +58,10 @@ describe('ParticipationService (Integration)', () => {
       const user: User = User.create(
         '송유현',
         'test@example.com',
-        EUserType.TEACHER,
+        UserType.TEACHER,
         Role.create('ROLE_MEMBER'),
-        UserStatus.Activate,
-        'password',
+        UserStatus.ACTIVATE,
+        'G$K9Vss9-wNX6jOvY',
       );
       const savedUser: User = await userRepository.save(user);
 
@@ -82,15 +82,6 @@ describe('ParticipationService (Integration)', () => {
           relations: {
             user: true,
             activity: true,
-          },
-          select: {
-            id: false,
-            activity: {
-              id: true,
-            },
-            user: {
-              id: true,
-            },
           },
         });
 

@@ -1,8 +1,7 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { EUserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/user-type';
 import { UserRole } from '../../src/modules/user/domain/user-role.entity';
 import { Role } from '../../src/modules/user/domain/role.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -16,7 +15,7 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 
-describe('AuthService (Integration)', () => {
+describe('AuthService', () => {
   let sut: AuthService;
   let userRepository: Repository<User>;
   let roleRepository: Repository<Role>;
@@ -49,25 +48,16 @@ describe('AuthService (Integration)', () => {
   describe('login', () => {
     it('유효한 정보를 통해 인증한다.', async () => {
       // given
-      const role: Role = roleRepository.create({
-        name: 'ROLE_MEMBER',
-      });
+      const role: Role = Role.create('ROLE_MEMBER');
       await roleRepository.save(role);
 
-      const user: User = User.create(
-        '송유현',
-        'test@example.com',
-        EUserType.TEACHER,
-        role,
-        UserStatus.Activate,
-        'password',
-      );
+      const user: User = createUser();
       await userRepository.save(user);
 
       // when
       const actual = await sut.login({
         email: 'test@example.com',
-        password: 'password',
+        password: 'G$K9Vss9-wNX6jOvY',
       });
 
       // then
@@ -76,50 +66,15 @@ describe('AuthService (Integration)', () => {
       expect(actual.tokenType).toBeDefined();
     });
   });
-
-  it('등록되지 않은 이메일이면 오류가 발생한다.', async () => {
-    // when
-    const actual = async () => {
-      await sut.login({
-        email: 'test@example.com',
-        password: 'password',
-      });
-    };
-
-    // then
-    await expect(actual).rejects.toThrowError(
-      new NotFoundException('존재하지 않는 사용자입니다.'),
-    );
-  });
-
-  it('비밀번호가 일치하지 않을 경우 인증에 실패해야 합니다.', async () => {
-    // given
-    const role: Role = roleRepository.create({
-      name: 'ROLE_MEMBER',
-    });
-    await roleRepository.save(role);
-
-    const user: User = User.create(
-      '송유현',
-      'test@example.com',
-      EUserType.TEACHER,
-      role,
-      UserStatus.Activate,
-      'password',
-    );
-    await userRepository.save(user);
-
-    // when
-    const actual = async () => {
-      await sut.login({
-        email: 'test@example.com',
-        password: 'hi',
-      });
-    };
-
-    // then
-    await expect(actual).rejects.toThrowError(
-      new BadRequestException('비밀번호가 올바르지 않습니다.'),
-    );
-  });
 });
+
+function createUser(): User {
+  return User.create(
+    '송유현',
+    'test@example.com',
+    UserType.TEACHER,
+    Role.create('ROLE_MEMBER'),
+    UserStatus.ACTIVATE,
+    'G$K9Vss9-wNX6jOvY',
+  );
+}

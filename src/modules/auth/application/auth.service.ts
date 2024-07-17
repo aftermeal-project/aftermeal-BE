@@ -1,12 +1,12 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../user/domain/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfiguration from '@config/jwt.config';
 import { ConfigType } from '@nestjs/config';
-import { LoginRequestDto } from '../dto/login-request.dto';
-import { LoginResponseDto } from '../dto/login-response.dto';
+import { LoginRequestDto } from '../presentation/dto/login-request.dto';
+import { LoginResponseDto } from '../presentation/dto/login-response.dto';
 import { UserRole } from '../../user/domain/user-role.entity';
 import { UserService } from '../../user/application/user.service';
 
@@ -22,11 +22,8 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginRequestDto): Promise<LoginResponseDto> {
-    const user: User | null = await this.userService.getOneByEmail(dto.email);
-    const isCorrectPassword: boolean = await user.checkPassword(dto.password);
-    if (!isCorrectPassword) {
-      throw new BadRequestException('비밀번호가 올바르지 않습니다.');
-    }
+    const user: User = await this.userService.getOneByEmail(dto.email);
+    await user.checkPassword(dto.password);
 
     const accessToken: string = await this.generateAccessToken(user);
     const timestamp: number = Math.floor(Date.now() / 1000);

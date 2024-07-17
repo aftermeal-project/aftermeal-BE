@@ -1,7 +1,7 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ResponseEntity } from '@common/entities/response.entity';
 import { ParticipationService } from '../application/participation.service';
-import { ParticipationRequestDto } from '../dto/participation-request.dto';
+import { ParticipationRequestDto } from './dto/participation-request.dto';
 import { User } from '@common/decorators/user.decorator';
 
 @Controller('participation')
@@ -10,7 +10,7 @@ export class ParticipationController {
 
   @Post()
   async apply(
-    @Body(ValidationPipe) dto: ParticipationRequestDto,
+    @Body() dto: ParticipationRequestDto,
     @User('userId') userId: number,
   ): Promise<ResponseEntity<void>> {
     await this.participationService.apply(dto.activityId, userId);
