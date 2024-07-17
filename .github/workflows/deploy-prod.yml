@@ -89,8 +89,8 @@ jobs:
         env:
           SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         run: |
-          docker compose -f compose.prod.yml pull
-          docker compose -f compose.prod.yml up -d --no-deps --build app
+          docker compose -f compose.override.yml -f compose.prod.yml pull
+          docker compose -f compose.override.yml -f compose.prod.yml up -d --no-deps --build app
 
       - name: Clean up
         run: |
