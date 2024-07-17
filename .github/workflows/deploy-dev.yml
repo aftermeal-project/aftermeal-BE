@@ -1,7 +1,9 @@
-name: Deploy
+name: Deploy Development
 
 on:
-  workflow_dispatch: {}
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -23,16 +25,17 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Dockerfile.dev
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/app:latest,${{ secrets.DOCKERHUB_USERNAME }}/app:${{ github.sha }}
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app:cache
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app:cache,mode=max
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/dev-app:latest,${{ secrets.DOCKERHUB_USERNAME }}/dev-app:${{ github.sha }}
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/dev-app:cache
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/dev-app:cache,mode=max
 
   deploy:
     needs: [build]
     runs-on: ubuntu-latest
+    environment: development
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -76,16 +79,21 @@ jobs:
           echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
 
-      - name: Deploy application
+      - name: Create Docker Context
         env:
           USERNAME: ${{ secrets.USERNAME }}
           HOST: ${{ secrets.HOST }}
+        run: |
+          docker context create aftermeal-api-server-context --docker "host=ssh://$USERNAME@$HOST"
+          docker context use aftermeal-api-server-context
+
+      - name: Deploy application
+        env:
           SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         run: |
-          docker context create aftermeal-server-context --docker "host=ssh://$USERNAME@$HOST"
-          docker context use aftermeal-server-context
-
           docker compose -f compose.prod.yml pull
           docker compose -f compose.prod.yml up -d --no-deps --build app
 
+      - name: Clean up
+        run: |
           docker system prune -f

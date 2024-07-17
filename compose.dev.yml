@@ -1,0 +1,5 @@
+services:
+  app:
+    image: ${DOCKER_REGISTRY}/dev-app
+    environment:
+      - NODE_ENV=development
