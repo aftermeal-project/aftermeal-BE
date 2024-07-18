@@ -1,7 +1,9 @@
-name: Deploy Production
+name: Deploy to Production
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -82,12 +84,10 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           HOST: ${{ secrets.HOST }}
         run: |
-          docker context create aftermeal-api-server-context --docker "host=ssh://$USERNAME@$HOST"
-          docker context use aftermeal-api-server-context
+          docker context create aftermeal --docker "host=ssh://$USERNAME@$HOST"
+          docker context use aftermeal
 
       - name: Deploy application
-        env:
-          SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         run: |
           docker compose -f compose.override.yml -f compose.prod.yml pull
           docker compose -f compose.override.yml -f compose.prod.yml up -d --no-deps --build app
