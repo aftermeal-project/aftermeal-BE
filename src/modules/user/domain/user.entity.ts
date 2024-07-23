@@ -3,8 +3,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseTimeEntity } from '@common/entities/base-time.entity';
@@ -41,7 +41,7 @@ export class User extends BaseTimeEntity {
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: UserRole[];
 
-  @OneToOne(() => Generation, { nullable: true })
+  @ManyToOne(() => Generation, { nullable: true })
   @JoinColumn({ name: 'generation_number' })
   generation: Generation | null;
 
