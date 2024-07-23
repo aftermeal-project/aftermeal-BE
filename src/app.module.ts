@@ -28,11 +28,11 @@ import { DataSource } from 'typeorm';
         emailConfiguration,
         cacheConfiguration,
       ],
+      isGlobal: true,
       validate: validate,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule.forFeature(databaseConfiguration)],
-      inject: [databaseConfiguration.KEY],
+      inject: [databaseConfiguration.KEY, appConfiguration.KEY],
       useClass: MysqlProvider,
       dataSourceFactory: async (options): Promise<DataSource> => {
         if (!options) {
