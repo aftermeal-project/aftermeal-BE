@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
 import { Role } from '../domain/role.entity';
@@ -12,6 +12,7 @@ import { RoleService } from '../../role/application/role.service';
 import { Transactional } from 'typeorm-transactional';
 import { UserStatus } from '../domain/user-status';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 
 @Injectable()
 export class UserService {
@@ -53,6 +54,7 @@ export class UserService {
       generation = await this.generationService.getOneByGenerationNumber(
         dto.generationNumber,
       );
+      await this.validateGraduatedGeneration(generation);
     }
 
     const role: Role = await this.roleService.getOneByName('ROLE_MEMBER');
@@ -76,7 +78,13 @@ export class UserService {
       },
     });
     if (isMemberExists) {
-      throw new ConflictException('이미 등록된 이메일입니다.');
+      throw new IllegalArgumentException('이미 등록된 이메일입니다.');
+    }
+  }
+
+  private async validateGraduatedGeneration(generation: Generation) {
+    if (generation.isGraduated) {
+      throw new IllegalArgumentException('졸업한 기수는 가입할 수 없습니다.');
     }
   }
 }
