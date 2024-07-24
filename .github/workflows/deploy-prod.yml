@@ -43,7 +43,6 @@ jobs:
       - name: Create .env file
         env:
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
-          APP_HOST: ${{ secrets.APP_HOST }}
           APP_PORT: ${{ secrets.APP_PORT }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_PORT: ${{ secrets.DB_PORT }}
@@ -56,7 +55,6 @@ jobs:
           REFRESH_TOKEN_EXPIRY_TIME: ${{ secrets.REFRESH_TOKEN_EXPIRY_TIME }}
         run: |
           echo DOCKER_REGISTRY=$DOCKER_REGISTRY >> .env
-          echo APP_HOST=$APP_HOST >> .env
           echo APP_PORT=$APP_PORT >> .env
           echo DB_HOST=$DB_HOST >> .env
           echo DB_PORT=$DB_PORT >> .env
