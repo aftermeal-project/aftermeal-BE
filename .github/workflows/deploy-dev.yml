@@ -87,8 +87,14 @@ jobs:
 
       - name: Deploy application
         run: |
-          docker compose -f compose.override.yml -f compose.dev.yml pull
-          docker compose -f compose.override.yml -f compose.dev.yml up -d --no-deps app
+          docker compose -f compose.dev.yml pull
+
+          if docker ps -q -f name=app | grep -q .; then
+            docker stop app
+            docker rm app
+          fi
+
+          docker compose -f compose.dev.yml up -d --no-deps app
 
       - name: Clean up
         run: |
