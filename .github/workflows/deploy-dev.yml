@@ -1,7 +1,9 @@
 name: Deploy to Development
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -30,7 +32,7 @@ jobs:
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/dev-app:cache
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/dev-app:cache,mode=max
 
-  deploy:
+  deploy-dev:
     needs: [build]
     runs-on: ubuntu-latest
     environment: development
@@ -85,15 +87,15 @@ jobs:
 
       - name: Deploy application
         run: |
-          docker compose -f compose.dev.yml pull
+          docker compose -f compose.yml -f compose.dev.yml pull
 
           if docker ps -q -f name=app | grep -q .; then
             docker stop app
             docker rm app
           fi
 
-          docker compose -f compose.dev.yml up -d --no-deps app
+          docker compose -f compose.yml -f compose.dev.yml up -d --no-deps app
 
       - name: Clean up
         run: |
-          docker system prune -f
+          docker image prune -f

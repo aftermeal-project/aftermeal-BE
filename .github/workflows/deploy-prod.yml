@@ -1,9 +1,7 @@
 name: Deploy to Production
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -87,15 +85,15 @@ jobs:
 
       - name: Deploy application
         run: |
-          docker compose -f compose.prod.yml pull
+          docker compose -f compose.yml -f compose.prod.yml pull
 
           if docker ps -q -f name=app | grep -q .; then
             docker stop app
             docker rm app
           fi
 
-          docker compose -f compose.prod.yml up -d --no-deps app
+          docker compose -f compose.yml -f compose.prod.yml up -d --no-deps app
 
       - name: Clean up
         run: |
-          docker system prune -f
+          docker image prune -f

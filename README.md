@@ -22,6 +22,7 @@ $ yarn install
 
 ```bash
 $ docker compose -f compose.db.yml up -d
+$ yarn run migration:run
 ```
 
 ## Running the app
