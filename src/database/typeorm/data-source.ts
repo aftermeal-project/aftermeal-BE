@@ -14,5 +14,3 @@ export const AppDataSource = new DataSource({
   entities: [join(__dirname, '../../modules/**/domain/*.entity{.ts,.js}')],
   migrations: [join(__dirname, '../../database/migrations/*{.ts,.js}')],
 });
-
-export const getDataSource = () => AppDataSource;
