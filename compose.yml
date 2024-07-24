@@ -1,11 +1,32 @@
 services:
-    db:
-        container_name: db
-        image: mysql
-        environment:
-            MYSQL_ROOT_PASSWORD: test
-            MYSQL_DATABASE: test
-            MYSQL_USER: test
-            MYSQL_PASSWORD: test
-        ports:
-            - 3306:3306
+  reverse-proxy:
+    container_name: reverse-proxy
+    image: nginx:1.27.0-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/html:/var/www/html
+      - nginx-conf:/etc/nginx/conf.d
+    depends_on:
+      - app
+
+  app:
+    container_name: app
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    environment:
+      - APP_PORT=${APP_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+      - ACCESS_TOKEN_EXPIRY_TIME=${ACCESS_TOKEN_EXPIRY_TIME}
+      - REFRESH_TOKEN_EXPIRY_TIME=${REFRESH_TOKEN_EXPIRY_TIME}
+
+volumes:
+  nginx-conf:

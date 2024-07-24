@@ -14,6 +14,7 @@ import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
+import jwtConfiguration from '@config/jwt.config';
 
 describe('AuthService', () => {
   let sut: AuthService;
@@ -25,7 +26,11 @@ describe('AuthService', () => {
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [getTestMysqlModule(), ConfigModule.forRoot(), AuthModule],
+      imports: [
+        getTestMysqlModule(),
+        ConfigModule.forRoot({ load: [jwtConfiguration], isGlobal: true }),
+        AuthModule,
+      ],
     }).compile();
 
     sut = moduleRef.get(AuthService);

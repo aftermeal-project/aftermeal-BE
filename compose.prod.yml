@@ -1,9 +1,10 @@
 services:
-  reverse-proxy:
-    restart: unless-stopped
-
   app:
     image: ${DOCKER_REGISTRY}/app
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
     restart: always
     environment:
       - NODE_ENV=production
+      - DB_LOGGING=false

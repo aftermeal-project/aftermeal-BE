@@ -14,10 +14,6 @@ class EnvironmentVariables {
   @IsOptional()
   NODE_ENV: ENVIRONMENT;
 
-  @IsString()
-  @IsNotEmpty()
-  APP_HOST: string;
-
   @IsNumber()
   @IsNotEmpty()
   APP_PORT: number;

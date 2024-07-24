@@ -18,7 +18,12 @@
     "test:e2e": "jest test/e2e --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migrate:create": "yarn typeorm migration:create ./src/database/migrations/Migration",
+    "migrate:generate": "yarn typeorm migration:generate ./src/database/migrations/Migration -d ./src/database/typeorm/data-source.ts",
+    "migrate:run": "yarn typeorm migration:run -d ./src/database/typeorm/data-source.ts",
+    "migrate:revert": "yarn typeorm migration:revert -d ./src/database/typeorm/data-source.ts"
   },
   "dependencies": {
     "@js-joda/core": "^5.6.1",
@@ -47,7 +52,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "ts-jenum": "^2.2.2",
-    "typeorm": "0.3.21-dev.e7649d2",
+    "typeorm": "0.3.20",
     "typeorm-transactional": "^0.5.0",
     "typeorm-naming-strategies": "^4.1.0"
   },

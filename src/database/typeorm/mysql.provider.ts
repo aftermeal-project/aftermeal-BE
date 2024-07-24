@@ -4,11 +4,14 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { Inject } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import databaseConfiguration from '@config/database.config';
+import appConfiguration from '@config/app.config';
 
 export class MysqlProvider implements TypeOrmOptionsFactory {
   constructor(
     @Inject(databaseConfiguration.KEY)
     private readonly dbConfig: ConfigType<typeof databaseConfiguration>,
+    @Inject(appConfiguration.KEY)
+    private readonly appConfig: ConfigType<typeof appConfiguration>,
   ) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
@@ -20,8 +23,8 @@ export class MysqlProvider implements TypeOrmOptionsFactory {
       password: this.dbConfig.password,
       database: this.dbConfig.name,
       entities: [join(__dirname, '../**/domain/*.entity{.ts,.js}')],
-      synchronize: process.env.NODE_ENV !== 'production',
-      logging: false,
+      synchronize: this.appConfig.env !== 'production',
+      logging: this.dbConfig.logging === 'true',
       namingStrategy: new SnakeNamingStrategy(),
       bigNumberStrings: false,
     };

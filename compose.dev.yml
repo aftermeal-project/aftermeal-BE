@@ -1,5 +1,9 @@
 services:
   app:
     image: ${DOCKER_REGISTRY}/dev-app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     environment:
       - NODE_ENV=development
+      - DB_LOGGING=true
