@@ -22,7 +22,7 @@ export class MysqlProvider implements TypeOrmOptionsFactory {
       username: this.dbConfig.user,
       password: this.dbConfig.password,
       database: this.dbConfig.name,
-      entities: [join(__dirname, '../**/domain/*.entity{.ts,.js}')],
+      entities: [join(__dirname, '../../modules/*/domain/*.entity{.ts,.js}')],
       synchronize: this.appConfig.env !== 'production',
       logging: this.dbConfig.logging === 'true',
       namingStrategy: new SnakeNamingStrategy(),
