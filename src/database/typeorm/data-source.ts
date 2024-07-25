@@ -1,16 +1,22 @@
-import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
+import { DataSource } from 'typeorm';
+import databaseConfig from '@config/database.config';
 import { join } from 'path';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 dotenv.config();
+const dbConfig = databaseConfig();
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: dbConfig.host,
+  port: dbConfig.port,
+  username: dbConfig.user,
+  password: dbConfig.password,
+  database: dbConfig.name,
   entities: [join(__dirname, '../../modules/*/domain/*.entity{.ts,.js}')],
-  migrations: [join(__dirname, '../../database/migrations/*{.ts,.js}')],
+  synchronize: false,
+  logging: dbConfig.logging === 'true',
+  namingStrategy: new SnakeNamingStrategy(),
+  bigNumberStrings: false,
 });
