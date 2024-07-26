@@ -9,16 +9,16 @@ import {
 import { Activity } from './activity.entity';
 
 enum DAY_OF_WEEK {
-  MONDAY = '월요일',
-  TUESDAY = '화요일',
-  WEDNESDAY = '수요일',
-  THURSDAY = '목요일',
-  FRIDAY = '금요일',
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
 }
 
 enum TimeSlot {
-  LUNCH = '점심',
-  DINNER = '저녁',
+  LUNCH = 'LUNCH',
+  DINNER = 'DINNER',
 }
 
 @Entity()
