@@ -1,7 +1,7 @@
-import { Activity } from './activity.entity';
+import { Activity } from '../domain/activity.entity';
 import { ActivityDto } from '../application/dto/activity.dto';
 import { Injectable } from '@nestjs/common';
-import { ActivityRepository } from './activity.repository';
+import { ActivityRepository } from '../domain/activity.repository';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
