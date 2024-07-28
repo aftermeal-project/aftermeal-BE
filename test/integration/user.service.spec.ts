@@ -60,7 +60,7 @@ describe('UserService', () => {
   describe('register', () => {
     it('신규 사용자를 등록한다.', async () => {
       // given
-      const role: Role = Role.create('ROLE_MEMBER');
+      const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
       // when
@@ -80,7 +80,7 @@ describe('UserService', () => {
       // given
       const email = 'test@example.com';
 
-      const role: Role = Role.create('ROLE_MEMBER');
+      const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
       const user: User = User.create(

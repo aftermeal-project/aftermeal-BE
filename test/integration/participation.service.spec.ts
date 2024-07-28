@@ -59,7 +59,7 @@ describe('ParticipationService', () => {
         '송유현',
         'test@example.com',
         UserType.TEACHER,
-        Role.create('ROLE_MEMBER'),
+        Role.create('USER'),
         UserStatus.ACTIVATE,
         'G$K9Vss9-wNX6jOvY',
       );

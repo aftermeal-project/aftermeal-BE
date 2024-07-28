@@ -14,7 +14,7 @@ describe('User', () => {
           '테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트',
           'test@example.com',
           UserType.TEACHER,
-          Role.create('ROLE_USER'),
+          Role.create('USER'),
           UserStatus.ACTIVATE,
           'G$K9Vss9-wNX6jOvY',
         );
@@ -28,7 +28,7 @@ describe('User', () => {
           '테스트',
           'test@example.com',
           UserType.TEACHER,
-          Role.create('ROLE_USER'),
+          Role.create('USER'),
           UserStatus.ACTIVATE,
           'G$K9Vss9-wNX6jOvYG$K9Vss9-wNX6jOvY',
         );
@@ -39,7 +39,7 @@ describe('User', () => {
           '테스트',
           'test@example.com',
           UserType.TEACHER,
-          Role.create('ROLE_USER'),
+          Role.create('USER'),
           UserStatus.ACTIVATE,
           'G$K9Vss9-wNX6jOvYG$K9Vss9-wNX6jOvY',
         );
@@ -53,7 +53,7 @@ describe('User', () => {
           '테스트',
           's20041@gsm.hs.kr',
           UserType.STUDENT,
-          Role.create('ROLE_USER'),
+          Role.create('USER'),
           UserStatus.ACTIVATE,
           'G$K9Vss9-wNX6jOvY',
         );
@@ -70,7 +70,7 @@ describe('User', () => {
           '테스트',
           'test@example.com',
           UserType.STUDENT,
-          Role.create('ROLE_USER'),
+          Role.create('USER'),
           UserStatus.ACTIVATE,
           'G$K9Vss9-wNX6jOvY',
           generation,
@@ -85,7 +85,7 @@ describe('User', () => {
           '테스트',
           'test@example.com',
           UserType.STUDENT,
-          Role.create('ROLE_USER'),
+          Role.create('USER'),
           UserStatus.ACTIVATE,
           'password',
         );
@@ -100,7 +100,7 @@ describe('User', () => {
         '테스트',
         'test@example.com',
         UserType.TEACHER,
-        Role.create('ROLE_USER'),
+        Role.create('USER'),
         UserStatus.ACTIVATE,
         'G$K9Vss9-wNX6jOvY',
       );

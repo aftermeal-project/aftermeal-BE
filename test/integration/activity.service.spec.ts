@@ -133,7 +133,7 @@ function createUser(email: string): User {
     '송유현',
     email,
     UserType.TEACHER,
-    Role.create('ROLE_MEMBER'),
+    Role.create('USER'),
     UserStatus.ACTIVATE,
     'G$K9Vss9-wNX6jOvY',
   );

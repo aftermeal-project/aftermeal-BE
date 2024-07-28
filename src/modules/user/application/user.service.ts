@@ -57,7 +57,7 @@ export class UserService {
       await this.validateGraduatedGeneration(generation);
     }
 
-    const role: Role = await this.roleService.getOneByName('ROLE_MEMBER');
+    const role: Role = await this.roleService.getOneByName('USER');
     const user: User = User.create(
       dto.name,
       dto.email,

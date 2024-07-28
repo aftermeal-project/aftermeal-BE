@@ -53,7 +53,7 @@ describe('AuthService', () => {
   describe('login', () => {
     it('유효한 정보를 통해 인증한다.', async () => {
       // given
-      const role: Role = Role.create('ROLE_MEMBER');
+      const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
       const user: User = createUser();
@@ -78,7 +78,7 @@ function createUser(): User {
     '송유현',
     'test@example.com',
     UserType.TEACHER,
-    Role.create('ROLE_MEMBER'),
+    Role.create('USER'),
     UserStatus.ACTIVATE,
     'G$K9Vss9-wNX6jOvY',
   );
