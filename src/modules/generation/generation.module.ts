@@ -6,5 +6,6 @@ import { Generation } from './domain/generation.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Generation])],
   providers: [GenerationService],
+  exports: [GenerationService],
 })
 export class GenerationModule {}

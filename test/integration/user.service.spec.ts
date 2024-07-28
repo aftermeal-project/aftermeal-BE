@@ -4,8 +4,8 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../../src/modules/user/domain/user.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { UserType } from '../../src/modules/user/domain/user-type';
-import { UserRole } from '../../src/modules/user/domain/user-role.entity';
-import { Role } from '../../src/modules/user/domain/role.entity';
+import { UserRole } from '../../src/modules/role/domain/user-role.entity';
+import { Role } from '../../src/modules/role/domain/role.entity';
 import { getTestMysqlModule } from '../get-test-mysql.module';
 import {
   initializeTransactionalContext,

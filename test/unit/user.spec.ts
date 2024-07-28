@@ -1,7 +1,7 @@
 import { UserType } from '../../src/modules/user/domain/user-type';
 import { User } from '../../src/modules/user/domain/user.entity';
 import { UserStatus } from '../../src/modules/user/domain/user-status';
-import { Role } from '../../src/modules/user/domain/role.entity';
+import { Role } from '../../src/modules/role/domain/role.entity';
 import { Generation } from '../../src/modules/generation/domain/generation.entity';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 

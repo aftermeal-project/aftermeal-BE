@@ -9,7 +9,7 @@ import { Participation } from '../../src/modules/participation/domain/participat
 import { User } from '../../src/modules/user/domain/user.entity';
 import { UserType } from '../../src/modules/user/domain/user-type';
 import { UserStatus } from '../../src/modules/user/domain/user-status';
-import { Role } from '../../src/modules/user/domain/role.entity';
+import { Role } from '../../src/modules/role/domain/role.entity';
 import {
   initializeTransactionalContext,
   StorageDriver,

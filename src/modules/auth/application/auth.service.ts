@@ -7,7 +7,7 @@ import jwtConfiguration from '@config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { LoginRequestDto } from '../presentation/dto/login-request.dto';
 import { LoginResponseDto } from '../presentation/dto/login-response.dto';
-import { UserRole } from '../../user/domain/user-role.entity';
+import { UserRole } from '../../role/domain/user-role.entity';
 import { UserService } from '../../user/application/user.service';
 
 @Injectable()
