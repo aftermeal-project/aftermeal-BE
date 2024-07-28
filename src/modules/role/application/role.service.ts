@@ -12,11 +12,12 @@ export class RoleService {
   ) {}
 
   async getOneByName(name: string): Promise<Role> {
-    const role: Role | undefined = await this.roleRepository.findOneBy({
+    let role: Role | undefined = await this.roleRepository.findOneBy({
       name: name,
     });
     if (!role) {
-      throw new NotFoundException('존재하지 않는 권한입니다.');
+      role = this.roleRepository.create({ name: name });
+      await this.roleRepository.save(role);
     }
     return role;
   }
