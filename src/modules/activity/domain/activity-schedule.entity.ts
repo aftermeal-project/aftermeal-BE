@@ -7,19 +7,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Activity } from './activity.entity';
-
-enum DAY_OF_WEEK {
-  MONDAY = 'MONDAY',
-  TUESDAY = 'TUESDAY',
-  WEDNESDAY = 'WEDNESDAY',
-  THURSDAY = 'THURSDAY',
-  FRIDAY = 'FRIDAY',
-}
-
-enum TimeSlot {
-  LUNCH = 'LUNCH',
-  DINNER = 'DINNER',
-}
+import { DAY_OF_WEEK } from './day-of-week';
+import { TimeSlot } from './time-slot';
 
 @Entity()
 export class ActivitySchedule extends BaseTimeEntity {
