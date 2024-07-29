@@ -4,8 +4,8 @@ import { User } from '../domain/user.entity';
 import { Role } from '../../role/domain/role.entity';
 import { Generation } from '../../generation/domain/generation.entity';
 import { UserType } from '../domain/user-type';
-import { UserRegisterResponseDto } from '../presentation/dto/user-register-response.dto';
-import { UserRegisterRequestDto } from '../presentation/dto/user-register-request.dto';
+import { UserRegisterResDto } from '../presentation/dto/user-register.res.dto';
+import { UserRegisterReqDto } from '../presentation/dto/user-register.req.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GenerationService } from '../../generation/application/generation.service';
 import { RoleService } from '../../role/application/role.service';
@@ -44,9 +44,7 @@ export class UserService {
   }
 
   @Transactional()
-  async register(
-    dto: UserRegisterRequestDto,
-  ): Promise<UserRegisterResponseDto> {
+  async register(dto: UserRegisterReqDto): Promise<UserRegisterResDto> {
     await this.validateEmailDuplication(dto.email);
     let generation: Generation | null = null;
 
@@ -68,7 +66,7 @@ export class UserService {
       generation,
     );
     const savedUser: User = await this.userRepository.save(user);
-    return new UserRegisterResponseDto(savedUser.id);
+    return new UserRegisterResDto(savedUser.id);
   }
 
   private async validateEmailDuplication(email: string): Promise<void> {

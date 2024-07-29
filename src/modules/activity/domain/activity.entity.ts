@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Participation } from '../../participation/domain/participation.entity';
-import { BaseTimeEntity } from '@common/entities/base-time.entity';
+import { BaseTimeEntity } from '@common/models/base-time.entity';
 
 @Entity()
 export class Activity extends BaseTimeEntity {

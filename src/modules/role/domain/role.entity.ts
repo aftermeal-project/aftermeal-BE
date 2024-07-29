@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { BaseTimeEntity } from '@common/entities/base-time.entity';
+import { BaseTimeEntity } from '@common/models/base-time.entity';
 
 @Entity()
 export class Role extends BaseTimeEntity {

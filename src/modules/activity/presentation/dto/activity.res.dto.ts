@@ -1,6 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
+import { ActivitySearchDto } from '../../application/dto/activity-search.dto';
 
-export class ActivityDto {
+export class ActivityResDto {
   @Exclude() private readonly _id: number;
   @Exclude() private readonly _name: string;
   @Exclude() private readonly _maximumParticipants: number;
@@ -36,5 +37,14 @@ export class ActivityDto {
   @Expose()
   get participantsCount(): number {
     return this._participantsCount;
+  }
+
+  static from(activity: ActivitySearchDto) {
+    return new ActivityResDto(
+      activity.id,
+      activity.name,
+      activity.maximumParticipants,
+      activity.participantsCount,
+    );
   }
 }

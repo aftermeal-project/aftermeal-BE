@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { UserType } from '../../domain/user-type';
 
-export class UserRegisterRequestDto {
+export class UserRegisterReqDto {
   @IsEmail({}, { message: '이메일은 이메일 형식이어야 합니다.' })
   email: string;
 

@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BaseTimeEntity } from '@common/entities/base-time.entity';
+import { BaseTimeEntity } from '@common/models/base-time.entity';
 import { Generation } from '../../generation/domain/generation.entity';
 import { UserType } from './user-type';
 import { UserStatus } from './user-status';
@@ -33,7 +33,7 @@ export class User extends BaseTimeEntity {
   status: UserStatus;
 
   @Column({ type: 'varchar' })
-  type: UserType;
+  userType: UserType;
 
   @Column()
   password: string;
@@ -78,7 +78,7 @@ export class User extends BaseTimeEntity {
     const user: User = new User();
     user.name = name;
     user.email = email;
-    user.type = type;
+    user.userType = type;
     user.userRoles = [UserRole.create(role, user)];
     user.status = status;
     user.password = password;

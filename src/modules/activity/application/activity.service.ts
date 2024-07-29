@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Activity } from '../domain/activity.entity';
 import { ActivityRepository } from '../domain/activity.repository';
-import { ActivityDto } from './dto/activity.dto';
+import { ActivitySearchDto } from './dto/activity-search.dto';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { ActivityResDto } from '../presentation/dto/activity.res.dto';
 
 @Injectable()
 export class ActivityService {
@@ -21,7 +22,11 @@ export class ActivityService {
     return activity;
   }
 
-  async getAll(): Promise<ActivityDto[]> {
-    return await this.activityRepository.findActivityDto();
+  async getAll(): Promise<ActivityResDto[]> {
+    const activityDto: ActivitySearchDto[] =
+      await this.activityRepository.findActivityDto();
+    return activityDto.map((activity: ActivitySearchDto) =>
+      ActivityResDto.from(activity),
+    );
   }
 }

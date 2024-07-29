@@ -1,7 +1,7 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Role } from './role.entity';
 import { User } from '../../user/domain/user.entity';
-import { BaseTimeEntity } from '@common/entities/base-time.entity';
+import { BaseTimeEntity } from '@common/models/base-time.entity';
 
 @Entity()
 export class UserRole extends BaseTimeEntity {

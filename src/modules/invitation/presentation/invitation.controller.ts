@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
 import { InvitationService } from '../application/invitation.service';
 import { InviteRequestDto } from './dto/invite.request-dto';
-import { ResponseEntity } from '@common/entities/response.entity';
+import { ResponseEntity } from '@common/models/response.entity';
 import { InvitationMemberService } from '../application/invitation-member.service';
 import { InviteMember } from '../application/dto/invite.member';
 
