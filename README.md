@@ -21,8 +21,8 @@ $ yarn install
 ## Set up Database
 
 ```bash
-$ docker compose -f compose.db.yml up -d
-$ yarn run migration:run
+$ docker compose -f compose.local.yml up -d --wait
+$ yarn run schema:sync
 ```
 
 ## Running the app
