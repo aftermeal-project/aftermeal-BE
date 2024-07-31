@@ -48,7 +48,7 @@ export class User extends BaseTimeEntity {
   static create(
     name: string,
     email: string,
-    type: UserType,
+    userType: UserType,
     role: Role,
     status: UserStatus,
     password: string,
@@ -65,7 +65,7 @@ export class User extends BaseTimeEntity {
         '비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
       );
     }
-    if (type === UserType.STUDENT) {
+    if (userType === UserType.STUDENT) {
       if (!generation) {
         throw new IllegalArgumentException('학생은 기수가 존재해야 합니다.');
       }
@@ -74,11 +74,14 @@ export class User extends BaseTimeEntity {
           '학생은 학교 이메일을 사용해야 합니다.',
         );
       }
+      if (generation.isGraduated) {
+        throw new IllegalArgumentException('졸업한 기수는 가입할 수 없습니다.');
+      }
     }
     const user: User = new User();
     user.name = name;
     user.email = email;
-    user.userType = type;
+    user.userType = userType;
     user.userRoles = [UserRole.create(role, user)];
     user.status = status;
     user.password = password;

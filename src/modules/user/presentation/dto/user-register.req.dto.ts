@@ -1,9 +1,9 @@
 import {
   IsEmail,
   IsEnum,
-  IsPositive,
-  IsOptional,
   IsNotEmpty,
+  IsOptional,
+  IsPositive,
 } from 'class-validator';
 import { UserType } from '../../domain/user-type';
 
@@ -17,7 +17,7 @@ export class UserRegisterReqDto {
   @IsEnum(UserType, {
     message: `사용자 유형은 다음 값 중 하나여야 합니다: ${Object.values(UserType)}`,
   })
-  type: UserType;
+  userType: UserType;
 
   @IsPositive({ message: '기수 번호는 양수여야 합니다.' })
   @IsOptional()

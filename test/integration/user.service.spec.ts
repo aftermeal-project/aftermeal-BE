@@ -67,7 +67,7 @@ describe('UserService', () => {
       const actual = await sut.register({
         name: '테스트',
         email: 'test@example.com',
-        type: UserType.TEACHER,
+        userType: UserType.TEACHER,
         password: 'G$K9Vss9-wNX6jOvY',
       });
 
@@ -98,7 +98,7 @@ describe('UserService', () => {
         await sut.register({
           name: '테스트',
           email: email,
-          type: UserType.TEACHER,
+          userType: UserType.TEACHER,
           password: 'G$K9Vss9-wNX6jOvY',
         });
       };
@@ -117,7 +117,7 @@ describe('UserService', () => {
         await sut.register({
           name: '테스트',
           email: 'test@example.com',
-          type: UserType.STUDENT,
+          userType: UserType.STUDENT,
           password: 'G$K9Vss9-wNX6jOvY',
           generationNumber: 1,
         });
