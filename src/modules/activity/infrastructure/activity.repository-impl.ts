@@ -1,9 +1,10 @@
 import { Activity } from '../domain/activity.entity';
-import { ActivitySearchDto } from '../application/dto/activity-search.dto';
+import { ActivityDetailsDBDTO } from './dto/activity-details.db.dto';
 import { Injectable } from '@nestjs/common';
 import { ActivityRepository } from '../domain/activity.repository';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ActivityRepositoryImpl implements ActivityRepository {
@@ -26,7 +27,7 @@ export class ActivityRepositoryImpl implements ActivityRepository {
     });
   }
 
-  async findActivityDto(): Promise<ActivitySearchDto[]> {
+  async findActivityDTO(): Promise<ActivityDetailsDBDTO[]> {
     return await this.activityRepository
       .createQueryBuilder('activity')
       .leftJoinAndSelect('activity.participation', 'participation')

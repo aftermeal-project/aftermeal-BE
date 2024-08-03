@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class LoginRequestDto {
+export class LoginRequestDTO {
   @IsString({ message: '이메일은 문자열 형식이어야 합니다.' })
   email: string;
 

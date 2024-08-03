@@ -1,7 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
-import { ActivitySearchDto } from '../../application/dto/activity-search.dto';
+import { ActivityDetailsDBDTO } from '../../infrastructure/dto/activity-details.db.dto';
 
-export class ActivityResDto {
+export class ActivityDetailsResponseDTO {
   @Exclude() private readonly _id: number;
   @Exclude() private readonly _name: string;
   @Exclude() private readonly _maximumParticipants: number;
@@ -39,12 +39,15 @@ export class ActivityResDto {
     return this._participantsCount;
   }
 
-  static from(activity: ActivitySearchDto) {
-    return new ActivityResDto(
-      activity.id,
-      activity.name,
-      activity.maximumParticipants,
-      activity.participantsCount,
+  static from(activity: ActivityDetailsDBDTO[]) {
+    return activity.map(
+      (activity) =>
+        new ActivityDetailsResponseDTO(
+          activity.id,
+          activity.name,
+          activity.maximumParticipants,
+          activity.participantsCount,
+        ),
     );
   }
 }

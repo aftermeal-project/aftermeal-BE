@@ -10,7 +10,7 @@ import { User } from '../../domain/user.entity';
 import { Role } from '../../../role/domain/role.entity';
 import { Generation } from '../../../generation/domain/generation.entity';
 
-export class UserRegisterReqDto {
+export class UserRegisterRequestDTO {
   constructor(
     email: string,
     name: string,

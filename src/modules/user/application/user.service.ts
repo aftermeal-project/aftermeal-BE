@@ -9,7 +9,7 @@ import { RoleService } from '../../role/application/role.service';
 import { Transactional } from 'typeorm-transactional';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
-import { UserRegisterReqDto } from '../presentation/dto/user-register.req.dto';
+import { UserRegisterRequestDTO } from '../presentation/dto/user-register.req.dto';
 
 @Injectable()
 export class UserService {
@@ -41,7 +41,7 @@ export class UserService {
   }
 
   @Transactional()
-  async register(dto: UserRegisterReqDto): Promise<User> {
+  async register(dto: UserRegisterRequestDTO): Promise<User> {
     await this.validateEmailDuplication(dto.email);
 
     const role: Role = await this.roleService.getOneByName('USER');

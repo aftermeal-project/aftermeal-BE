@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfiguration from '@config/jwt.config';
 import { ConfigType } from '@nestjs/config';
-import { LoginRequestDto } from '../presentation/dto/login-request.dto';
-import { LoginResponseDto } from '../presentation/dto/login-response.dto';
+import { LoginRequestDTO } from '../presentation/dto/login.req.dto';
+import { LoginResponseDTO } from '../presentation/dto/login.res.dto';
 import { UserRole } from '../../role/domain/user-role.entity';
 import { UserService } from '../../user/application/user.service';
 
@@ -21,7 +21,7 @@ export class AuthService {
     private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
   ) {}
 
-  async login(dto: LoginRequestDto): Promise<LoginResponseDto> {
+  async login(dto: LoginRequestDTO): Promise<LoginResponseDTO> {
     const user: User = await this.userService.getOneByEmail(dto.email);
     await user.checkPassword(dto.password);
 
@@ -29,7 +29,7 @@ export class AuthService {
     const timestamp: number = Math.floor(Date.now() / 1000);
     const exp: number = timestamp + this.jwtConfig.accessToken.expiresIn;
 
-    return new LoginResponseDto(accessToken, 'Bearer', exp);
+    return new LoginResponseDTO(accessToken, 'Bearer', exp);
   }
 
   private async generateAccessToken(user: User): Promise<string> {

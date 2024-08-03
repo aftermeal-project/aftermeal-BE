@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ActivityService } from '../application/activity.service';
 import { ResponseEntity } from '@common/models/response.entity';
 import { Public } from '@common/decorators/public.decorator';
-import { ActivityResDto } from './dto/activity.res.dto';
+import { ActivityDetailsResponseDTO } from './dto/activity-details.res.dto';
 
 @Controller('activities')
 export class ActivityController {
@@ -10,10 +10,13 @@ export class ActivityController {
 
   @Public()
   @Get()
-  async getActivities(): Promise<ResponseEntity<ActivityResDto[]>> {
+  async getActivityDetails(): Promise<
+    ResponseEntity<ActivityDetailsResponseDTO[]>
+  > {
+    const activityDetails = await this.activityService.getAll();
     return ResponseEntity.OK_WITH_DATA(
       '활동 목록 조회에 성공하였습니다.',
-      await this.activityService.getAll(),
+      ActivityDetailsResponseDTO.from(activityDetails),
     );
   }
 }

@@ -5,7 +5,7 @@ import { ActivityModule } from '../../src/modules/activity/activity.module';
 import { DataSource, Repository } from 'typeorm';
 import { ActivityRepository } from '../../src/modules/activity/domain/activity.repository';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
-import { ActivityDetailsDto } from '../../src/modules/activity/infrastructure/dto/activity-details.dto';
+import { ActivityDetailsDBDTO } from '../../src/modules/activity/infrastructure/dto/activity-details.db.dto';
 import { Activity } from '../../src/modules/activity/domain/activity.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
@@ -75,7 +75,7 @@ describe('ActivityService', () => {
       await participationRepository.save(participations);
 
       // when
-      const actual: ActivityDetailsDto[] = await sut.getAll();
+      const actual: ActivityDetailsDBDTO[] = await sut.getAll();
 
       // then
       expect(actual[0].id).toBeDefined();

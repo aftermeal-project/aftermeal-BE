@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { UserType } from '../../../user/domain/user-type';
 
-export class InviteRequestDto {
+export class InviteRequestDTO {
   // @IsSchoolEmail(School.GSM, { each: true, groups: [MemberType.STUDENT] })
   @ArrayUnique({ always: true })
   @IsEmail({}, { each: true, always: true })
@@ -22,4 +22,8 @@ export class InviteRequestDto {
   // @IsPositive({ groups: [MemberType.STUDENT] })
   // @IsNotEmpty({ groups: [MemberType.STUDENT] })
   inviteeGenerationNumber?: number;
+
+  toEntity() {
+    return undefined;
+  }
 }

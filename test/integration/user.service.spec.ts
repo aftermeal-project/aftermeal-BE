@@ -14,7 +14,7 @@ import {
 import { UserModule } from '../../src/modules/user/user.module';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { Generation } from '../../src/modules/generation/domain/generation.entity';
-import { UserRegisterReqDto } from '../../src/modules/user/presentation/dto/user-register.req.dto';
+import { UserRegisterRequestDTO } from '../../src/modules/user/presentation/dto/user-register.req.dto';
 
 describe('UserService', () => {
   let sut: UserService;
@@ -64,7 +64,7 @@ describe('UserService', () => {
       await roleRepository.save(role);
 
       // when
-      const dto = new UserRegisterReqDto(
+      const dto = new UserRegisterRequestDTO(
         '테스트',
         'test@example.com',
         UserType.TEACHER,
@@ -93,7 +93,7 @@ describe('UserService', () => {
       await userRepository.save(user);
 
       // when
-      const dto = new UserRegisterReqDto(
+      const dto = new UserRegisterRequestDTO(
         '테스트',
         email,
         UserType.TEACHER,
