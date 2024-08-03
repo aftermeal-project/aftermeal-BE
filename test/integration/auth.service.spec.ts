@@ -74,12 +74,10 @@ describe('AuthService', () => {
 });
 
 function createUser(): User {
-  return User.create(
+  return User.createTeacher(
     '송유현',
     'test@example.com',
-    UserType.TEACHER,
     Role.create('USER'),
-    UserStatus.ACTIVATE,
     'G$K9Vss9-wNX6jOvY',
   );
 }

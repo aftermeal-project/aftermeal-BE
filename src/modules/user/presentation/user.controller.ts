@@ -4,6 +4,7 @@ import { UserRegisterResDto } from './dto/user-register.res.dto';
 import { ResponseEntity } from '@common/models/response.entity';
 import { UserService } from '../application/user.service';
 import { Public } from '@common/decorators/public.decorator';
+import { User } from '../domain/user.entity';
 
 @Controller('users')
 export class UserController {
@@ -14,9 +15,10 @@ export class UserController {
   async register(
     @Body() dto: UserRegisterReqDto,
   ): Promise<ResponseEntity<UserRegisterResDto>> {
+    const user: User = await this.userService.register(dto);
     return ResponseEntity.OK_WITH_DATA(
       '등록에 성공했습니다.',
-      await this.userService.register(dto),
+      UserRegisterResDto.from(user),
     );
   }
 }

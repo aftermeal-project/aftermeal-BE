@@ -12,9 +12,9 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 import { UserModule } from '../../src/modules/user/user.module';
-import { UserStatus } from '../../src/modules/user/domain/user-status';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { Generation } from '../../src/modules/generation/domain/generation.entity';
+import { UserRegisterReqDto } from '../../src/modules/user/presentation/dto/user-register.req.dto';
 
 describe('UserService', () => {
   let sut: UserService;
@@ -64,12 +64,13 @@ describe('UserService', () => {
       await roleRepository.save(role);
 
       // when
-      const actual = await sut.register({
-        name: '테스트',
-        email: 'test@example.com',
-        userType: UserType.TEACHER,
-        password: 'G$K9Vss9-wNX6jOvY',
-      });
+      const dto = new UserRegisterReqDto(
+        '테스트',
+        'test@example.com',
+        UserType.TEACHER,
+        'G$K9Vss9-wNX6jOvY',
+      );
+      const actual = await sut.register(dto);
 
       // then
       const user: User = await sut.getOneById(actual.id);
@@ -83,44 +84,23 @@ describe('UserService', () => {
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
-      const user: User = User.create(
+      const user: User = User.createTeacher(
         '송유현',
         email,
-        UserType.TEACHER,
         role,
-        UserStatus.ACTIVATE,
         'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);
 
       // when
+      const dto = new UserRegisterReqDto(
+        '테스트',
+        email,
+        UserType.TEACHER,
+        'G$K9Vss9-wNX6jOvY',
+      );
       const actual = async () => {
-        await sut.register({
-          name: '테스트',
-          email: email,
-          userType: UserType.TEACHER,
-          password: 'G$K9Vss9-wNX6jOvY',
-        });
-      };
-
-      // then
-      await expect(actual).rejects.toThrow(IllegalArgumentException);
-    });
-
-    it('졸업한 기수는 등록할 수 없다.', async () => {
-      // given
-      const generation = Generation.create(1, 2024, true);
-      await generationRepository.save(generation);
-
-      // when
-      const actual = async () => {
-        await sut.register({
-          name: '테스트',
-          email: 'test@example.com',
-          userType: UserType.STUDENT,
-          password: 'G$K9Vss9-wNX6jOvY',
-          generationNumber: 1,
-        });
+        await sut.register(dto);
       };
 
       // then

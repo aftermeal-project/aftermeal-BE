@@ -6,8 +6,25 @@ import {
   IsPositive,
 } from 'class-validator';
 import { UserType } from '../../domain/user-type';
+import { User } from '../../domain/user.entity';
+import { Role } from '../../../role/domain/role.entity';
+import { Generation } from '../../../generation/domain/generation.entity';
 
 export class UserRegisterReqDto {
+  constructor(
+    email: string,
+    name: string,
+    userType: UserType,
+    password: string,
+    generationNumber?: number,
+  ) {
+    this.email = email;
+    this.name = name;
+    this.userType = userType;
+    this.generationNumber = generationNumber;
+    this.password = password;
+  }
+
   @IsEmail({}, { message: '이메일은 이메일 형식이어야 합니다.' })
   email: string;
 
@@ -25,4 +42,16 @@ export class UserRegisterReqDto {
 
   @IsNotEmpty({ message: '비밀번호는 필수값입니다.' })
   password: string;
+
+  toEntity(role: Role, generation?: Generation): User {
+    return this.userType === UserType.STUDENT
+      ? User.createStudent(
+          this.email,
+          this.name,
+          role,
+          generation,
+          this.password,
+        )
+      : User.createTeacher(this.email, this.name, role, this.password);
+  }
 }

@@ -5,13 +5,11 @@ import { ActivityModule } from '../../src/modules/activity/activity.module';
 import { DataSource, Repository } from 'typeorm';
 import { ActivityRepository } from '../../src/modules/activity/domain/activity.repository';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
-import { ActivitySearchDto } from '../../src/modules/activity/application/dto/activity-search.dto';
+import { ActivityDetailsDto } from '../../src/modules/activity/infrastructure/dto/activity-details.dto';
 import { Activity } from '../../src/modules/activity/domain/activity.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { UserType } from '../../src/modules/user/domain/user-type';
-import { UserStatus } from '../../src/modules/user/domain/user-status';
 import { Role } from '../../src/modules/role/domain/role.entity';
 import {
   initializeTransactionalContext,
@@ -77,7 +75,7 @@ describe('ActivityService', () => {
       await participationRepository.save(participations);
 
       // when
-      const actual: ActivitySearchDto[] = await sut.getAll();
+      const actual: ActivityDetailsDto[] = await sut.getAll();
 
       // then
       expect(actual[0].id).toBeDefined();
@@ -129,12 +127,10 @@ describe('ActivityService', () => {
 });
 
 function createUser(email: string): User {
-  return User.create(
+  return User.createTeacher(
     '송유현',
     email,
-    UserType.TEACHER,
     Role.create('USER'),
-    UserStatus.ACTIVATE,
     'G$K9Vss9-wNX6jOvY',
   );
 }

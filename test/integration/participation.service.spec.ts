@@ -7,8 +7,6 @@ import { Activity } from '../../src/modules/activity/domain/activity.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { UserType } from '../../src/modules/user/domain/user-type';
-import { UserStatus } from '../../src/modules/user/domain/user-status';
 import { Role } from '../../src/modules/role/domain/role.entity';
 import {
   initializeTransactionalContext,
@@ -55,12 +53,10 @@ describe('ParticipationService', () => {
       const activity: Activity = new Activity('배구', 18);
       const savedActivity: Activity = await activityRepository.save(activity);
 
-      const user: User = User.create(
+      const user: User = User.createTeacher(
         '송유현',
         'test@example.com',
-        UserType.TEACHER,
         Role.create('USER'),
-        UserStatus.ACTIVATE,
         'G$K9Vss9-wNX6jOvY',
       );
       const savedUser: User = await userRepository.save(user);
