@@ -1,14 +1,12 @@
 import { DataSource, Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { UserType } from '../../src/modules/user/domain/user-type';
 import { UserRole } from '../../src/modules/role/domain/user-role.entity';
 import { Role } from '../../src/modules/role/domain/role.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { getTestMysqlModule } from '../get-test-mysql.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '../../src/modules/auth/auth.module';
-import { UserStatus } from '../../src/modules/user/domain/user-status';
 import { AuthService } from '../../src/modules/auth/application/auth.service';
 import {
   initializeTransactionalContext,
@@ -57,6 +55,7 @@ describe('AuthService', () => {
       await roleRepository.save(role);
 
       const user: User = createUser();
+      await user.hashPassword();
       await userRepository.save(user);
 
       // when

@@ -6,8 +6,10 @@ import * as request from 'supertest';
 import { setNestApp } from '../../src/set-nest-app';
 
 const mockActivityService = {
-  getAll: jest.fn(),
+  getActivityInfos: jest.fn(),
+  getActivitySummaries: jest.fn(),
 };
+
 describe('ActivityController', () => {
   let app: INestApplication;
 
@@ -27,10 +29,22 @@ describe('ActivityController', () => {
     await app.init();
   });
 
-  describe('getActivities', () => {
-    it('활동 목록을 가져온다.', async () => {
+  describe('getActivitySummaries', () => {
+    it('활동 요약 목록을 가져온다.', async () => {
       // when
       const response = await request(app.getHttpServer()).get('/v1/activities');
+
+      // then
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe('getActivityInfos', () => {
+    it('활동 정보 목록을 가져온다.', async () => {
+      // when
+      const response = await request(app.getHttpServer()).get(
+        '/v1/activities/info',
+      );
 
       // then
       expect(response.status).toBe(200);

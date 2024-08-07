@@ -3,7 +3,7 @@ import { ActivityService } from './application/activity.service';
 import { ActivityController } from './presentation/activity.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Activity } from './domain/activity.entity';
-import { ActivityRepositoryImpl } from './infrastructure/activity.repository-impl';
+import { ActivityTypeOrmRepository } from './infrastructure/activity-typeorm.repository';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
 
 @Module({
@@ -11,7 +11,7 @@ import { ACTIVITY_REPOSITORY } from '@common/constants';
   controllers: [ActivityController],
   providers: [
     ActivityService,
-    { provide: ACTIVITY_REPOSITORY, useClass: ActivityRepositoryImpl },
+    { provide: ACTIVITY_REPOSITORY, useClass: ActivityTypeOrmRepository },
   ],
   exports: [ActivityService],
 })

@@ -5,108 +5,144 @@ import { IllegalArgumentException } from '@common/exceptions/illegal-argument.ex
 
 describe('User', () => {
   describe('createTeacher', () => {
+    it('유효한 입력으로 교사 계정을 생성한다', async () => {
+      // given
+      const role: Role = Role.create('USER');
+
+      // when
+      const user: User = User.createTeacher(
+        '테스트',
+        'test@example.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
+
+      // then
+      expect(user).toBeDefined();
+    });
+
     it('이름은 40자 이하여야 한다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+
       // when & then
       expect(() => {
         User.createTeacher(
           '테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트',
           'test@example.com',
-          Role.create('USER'),
+          role,
           'G$K9Vss9-wNX6jOvY',
         );
       }).toThrow(IllegalArgumentException);
     });
 
     it('비밀번호는 20자 이하여야 한다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+
       // when & then
       expect(() => {
         User.createTeacher(
           '테스트',
           'test@example.com',
-          Role.create('USER'),
-          'G$K9Vss9-wNX6jOvYG$K9Vss9-wNX6jOvY',
-        );
-      }).toThrow(IllegalArgumentException);
-
-      expect(() => {
-        User.createTeacher(
-          '테스트',
-          'test@example.com',
-          Role.create('USER'),
+          role,
           'G$K9Vss9-wNX6jOvYG$K9Vss9-wNX6jOvY',
         );
       }).toThrow(IllegalArgumentException);
     });
 
     it('비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8자 이상이어야 한다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+
       // when & then
       expect(() => {
-        User.createTeacher(
-          '테스트',
-          'test@example.com',
-          Role.create('USER'),
-          'password',
-        );
+        User.createTeacher('테스트', 'test@example.com', role, 'password');
       }).toThrow(IllegalArgumentException);
     });
   });
 
   describe('createStudent', () => {
+    it('유효한 입력으로 학생 계정을 생성한다', async () => {
+      // given
+      const role: Role = Role.create('USER');
+      const generation: Generation = Generation.create(8, 2024, false);
+
+      // when
+      const user: User = User.createStudent(
+        '테스트',
+        's20041@gsm.hs.kr',
+        role,
+        generation,
+        'G$K9Vss9-wNX6jOvY',
+      );
+
+      // then
+      expect(user).toBeDefined();
+    });
+
     it('이름은 40자 이하여야 한다.', async () => {
       // given
-      const generation = new Generation();
+      const role: Role = Role.create('USER');
+      const generation: Generation = Generation.create(8, 2024, false);
 
       // when & then
       expect(() => {
         User.createStudent(
-          '테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트',
-          'test@example.com',
-          Role.create('USER'),
+          '테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트',
+          's20041@gsm.hs.kr',
+          role,
           generation,
           'G$K9Vss9-wNX6jOvY',
         );
       }).toThrow(IllegalArgumentException);
     });
+
     it('비밀번호는 20자 이하여야 한다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+      const generation: Generation = Generation.create(8, 2024, false);
+
       // when & then
       expect(() => {
-        User.createTeacher(
+        User.createStudent(
           '테스트',
-          'test@example.com',
-          Role.create('USER'),
-          'G$K9Vss9-wNX6jOvYG$K9Vss9-wNX6jOvY',
-        );
-      }).toThrow(IllegalArgumentException);
-
-      expect(() => {
-        User.createTeacher(
-          '테스트',
-          'test@example.com',
-          Role.create('USER'),
+          's20041@gsm.hs.kr',
+          role,
+          generation,
           'G$K9Vss9-wNX6jOvYG$K9Vss9-wNX6jOvY',
         );
       }).toThrow(IllegalArgumentException);
     });
 
     it('비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8자 이상이어야 한다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+      const generation: Generation = Generation.create(8, 2024, false);
+
       // when & then
       expect(() => {
-        User.createTeacher(
+        User.createStudent(
           '테스트',
-          'test@example.com',
-          Role.create('USER'),
+          's20041@gsm.hs.kr',
+          role,
+          generation,
           'password',
         );
       }).toThrow(IllegalArgumentException);
     });
 
     it('기수가 존재해야 한다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+
       // when & then
       expect(() => {
-        User.createTeacher(
+        User.createStudent(
           '테스트',
           's20041@gsm.hs.kr',
-          Role.create('USER'),
+          role,
+          null,
           'G$K9Vss9-wNX6jOvY',
         );
       }).toThrow(IllegalArgumentException);
@@ -114,14 +150,15 @@ describe('User', () => {
 
     it('재학 중인 기수의 학생이어야 한다.', async () => {
       // given
-      const generation = Generation.create(1, 2018, false);
+      const role: Role = Role.create('USER');
+      const generation = Generation.create(1, 2018, true);
 
       // when & then
       expect(() => {
         User.createStudent(
           '테스트',
-          'test@example.com',
-          Role.create('USER'),
+          's20041@gsm.hs.kr',
+          role,
           generation,
           'G$K9Vss9-wNX6jOvY',
         );
@@ -130,14 +167,15 @@ describe('User', () => {
 
     it('이메일은 학교 이메일이어야 한다.', async () => {
       // given
-      const generation = new Generation();
+      const role: Role = Role.create('USER');
+      const generation: Generation = Generation.create(8, 2024, false);
 
       // when & then
       expect(() => {
         User.createStudent(
           '테스트',
           'test@example.com',
-          Role.create('USER'),
+          role,
           generation,
           'G$K9Vss9-wNX6jOvY',
         );
@@ -146,14 +184,16 @@ describe('User', () => {
   });
 
   describe('checkPassword', () => {
-    it('입력한 비밀번호가 등록된 비밀번호와 일치해야한다.', async () => {
+    it('잘못된 비밀번호 입력 시 로그인에 실패한다.', async () => {
       // given
+      const role: Role = Role.create('USER');
       const user: User = User.createTeacher(
         '테스트',
         'test@example.com',
-        Role.create('USER'),
+        role,
         'G$K9Vss9-wNX6jOvY',
       );
+      await user.hashPassword();
 
       // when & then
       await expect(
@@ -163,20 +203,22 @@ describe('User', () => {
   });
 
   describe('hashPassword', () => {
-    it('비밀번호를 해싱한다.', async () => {
+    it('사용자 비밀번호를 안전하게 저장한다.', async () => {
       // given
+      const role: Role = Role.create('USER');
+
       const user: User = User.createTeacher(
         '테스트',
-        '',
-        Role.create('USER'),
+        'test@example.com',
+        role,
         'G$K9Vss9-wNX6jOvY',
       );
 
       // when
-      const actual = user.hashPassword();
+      await user.hashPassword();
 
       // then
-      expect(actual).toBeDefined();
+      expect(user.password).not.toBe('G$K9Vss9-wNX6jOvY');
     });
   });
 });

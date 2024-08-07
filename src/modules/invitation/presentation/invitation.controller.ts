@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
 import { InvitationService } from '../application/invitation.service';
-import { InviteRequestDTO } from './dto/invite.req.dto';
+import { InviteRequestDto } from './dto/invite-request.dto';
 import { ResponseEntity } from '@common/models/response.entity';
 import { InvitationMemberService } from '../application/invitation-member.service';
 
@@ -14,7 +14,7 @@ export class InvitationController {
   // TODO: @UseGuards(AuthGuard)
   @Post('member')
   async invite(
-    @Body() dto: InviteRequestDTO,
+    @Body() dto: InviteRequestDto,
     // TODO @User() user: User,
   ): Promise<ResponseEntity<void>> {
     await this.invitationService.invite(dto.toEntity());

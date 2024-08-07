@@ -11,7 +11,7 @@ export class GenerationService {
     private readonly generationRepository: Repository<Generation>,
   ) {}
 
-  async getOneByGenerationNumber(
+  async getGenerationByGenerationNumber(
     generationNumber: number,
   ): Promise<Generation> {
     const generation: Generation | null =

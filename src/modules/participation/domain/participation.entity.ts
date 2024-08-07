@@ -16,11 +16,10 @@ export class Participation extends BaseTimeEntity {
   @JoinColumn({ name: 'activity_id' })
   activity: Activity;
 
-  constructor();
-  constructor(user: User, activity: Activity);
-  constructor(user?: User, activity?: Activity) {
-    super();
-    this.user = user;
-    this.activity = activity;
+  static create(user: User, activity: Activity) {
+    const participation = new Participation();
+    participation.user = user;
+    participation.activity = activity;
+    return participation;
   }
 }

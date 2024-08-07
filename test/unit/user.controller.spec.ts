@@ -9,6 +9,7 @@ import { UserType } from '../../src/modules/user/domain/user-type';
 const mockUserService = {
   register: jest.fn(),
 };
+
 describe('UserController', () => {
   let app: INestApplication;
 

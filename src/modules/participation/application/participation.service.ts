@@ -16,12 +16,12 @@ export class ParticipationService {
     private readonly userService: UserService,
   ) {}
 
-  async apply(activityId: number, userId: number): Promise<void> {
-    const user: User = await this.userService.getOneById(userId);
+  async applyParticipation(activityId: number, userId: number): Promise<void> {
+    const user: User = await this.userService.getUserById(userId);
     const activity: Activity =
-      await this.activityService.getOneByActivityId(activityId);
+      await this.activityService.getActivityById(activityId);
 
-    const participation: Participation = new Participation(user, activity);
+    const participation: Participation = Participation.create(user, activity);
     await this.participationRepository.save(participation);
   }
 }

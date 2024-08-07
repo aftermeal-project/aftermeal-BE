@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 
-export class LoginResponseDTO {
+export class LoginResponseDto {
   @Exclude() private readonly _accessToken: string;
   @Exclude() private readonly _tokenType: string;
   @Exclude() private readonly _expiredIn: number;

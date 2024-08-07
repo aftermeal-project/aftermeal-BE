@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { ResponseEntity } from '@common/models/response.entity';
-import { LoginRequestDTO } from './dto/login.req.dto';
-import { LoginResponseDTO } from './dto/login.res.dto';
+import { LoginRequestDto } from './dto/login-request.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 import { Public } from '@common/decorators/public.decorator';
 
 @Controller('auth')
@@ -12,8 +12,8 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(
-    @Body() dto: LoginRequestDTO,
-  ): Promise<ResponseEntity<LoginResponseDTO>> {
+    @Body() dto: LoginRequestDto,
+  ): Promise<ResponseEntity<LoginResponseDto>> {
     return ResponseEntity.OK_WITH_DATA(
       '로그인 성공',
       await this.authService.login(dto),

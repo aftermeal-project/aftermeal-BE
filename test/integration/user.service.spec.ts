@@ -14,7 +14,7 @@ import {
 import { UserModule } from '../../src/modules/user/user.module';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { Generation } from '../../src/modules/generation/domain/generation.entity';
-import { UserRegisterRequestDTO } from '../../src/modules/user/presentation/dto/user-register.req.dto';
+import { UserRegistrationRequestDto } from '../../src/modules/user/presentation/dto/user-registration-request.dto';
 
 describe('UserService', () => {
   let sut: UserService;
@@ -63,42 +63,43 @@ describe('UserService', () => {
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
-      // when
-      const dto = new UserRegisterRequestDTO(
+      const dto = new UserRegistrationRequestDto(
         '테스트',
         'test@example.com',
         UserType.TEACHER,
         'G$K9Vss9-wNX6jOvY',
       );
-      const actual = await sut.register(dto);
+
+      // when
+      await sut.register(dto);
 
       // then
-      const user: User = await sut.getOneById(actual.id);
-      expect(user.id).toBeDefined();
+      const user: User = await sut.getUserByEmail('test@example.com');
+      expect(user).toBeDefined();
     });
 
     it('이미 등록된 이메일으로는 등록할 수 없다.', async () => {
       // given
-      const email = 'test@example.com';
-
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
+      const email = 'test@example.com';
       const user: User = User.createTeacher(
-        '송유현',
+        '테스트',
         email,
         role,
         'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);
 
-      // when
-      const dto = new UserRegisterRequestDTO(
+      const dto: UserRegistrationRequestDto = new UserRegistrationRequestDto(
         '테스트',
         email,
         UserType.TEACHER,
         'G$K9Vss9-wNX6jOvY',
       );
+
+      // when
       const actual = async () => {
         await sut.register(dto);
       };

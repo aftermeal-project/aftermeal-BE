@@ -39,7 +39,7 @@ describe('ParticipationService', () => {
 
   afterEach(async () => {
     await participationRepository.delete({});
-    await activityRepository.clear();
+    await activityRepository.deleteAll();
     await userRepository.delete({});
   });
 
@@ -50,7 +50,7 @@ describe('ParticipationService', () => {
   describe('apply', () => {
     it('활동에 참가를 신청한다.', async () => {
       // given
-      const activity: Activity = new Activity('배구', 18);
+      const activity: Activity = Activity.create('배구', 18);
       const savedActivity: Activity = await activityRepository.save(activity);
 
       const user: User = User.createTeacher(
@@ -62,7 +62,7 @@ describe('ParticipationService', () => {
       const savedUser: User = await userRepository.save(user);
 
       // when
-      await sut.apply(savedActivity.id, savedUser.id);
+      await sut.applyParticipation(savedActivity.id, savedUser.id);
 
       // then
       const participation: Participation =

@@ -9,7 +9,8 @@ import { RoleService } from '../../role/application/role.service';
 import { Transactional } from 'typeorm-transactional';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
-import { UserRegisterRequestDTO } from '../presentation/dto/user-register.req.dto';
+import { UserRegistrationRequestDto } from '../presentation/dto/user-registration-request.dto';
+import { Generation } from '../../generation/domain/generation.entity';
 
 @Injectable()
 export class UserService {
@@ -20,7 +21,7 @@ export class UserService {
     private readonly generationService: GenerationService,
   ) {}
 
-  async getOneById(userId: number): Promise<User> {
+  async getUserById(userId: number): Promise<User> {
     const user: User | undefined = await this.userRepository.findOneBy({
       id: userId,
     });
@@ -30,7 +31,7 @@ export class UserService {
     return user;
   }
 
-  async getOneByEmail(email: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User> {
     const user: User | undefined = await this.userRepository.findOneBy({
       email: email,
     });
@@ -41,20 +42,21 @@ export class UserService {
   }
 
   @Transactional()
-  async register(dto: UserRegisterRequestDTO): Promise<User> {
+  async register(dto: UserRegistrationRequestDto): Promise<void> {
     await this.validateEmailDuplication(dto.email);
 
     const role: Role = await this.roleService.getOneByName('USER');
-    const generation =
-      dto.userType === UserType.STUDENT
-        ? await this.generationService.getOneByGenerationNumber(
-            dto.generationNumber,
-          )
-        : null;
+    let generation: Generation | undefined;
+
+    if (dto.userType === UserType.STUDENT) {
+      generation = await this.generationService.getGenerationByGenerationNumber(
+        dto.generationNumber,
+      );
+    }
 
     const user: User = dto.toEntity(role, generation);
     await user.hashPassword();
-    return await this.userRepository.save(user);
+    await this.userRepository.save(user);
   }
 
   private async validateEmailDuplication(email: string): Promise<void> {

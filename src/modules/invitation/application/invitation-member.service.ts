@@ -5,7 +5,7 @@ import { Mail } from '@common/utils/src/mail';
 import { Cache } from 'cache-manager';
 import { Invitation, Target } from '../domain/invitation';
 import { UserService } from '../../user/application/user.service';
-import { InviteRequestDTO } from '../presentation/dto/invite.req.dto';
+import { InviteRequestDto } from '../presentation/dto/invite-request.dto';
 
 @Injectable()
 export class InvitationMemberService implements InvitationService {
@@ -16,7 +16,7 @@ export class InvitationMemberService implements InvitationService {
     private readonly userService: UserService,
   ) {}
 
-  async invite(dto: InviteRequestDTO): Promise<void> {
+  async invite(dto: InviteRequestDto): Promise<void> {
     // for (const inviteeEmail of inviteMember.email) {
     //   const { id }: User = await this.userService.newCandidate(
     //     inviteeEmail,
@@ -38,15 +38,17 @@ export class InvitationMemberService implements InvitationService {
     console.log(dto);
   }
 
-  async getByTarget(target: Target): Promise<Invitation | null> {
+  async getInvitationByTarget(target: Target): Promise<Invitation | null> {
     const invitationRedisKey: string = this.invitationRedisKey(target);
     return await this.cacheManager.get<Invitation>(invitationRedisKey);
   }
 
-  async getByInvitationCode(invitationCode: string): Promise<Invitation> {
+  async getInvitationByInvitationCode(
+    invitationCode: string,
+  ): Promise<Invitation> {
     const targetRedisKey: string = this.targetRedisKey(invitationCode);
     const target: Target = await this.cacheManager.get<Target>(targetRedisKey);
-    return this.getByTarget(target);
+    return this.getInvitationByTarget(target);
   }
 
   private async issueInvitation(invitation: Invitation): Promise<void> {
