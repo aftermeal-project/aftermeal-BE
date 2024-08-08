@@ -1,9 +1,8 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
 import { InvitationService } from '../application/invitation.service';
-import { InviteRequestDto } from './dto/invite.request-dto';
-import { ResponseEntity } from '@common/entities/response.entity';
+import { InviteRequestDto } from './dto/invite-request.dto';
+import { ResponseEntity } from '@common/models/response.entity';
 import { InvitationMemberService } from '../application/invitation-member.service';
-import { InviteMember } from '../application/dto/invite.member';
 
 @Controller('invitation')
 export class InvitationController {
@@ -18,13 +17,7 @@ export class InvitationController {
     @Body() dto: InviteRequestDto,
     // TODO @User() user: User,
   ): Promise<ResponseEntity<void>> {
-    await this.invitationService.invite(
-      new InviteMember(
-        dto.inviteeEmail,
-        dto.inviteeMemberType,
-        dto?.inviteeGenerationNumber,
-      ),
-    );
+    await this.invitationService.invite(dto.toEntity());
     return ResponseEntity.OK_WITH('초대장 전송에 성공하였습니다.');
   }
 

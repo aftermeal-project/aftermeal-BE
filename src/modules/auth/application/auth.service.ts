@@ -7,7 +7,7 @@ import jwtConfiguration from '@config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { LoginRequestDto } from '../presentation/dto/login-request.dto';
 import { LoginResponseDto } from '../presentation/dto/login-response.dto';
-import { UserRole } from '../../user/domain/user-role.entity';
+import { UserRole } from '../../role/domain/user-role.entity';
 import { UserService } from '../../user/application/user.service';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginRequestDto): Promise<LoginResponseDto> {
-    const user: User = await this.userService.getOneByEmail(dto.email);
+    const user: User = await this.userService.getUserByEmail(dto.email);
     await user.checkPassword(dto.password);
 
     const accessToken: string = await this.generateAccessToken(user);

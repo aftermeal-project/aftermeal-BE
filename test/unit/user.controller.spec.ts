@@ -9,6 +9,7 @@ import { UserType } from '../../src/modules/user/domain/user-type';
 const mockUserService = {
   register: jest.fn(),
 };
+
 describe('UserController', () => {
   let app: INestApplication;
 
@@ -36,7 +37,7 @@ describe('UserController', () => {
         .send({
           email: 'test@example.com',
           name: '테스트',
-          type: 'TEACHER',
+          userType: 'TEACHER',
           password: 'G$K9Vss9-wNX6jOvY',
         });
 
@@ -51,7 +52,7 @@ describe('UserController', () => {
         .send({
           email: 'email',
           name: '테스트',
-          type: 'TEACHER',
+          userType: 'TEACHER',
           password: 'G$K9Vss9-wNX6jOvY',
         });
 
@@ -66,7 +67,7 @@ describe('UserController', () => {
         .send({
           email: 'test@example.com',
           name: null,
-          type: 'TEACHER',
+          userType: 'TEACHER',
           password: 'G$K9Vss9-wNX6jOvY',
         });
 
@@ -81,7 +82,7 @@ describe('UserController', () => {
         .send({
           email: 'test@example.com',
           name: '테스트',
-          type: '너구리',
+          userType: '너구리',
           password: 'G$K9Vss9-wNX6jOvY',
         });
 
@@ -96,7 +97,7 @@ describe('UserController', () => {
         .send({
           email: 'test@example.com',
           name: '테스트',
-          type: 'TEACHER',
+          userType: 'TEACHER',
           password: null,
         });
 

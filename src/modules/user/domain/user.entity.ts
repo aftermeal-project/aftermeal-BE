@@ -1,5 +1,4 @@
 import {
-  BeforeInsert,
   Column,
   Entity,
   JoinColumn,
@@ -7,13 +6,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BaseTimeEntity } from '@common/entities/base-time.entity';
+import { BaseTimeEntity } from '@common/models/base-time.entity';
 import { Generation } from '../../generation/domain/generation.entity';
 import { UserType } from './user-type';
 import { UserStatus } from './user-status';
-import { UserRole } from './user-role.entity';
+import { UserRole } from '../../role/domain/user-role.entity';
 import { compare, genSalt, hash } from 'bcrypt';
-import { Role } from './role.entity';
+import { Role } from '../../role/domain/role.entity';
 import { ESchool } from './school';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { isStrongPassword } from 'class-validator';
@@ -33,7 +32,7 @@ export class User extends BaseTimeEntity {
   status: UserStatus;
 
   @Column({ type: 'varchar' })
-  type: UserType;
+  userType: UserType;
 
   @Column()
   password: string;
@@ -45,48 +44,48 @@ export class User extends BaseTimeEntity {
   @JoinColumn({ name: 'generation_number' })
   generation: Generation | null;
 
-  static create(
+  static createTeacher(
     name: string,
     email: string,
-    type: UserType,
     role: Role,
-    status: UserStatus,
     password: string,
-    generation: Generation | null = null,
   ): User {
-    if (name.length > 40) {
-      throw new IllegalArgumentException('이름은 40자 이하여야 합니다.');
-    }
-    if (password.length > 20) {
-      throw new IllegalArgumentException('비밀번호는 20자 이하여야 합니다.');
-    }
-    if (!isStrongPassword(password)) {
-      throw new IllegalArgumentException(
-        '비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
-      );
-    }
-    if (type === UserType.STUDENT) {
-      if (!generation) {
-        throw new IllegalArgumentException('학생은 기수가 존재해야 합니다.');
-      }
-      if (!ESchool.GSM.emailFormat.test(email)) {
-        throw new IllegalArgumentException(
-          '학생은 학교 이메일을 사용해야 합니다.',
-        );
-      }
-    }
+    this.validateName(name);
+    this.validatePassword(password);
+
     const user: User = new User();
     user.name = name;
     user.email = email;
-    user.type = type;
+    user.userType = UserType.TEACHER;
     user.userRoles = [UserRole.create(role, user)];
-    user.status = status;
+    user.status = UserStatus.ACTIVATE;
+    user.password = password;
+    return user;
+  }
+
+  static createStudent(
+    name: string,
+    schoolEmail: string,
+    role: Role,
+    generation: Generation,
+    password: string,
+  ): User {
+    this.validateName(name);
+    this.validatePassword(password);
+    this.validateGeneration(generation);
+    this.validateSchoolEmail(schoolEmail);
+
+    const user: User = new User();
+    user.name = name;
+    user.email = schoolEmail;
+    user.userType = UserType.STUDENT;
+    user.userRoles = [UserRole.create(role, user)];
+    user.status = UserStatus.ACTIVATE;
     user.password = password;
     user.generation = generation;
     return user;
   }
 
-  @BeforeInsert()
   async hashPassword(): Promise<void> {
     const salt: string = await genSalt();
     this.password = await hash(this.password, salt);
@@ -98,5 +97,39 @@ export class User extends BaseTimeEntity {
       throw new IllegalArgumentException('비밀번호가 올바르지 않습니다.');
     }
     return isPasswordCorrect;
+  }
+
+  private static validateName(name: string): void {
+    if (name.length > 40) {
+      throw new IllegalArgumentException('이름은 40자 이하여야 합니다.');
+    }
+  }
+
+  private static validatePassword(password: string): void {
+    if (password.length > 20) {
+      throw new IllegalArgumentException('비밀번호는 20자 이하여야 합니다.');
+    }
+    if (!isStrongPassword(password)) {
+      throw new IllegalArgumentException(
+        '비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
+      );
+    }
+  }
+
+  private static validateSchoolEmail(schoolEmail: string) {
+    if (!ESchool.GSM.emailFormat.test(schoolEmail)) {
+      throw new IllegalArgumentException(
+        '학생은 학교 이메일을 사용해야 합니다.',
+      );
+    }
+  }
+
+  private static validateGeneration(generation: Generation) {
+    if (!generation) {
+      throw new IllegalArgumentException('기수가 존재해야 합니다.');
+    }
+    if (generation.isGraduated) {
+      throw new IllegalArgumentException('재학 중인 학생이어야 합니다.');
+    }
   }
 }

@@ -1,14 +1,12 @@
 import { DataSource, Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { UserType } from '../../src/modules/user/domain/user-type';
-import { UserRole } from '../../src/modules/user/domain/user-role.entity';
-import { Role } from '../../src/modules/user/domain/role.entity';
+import { UserRole } from '../../src/modules/role/domain/user-role.entity';
+import { Role } from '../../src/modules/role/domain/role.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { getTestMysqlModule } from '../get-test-mysql.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '../../src/modules/auth/auth.module';
-import { UserStatus } from '../../src/modules/user/domain/user-status';
 import { AuthService } from '../../src/modules/auth/application/auth.service';
 import {
   initializeTransactionalContext,
@@ -53,10 +51,11 @@ describe('AuthService', () => {
   describe('login', () => {
     it('유효한 정보를 통해 인증한다.', async () => {
       // given
-      const role: Role = Role.create('ROLE_MEMBER');
+      const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
       const user: User = createUser();
+      await user.hashPassword();
       await userRepository.save(user);
 
       // when
@@ -74,12 +73,10 @@ describe('AuthService', () => {
 });
 
 function createUser(): User {
-  return User.create(
+  return User.createTeacher(
     '송유현',
     'test@example.com',
-    UserType.TEACHER,
-    Role.create('ROLE_MEMBER'),
-    UserStatus.ACTIVATE,
+    Role.create('USER'),
     'G$K9Vss9-wNX6jOvY',
   );
 }

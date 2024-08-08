@@ -1,10 +1,11 @@
-import { ActivityDto } from '../application/dto/activity.dto';
 import { Activity } from './activity.entity';
+import { ActivitySummaryDto } from '../infrastructure/dto/activity-summary.dto';
 
 export interface ActivityRepository {
   save(activity: Activity): Promise<Activity>;
   saveAll(activities: Activity[]): Promise<Activity[]>;
-  findOneByActivityId(activityId: number): Promise<Activity>;
-  findActivityDto(): Promise<ActivityDto[]>;
-  clear(): Promise<void>;
+  findById(id: number): Promise<Activity | null>;
+  find(): Promise<Activity[]>;
+  findActivitySummaries(): Promise<ActivitySummaryDto[]>;
+  deleteAll(): Promise<void>;
 }

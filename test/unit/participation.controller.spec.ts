@@ -6,8 +6,9 @@ import { ParticipationController } from '../../src/modules/participation/present
 import { ParticipationService } from '../../src/modules/participation/application/participation.service';
 
 const mockParticipationService = {
-  apply: jest.fn(),
+  applyParticipation: jest.fn(),
 };
+
 describe('ParticipationController', () => {
   let app: INestApplication;
 
@@ -27,7 +28,7 @@ describe('ParticipationController', () => {
     await app.init();
   });
 
-  describe('apply', () => {
+  describe('applyParticipation', () => {
     it('활동에 참가를 신청한다.', async () => {
       // when
       const response = await request(app.getHttpServer())

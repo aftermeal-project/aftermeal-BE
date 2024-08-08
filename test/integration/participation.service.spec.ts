@@ -7,9 +7,7 @@ import { Activity } from '../../src/modules/activity/domain/activity.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { UserType } from '../../src/modules/user/domain/user-type';
-import { UserStatus } from '../../src/modules/user/domain/user-status';
-import { Role } from '../../src/modules/user/domain/role.entity';
+import { Role } from '../../src/modules/role/domain/role.entity';
 import {
   initializeTransactionalContext,
   StorageDriver,
@@ -41,7 +39,7 @@ describe('ParticipationService', () => {
 
   afterEach(async () => {
     await participationRepository.delete({});
-    await activityRepository.clear();
+    await activityRepository.deleteAll();
     await userRepository.delete({});
   });
 
@@ -52,21 +50,19 @@ describe('ParticipationService', () => {
   describe('apply', () => {
     it('활동에 참가를 신청한다.', async () => {
       // given
-      const activity: Activity = new Activity('배구', 18);
+      const activity: Activity = Activity.create('배구', 18);
       const savedActivity: Activity = await activityRepository.save(activity);
 
-      const user: User = User.create(
+      const user: User = User.createTeacher(
         '송유현',
         'test@example.com',
-        UserType.TEACHER,
-        Role.create('ROLE_MEMBER'),
-        UserStatus.ACTIVATE,
+        Role.create('USER'),
         'G$K9Vss9-wNX6jOvY',
       );
       const savedUser: User = await userRepository.save(user);
 
       // when
-      await sut.apply(savedActivity.id, savedUser.id);
+      await sut.applyParticipation(savedActivity.id, savedUser.id);
 
       // then
       const participation: Participation =

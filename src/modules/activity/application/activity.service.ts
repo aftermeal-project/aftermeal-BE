@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Activity } from '../domain/activity.entity';
 import { ActivityRepository } from '../domain/activity.repository';
-import { ActivityDto } from './dto/activity.dto';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { ActivitySummaryDto } from '../infrastructure/dto/activity-summary.dto';
+import { ActivitySummaryResponseDto } from '../presentation/dto/activity-summary-response.dto';
+import { ActivityInfoResponseDto } from '../presentation/dto/activity-info-response.dto';
 
 @Injectable()
 export class ActivityService {
@@ -12,16 +14,25 @@ export class ActivityService {
     private readonly activityRepository: ActivityRepository,
   ) {}
 
-  async getOneByActivityId(activityId: number): Promise<Activity> {
-    const activity: Activity =
-      await this.activityRepository.findOneByActivityId(activityId);
+  async getActivityById(id: number): Promise<Activity> {
+    const activity: Activity = await this.activityRepository.findById(id);
     if (!activity) {
       throw new NotFoundException('존재하지 않는 활동입니다.');
     }
     return activity;
   }
 
-  async getAll(): Promise<ActivityDto[]> {
-    return await this.activityRepository.findActivityDto();
+  async getActivityInfos(): Promise<ActivityInfoResponseDto[]> {
+    const activities: Activity[] =
+      await this.activityRepository.find();
+    return activities.map((activity) => ActivityInfoResponseDto.from(activity));
+  }
+
+  async getActivitySummaries(): Promise<ActivitySummaryResponseDto[]> {
+    const activities: ActivitySummaryDto[] =
+      await this.activityRepository.findActivitySummaries();
+    return activities.map((activity) =>
+      ActivitySummaryResponseDto.from(activity),
+    );
   }
 }

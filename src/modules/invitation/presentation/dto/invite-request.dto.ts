@@ -22,4 +22,8 @@ export class InviteRequestDto {
   // @IsPositive({ groups: [MemberType.STUDENT] })
   // @IsNotEmpty({ groups: [MemberType.STUDENT] })
   inviteeGenerationNumber?: number;
+
+  toEntity() {
+    return undefined;
+  }
 }

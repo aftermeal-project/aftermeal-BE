@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
-import { Role } from '../domain/role.entity';
-import { Generation } from '../../generation/domain/generation.entity';
+import { Role } from '../../role/domain/role.entity';
 import { UserType } from '../domain/user-type';
-import { UserRegisterResponseDto } from '../presentation/dto/user-register-response.dto';
-import { UserRegisterRequestDto } from '../presentation/dto/user-register-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GenerationService } from '../../generation/application/generation.service';
 import { RoleService } from '../../role/application/role.service';
 import { Transactional } from 'typeorm-transactional';
-import { UserStatus } from '../domain/user-status';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
+import { UserRegistrationRequestDto } from '../presentation/dto/user-registration-request.dto';
+import { Generation } from '../../generation/domain/generation.entity';
 
 @Injectable()
 export class UserService {
@@ -23,7 +21,7 @@ export class UserService {
     private readonly generationService: GenerationService,
   ) {}
 
-  async getOneById(userId: number): Promise<User> {
+  async getUserById(userId: number): Promise<User> {
     const user: User | undefined = await this.userRepository.findOneBy({
       id: userId,
     });
@@ -33,7 +31,7 @@ export class UserService {
     return user;
   }
 
-  async getOneByEmail(email: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User> {
     const user: User | undefined = await this.userRepository.findOneBy({
       email: email,
     });
@@ -44,31 +42,21 @@ export class UserService {
   }
 
   @Transactional()
-  async register(
-    dto: UserRegisterRequestDto,
-  ): Promise<UserRegisterResponseDto> {
+  async register(dto: UserRegistrationRequestDto): Promise<void> {
     await this.validateEmailDuplication(dto.email);
-    let generation: Generation | null = null;
 
-    if (dto.type === UserType.STUDENT) {
-      generation = await this.generationService.getOneByGenerationNumber(
+    const role: Role = await this.roleService.getOneByName('USER');
+    let generation: Generation | undefined;
+
+    if (dto.userType === UserType.STUDENT) {
+      generation = await this.generationService.getGenerationByGenerationNumber(
         dto.generationNumber,
       );
-      await this.validateGraduatedGeneration(generation);
     }
 
-    const role: Role = await this.roleService.getOneByName('ROLE_MEMBER');
-    const user: User = User.create(
-      dto.name,
-      dto.email,
-      dto.type,
-      role,
-      UserStatus.ACTIVATE,
-      dto.password,
-      generation,
-    );
-    const savedUser: User = await this.userRepository.save(user);
-    return new UserRegisterResponseDto(savedUser.id);
+    const user: User = dto.toEntity(role, generation);
+    await user.hashPassword();
+    await this.userRepository.save(user);
   }
 
   private async validateEmailDuplication(email: string): Promise<void> {
@@ -79,12 +67,6 @@ export class UserService {
     });
     if (isMemberExists) {
       throw new IllegalArgumentException('이미 등록된 이메일입니다.');
-    }
-  }
-
-  private async validateGraduatedGeneration(generation: Generation) {
-    if (generation.isGraduated) {
-      throw new IllegalArgumentException('졸업한 기수는 가입할 수 없습니다.');
     }
   }
 }

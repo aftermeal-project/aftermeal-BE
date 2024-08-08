@@ -1,7 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
 import { User } from '../../domain/user.entity';
 
-export class UserRegisterResponseDto {
+export class UserRegistrationResponseDto {
   @Exclude() private readonly _id: number;
 
   constructor(id: number) {
@@ -13,7 +13,7 @@ export class UserRegisterResponseDto {
     return this._id;
   }
 
-  static from(user: User): UserRegisterResponseDto {
-    return new UserRegisterResponseDto(user.id);
+  static from(user: User): UserRegistrationResponseDto {
+    return new UserRegistrationResponseDto(user.id);
   }
 }
