@@ -45,7 +45,7 @@ export class UserService {
   async register(dto: UserRegistrationRequestDto): Promise<void> {
     await this.validateEmailDuplication(dto.email);
 
-    const role: Role = await this.roleService.getOneByName('USER');
+    const role: Role = await this.roleService.getRoleByRoleName('USER');
     let generation: Generation | undefined;
 
     if (dto.userType === UserType.STUDENT) {

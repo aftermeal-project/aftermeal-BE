@@ -11,11 +11,11 @@ export class UserRole extends BaseTimeEntity {
   @PrimaryColumn()
   userId: number;
 
-  @ManyToOne(() => Role, { eager: true })
+  @ManyToOne(() => Role, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'role_id' })
   role: Role;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

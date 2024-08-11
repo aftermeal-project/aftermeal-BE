@@ -15,3 +15,14 @@ services:
         interval: 5s
         timeout: 5s
         retries: 5
+
+  redis:
+    container_name: redis
+    image: redis:7.4
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

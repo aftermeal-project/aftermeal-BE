@@ -1,53 +1,36 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../user/domain/user.entity';
-import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import jwtConfiguration from '@config/jwt.config';
-import { ConfigType } from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
+import { UserService } from '../../user/application/user.service';
 import { LoginRequestDto } from '../presentation/dto/login-request.dto';
 import { LoginResponseDto } from '../presentation/dto/login-response.dto';
-import { UserRole } from '../../role/domain/user-role.entity';
-import { UserService } from '../../user/application/user.service';
+import { TokenService } from './token.service';
+import { User } from '../../user/domain/user.entity';
+import { Role } from '../../role/domain/role.entity';
+import { RoleService } from '../../role/application/role.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    @InjectRepository(UserRole)
-    private readonly userRoleRepository: Repository<UserRole>,
-    private readonly jwtService: JwtService,
-    @Inject(jwtConfiguration.KEY)
-    private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
+    private readonly roleService: RoleService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async login(dto: LoginRequestDto): Promise<LoginResponseDto> {
     const user: User = await this.userService.getUserByEmail(dto.email);
     await user.checkPassword(dto.password);
 
-    const accessToken: string = await this.generateAccessToken(user);
-    const timestamp: number = Math.floor(Date.now() / 1000);
-    const exp: number = timestamp + this.jwtConfig.accessToken.expiresIn;
+    const roles: Role[] = await this.roleService.getRolesByUserId(user.id);
 
-    return new LoginResponseDto(accessToken, 'Bearer', exp);
-  }
+    const [accessToken, refreshToken] = await Promise.all([
+      this.tokenService.generateAccessToken(user, roles),
+      this.tokenService.generateRefreshToken(user),
+    ]);
 
-  private async generateAccessToken(user: User): Promise<string> {
-    const userRoles: UserRole[] = await this.userRoleRepository.findBy({
-      userId: user.id,
-    });
-
-    const rolesName: string[] = userRoles.map((userRole) => userRole.role.name);
-    const payload = {
-      sub: user.email,
-      userId: user.id,
-      username: user.name,
-      roles: rolesName,
-    };
-
-    return this.jwtService.sign(payload, {
-      secret: this.jwtConfig.accessToken.secret,
-      expiresIn: this.jwtConfig.accessToken.expiresIn,
-    });
+    return new LoginResponseDto(
+      accessToken,
+      'Bearer',
+      this.tokenService.getAccessTokenExpiresIn(),
+      refreshToken,
+    );
   }
 }
