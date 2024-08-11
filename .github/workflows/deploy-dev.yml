@@ -53,6 +53,8 @@ jobs:
           REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
           ACCESS_TOKEN_EXPIRY_TIME: ${{ secrets.ACCESS_TOKEN_EXPIRY_TIME }}
           REFRESH_TOKEN_EXPIRY_TIME: ${{ secrets.REFRESH_TOKEN_EXPIRY_TIME }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
         run: |
           echo DOCKER_REGISTRY=$DOCKER_REGISTRY >> .env
           echo APP_PORT=$APP_PORT >> .env
@@ -65,6 +67,8 @@ jobs:
           echo REFRESH_TOKEN_SECRET=$REFRESH_TOKEN_SECRET >> .env
           echo ACCESS_TOKEN_EXPIRY_TIME=$ACCESS_TOKEN_EXPIRY_TIME >> .env
           echo REFRESH_TOKEN_EXPIRY_TIME=$REFRESH_TOKEN_EXPIRY_TIME >> .env
+          echo REDIS_HOST=$REDIS_HOST >> .env
+          echo REDIS_PORT=$REDIS_PORT >> .env
 
       - name: Set up SSH key
         env:

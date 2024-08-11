@@ -16,11 +16,15 @@ import { Role } from '../../role/domain/role.entity';
 import { ESchool } from './school';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { isStrongPassword } from 'class-validator';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity()
 export class User extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: 'uuid', unique: true })
+  uuid: string;
 
   @Column()
   name: string;
@@ -54,6 +58,7 @@ export class User extends BaseTimeEntity {
     this.validatePassword(password);
 
     const user: User = new User();
+    user.uuid = uuidv4();
     user.name = name;
     user.email = email;
     user.userType = UserType.TEACHER;
@@ -76,6 +81,7 @@ export class User extends BaseTimeEntity {
     this.validateSchoolEmail(schoolEmail);
 
     const user: User = new User();
+    user.uuid = uuidv4();
     user.name = name;
     user.email = schoolEmail;
     user.userType = UserType.STUDENT;

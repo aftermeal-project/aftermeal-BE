@@ -2,9 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../../src/modules/user/application/user.service';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserType } from '../../src/modules/user/domain/user-type';
-import { UserRole } from '../../src/modules/role/domain/user-role.entity';
 import { Role } from '../../src/modules/role/domain/role.entity';
 import { getTestMysqlModule } from '../get-test-mysql.module';
 import {
@@ -20,25 +19,17 @@ describe('UserService', () => {
   let sut: UserService;
   let userRepository: Repository<User>;
   let roleRepository: Repository<Role>;
-  let userRoleRepository: Repository<UserRole>;
   let generationRepository: Repository<Generation>;
   let dataSource: DataSource;
 
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [
-        getTestMysqlModule(),
-        UserModule,
-        TypeOrmModule.forFeature([UserRole]),
-      ],
+      imports: [getTestMysqlModule(), UserModule],
     }).compile();
 
     sut = moduleRef.get<UserService>(UserService);
     userRepository = moduleRef.get<Repository<User>>(getRepositoryToken(User));
-    userRoleRepository = moduleRef.get<Repository<UserRole>>(
-      getRepositoryToken(UserRole),
-    );
     roleRepository = moduleRef.get<Repository<Role>>(getRepositoryToken(Role));
     generationRepository = moduleRef.get<Repository<Generation>>(
       getRepositoryToken(Generation),
@@ -47,7 +38,6 @@ describe('UserService', () => {
   });
 
   afterEach(async () => {
-    await userRoleRepository.delete({});
     await userRepository.delete({});
     await roleRepository.delete({});
     await generationRepository.delete({});

@@ -1,7 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { UserRole } from '../../src/modules/role/domain/user-role.entity';
 import { Role } from '../../src/modules/role/domain/role.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { getTestMysqlModule } from '../get-test-mysql.module';
@@ -12,40 +11,49 @@ import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
-import jwtConfiguration from '@config/jwt.config';
+import jwtConfig from '@config/jwt.config';
+import redisConfig from '@config/redis.config';
 
 describe('AuthService', () => {
-  let sut: AuthService;
+  let moduleRef: TestingModule;
+
+  let authService: AuthService;
   let userRepository: Repository<User>;
   let roleRepository: Repository<Role>;
-  let userRoleRepository: Repository<UserRole>;
   let dataSource: DataSource;
 
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
-    const moduleRef: TestingModule = await Test.createTestingModule({
+
+    moduleRef = await Test.createTestingModule({
       imports: [
         getTestMysqlModule(),
-        ConfigModule.forRoot({ load: [jwtConfiguration], isGlobal: true }),
+        ConfigModule.forRoot({
+          load: [jwtConfig, redisConfig],
+          isGlobal: true,
+        }),
         AuthModule,
       ],
     }).compile();
+    await moduleRef.init();
 
-    sut = moduleRef.get(AuthService);
+    // System Under Test
+    authService = moduleRef.get(AuthService);
+
+    // Dependencies
     userRepository = moduleRef.get(getRepositoryToken(User));
     roleRepository = moduleRef.get(getRepositoryToken(Role));
-    userRoleRepository = moduleRef.get(getRepositoryToken(UserRole));
     dataSource = moduleRef.get(DataSource);
   });
 
   afterEach(async () => {
-    await userRoleRepository.delete({});
     await roleRepository.delete({});
     await userRepository.delete({});
   });
 
   afterAll(async () => {
     await dataSource.destroy();
+    await moduleRef.close();
   });
 
   describe('login', () => {
@@ -54,29 +62,29 @@ describe('AuthService', () => {
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
-      const user: User = createUser();
+      const email: string = 'test@example.com';
+      const password: string = 'G$K9Vss9-wNX6jOvY';
+
+      const user: User = User.createTeacher(
+        '송유현',
+        email,
+        Role.create('USER'),
+        password,
+      );
       await user.hashPassword();
       await userRepository.save(user);
 
       // when
-      const actual = await sut.login({
-        email: 'test@example.com',
-        password: 'G$K9Vss9-wNX6jOvY',
+      const actual = await authService.login({
+        email: email,
+        password: password,
       });
 
       // then
       expect(actual.accessToken).toBeDefined();
       expect(actual.expiredIn).toBeDefined();
       expect(actual.tokenType).toBeDefined();
+      expect(actual.refreshToken).toBeDefined();
     });
   });
 });
-
-function createUser(): User {
-  return User.createTeacher(
-    '송유현',
-    'test@example.com',
-    Role.create('USER'),
-    'G$K9Vss9-wNX6jOvY',
-  );
-}

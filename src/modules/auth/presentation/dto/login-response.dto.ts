@@ -4,13 +4,13 @@ export class LoginResponseDto {
   @Exclude() private readonly _accessToken: string;
   @Exclude() private readonly _tokenType: string;
   @Exclude() private readonly _expiredIn: number;
-  @Exclude() private readonly _refreshToken?: string;
+  @Exclude() private readonly _refreshToken: string;
 
   constructor(
     accessToken: string,
     tokenType: string,
     expiredIn: number,
-    refreshToken?: string,
+    refreshToken: string,
   ) {
     this._accessToken = accessToken;
     this._tokenType = tokenType;
@@ -35,6 +35,6 @@ export class LoginResponseDto {
 
   @Expose()
   get refreshToken(): string {
-    return this?._refreshToken;
+    return this._refreshToken;
   }
 }

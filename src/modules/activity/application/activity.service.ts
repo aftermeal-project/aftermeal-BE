@@ -23,8 +23,7 @@ export class ActivityService {
   }
 
   async getActivityInfos(): Promise<ActivityInfoResponseDto[]> {
-    const activities: Activity[] =
-      await this.activityRepository.find();
+    const activities: Activity[] = await this.activityRepository.find();
     return activities.map((activity) => ActivityInfoResponseDto.from(activity));
   }
 
