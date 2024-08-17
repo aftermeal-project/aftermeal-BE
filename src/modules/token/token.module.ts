@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TokenService } from './application/token.service';
-import { TOKEN_REPOSITORY } from '@common/constants';
+import { REFRESH_TOKEN_REPOSITORY } from '@common/constants';
 import { RefreshTokenRedisRepository } from './infrastructure/refresh-token-redis.repository';
 import { TokenStorageModule } from './token-storage.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -19,7 +19,7 @@ import { RoleModule } from '../role/role.module';
   providers: [
     TokenService,
     {
-      provide: TOKEN_REPOSITORY,
+      provide: REFRESH_TOKEN_REPOSITORY,
       useClass: RefreshTokenRedisRepository,
     },
   ],

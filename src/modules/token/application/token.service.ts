@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
-import { TOKEN_REPOSITORY } from '@common/constants';
+import { REFRESH_TOKEN_REPOSITORY } from '@common/constants';
 import jwtConfiguration from '@config/jwt.config';
 import { TokenRepository } from '../domain/token.repository';
 import { generateRandomString } from '@common/utils/src/generate-random-string';
@@ -29,7 +29,7 @@ export class TokenService {
     private readonly jwtService: JwtService,
     @Inject(jwtConfiguration.KEY)
     private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
-    @Inject(TOKEN_REPOSITORY)
+    @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly tokenRepository: TokenRepository,
   ) {}
 

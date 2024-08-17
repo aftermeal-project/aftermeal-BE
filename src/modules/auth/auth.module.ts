@@ -8,13 +8,6 @@ import { RoleModule } from '../role/role.module';
 @Module({
   imports: [TokenModule, UserModule, RoleModule],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    TokenService,
-    {
-      provide: TOKEN_REPOSITORY,
-      useClass: TokenRedisRepository,
-    },
-  ],
+  providers: [AuthService],
 })
 export class AuthModule {}
