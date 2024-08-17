@@ -18,7 +18,7 @@ import { REDIS_CLIENT } from '@common/constants';
         redisConfig: ConfigType<typeof redisConfiguration>,
       ) => {
         return createClient({
-          url: `redis://${redisConfig.host}:${redisConfig.port}`,
+          url: `redis://:${redisConfig.password}@${redisConfig.host}:${redisConfig.port}`,
         });
       },
       inject: [redisConfiguration.KEY],

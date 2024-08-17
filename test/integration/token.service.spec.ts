@@ -1,29 +1,29 @@
-import { DataSource, Repository } from 'typeorm';
-import { Test, TestingModule } from '@nestjs/testing';
-import { User } from '../../src/modules/user/domain/user.entity';
 import { Role } from '../../src/modules/role/domain/role.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { getTestMysqlModule } from '../get-test-mysql.module';
-import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from '../../src/modules/auth/auth.module';
-import { AuthService } from '../../src/modules/auth/application/auth.service';
+import { User } from '../../src/modules/user/domain/user.entity';
+import { TokenRefreshResponseDto } from '../../src/modules/token/presentation/dto/token-refresh-response.dto';
+import { Test, TestingModule } from '@nestjs/testing';
+import { DataSource, Repository } from 'typeorm';
 import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
+import { getTestMysqlModule } from '../get-test-mysql.module';
+import { ConfigModule } from '@nestjs/config';
 import jwtConfig from '@config/jwt.config';
 import redisConfig from '@config/redis.config';
-import { LoginResponseDto } from '../../src/modules/auth/presentation/dto/login-response.dto';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { TokenService } from '../../src/modules/token/application/token.service';
+import { TokenModule } from '../../src/modules/token/token.module';
 
-describe('AuthService', () => {
+describe('TokenService', () => {
   // System Under Test
-  let authService: AuthService;
+  let tokenService: TokenService;
 
   // Dependencies
   let userRepository: Repository<User>;
   let roleRepository: Repository<Role>;
-  let dataSource: DataSource;
   let moduleRef: TestingModule;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
@@ -35,12 +35,12 @@ describe('AuthService', () => {
           load: [jwtConfig, redisConfig],
           isGlobal: true,
         }),
-        AuthModule,
+        TokenModule,
       ],
     }).compile();
     await moduleRef.init();
 
-    authService = moduleRef.get(AuthService);
+    tokenService = moduleRef.get(TokenService);
     userRepository = moduleRef.get(getRepositoryToken(User));
     roleRepository = moduleRef.get(getRepositoryToken(Role));
     dataSource = moduleRef.get(DataSource);
@@ -56,8 +56,8 @@ describe('AuthService', () => {
     await moduleRef.close();
   });
 
-  describe('login', () => {
-    it('유효한 정보를 통해 인증한다.', async () => {
+  describe('refresh', () => {
+    it('유효한 토큰을 통해 갱신한다.', async () => {
       // given
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
@@ -74,8 +74,13 @@ describe('AuthService', () => {
       await user.hashPassword();
       await userRepository.save(user);
 
+      const refreshToken: string = await tokenService.generateRefreshToken(
+        user.id,
+      );
+
       // when
-      const actual: LoginResponseDto = await authService.login(email, password);
+      const actual: TokenRefreshResponseDto =
+        await tokenService.refresh(refreshToken);
 
       // then
       expect(actual.accessToken).toBeDefined();
