@@ -60,14 +60,12 @@ describe('AuthController', () => {
     });
 
     it('비밀번호는 필수값이다.', async () => {
-      // when
       const response = await request(app.getHttpServer())
         .post('/v1/auth/login')
         .send({
           email: 'test@example.com',
         });
 
-      // then
       expect(response.status).toBe(400);
     });
   });

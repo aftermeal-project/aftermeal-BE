@@ -3,9 +3,10 @@ import { registerAs } from '@nestjs/config';
 export default registerAs('jwt', () => ({
   accessToken: {
     secret: process.env.ACCESS_TOKEN_SECRET,
-    expiresIn: parseInt(process.env.ACCESS_TOKEN_EXPIRATION_TIME),
+    expiresIn: parseInt(process.env.ACCESS_TOKEN_EXPIRY_TIME),
   },
   refreshToken: {
-    expiresIn: parseInt(process.env.REFRESH_TOKEN_EXPIRATION_TIME),
+    secret: process.env.REFRESH_TOKEN_SECRET,
+    expiresIn: parseInt(process.env.REFRESH_TOKEN_EXPIRY_TIME),
   },
 }));

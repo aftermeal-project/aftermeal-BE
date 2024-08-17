@@ -13,17 +13,14 @@ import {
 } from 'typeorm-transactional';
 import jwtConfig from '@config/jwt.config';
 import redisConfig from '@config/redis.config';
-import { LoginResponseDto } from '../../src/modules/auth/presentation/dto/login-response.dto';
 
 describe('AuthService', () => {
-  // System Under Test
-  let authService: AuthService;
+  let moduleRef: TestingModule;
 
-  // Dependencies
+  let authService: AuthService;
   let userRepository: Repository<User>;
   let roleRepository: Repository<Role>;
   let dataSource: DataSource;
-  let moduleRef: TestingModule;
 
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
@@ -40,7 +37,10 @@ describe('AuthService', () => {
     }).compile();
     await moduleRef.init();
 
+    // System Under Test
     authService = moduleRef.get(AuthService);
+
+    // Dependencies
     userRepository = moduleRef.get(getRepositoryToken(User));
     roleRepository = moduleRef.get(getRepositoryToken(Role));
     dataSource = moduleRef.get(DataSource);
@@ -75,7 +75,10 @@ describe('AuthService', () => {
       await userRepository.save(user);
 
       // when
-      const actual: LoginResponseDto = await authService.login(email, password);
+      const actual = await authService.login({
+        email: email,
+        password: password,
+      });
 
       // then
       expect(actual.accessToken).toBeDefined();
