@@ -29,7 +29,6 @@ services:
       - REFRESH_TOKEN_EXPIRY_TIME=${REFRESH_TOKEN_EXPIRY_TIME}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
 
 volumes:
   nginx-conf:

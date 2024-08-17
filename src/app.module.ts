@@ -13,7 +13,6 @@ import { UserModule } from './modules/user/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from '@common/guards/auth.guard';
 import { DatabaseModule } from './database/database.module';
-import { TokenModule } from './modules/token/token.module';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { TokenModule } from './modules/token/token.module';
     DatabaseModule,
     UserModule,
     AuthModule,
-    TokenModule,
     ActivityModule,
     ParticipationModule,
   ],

@@ -16,7 +16,7 @@ export class AuthController {
   ): Promise<ResponseEntity<LoginResponseDto>> {
     return ResponseEntity.OK_WITH_DATA(
       '로그인 성공',
-      await this.authService.login(dto.email, dto.password),
+      await this.authService.login(dto),
     );
   }
 }

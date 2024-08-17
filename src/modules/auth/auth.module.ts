@@ -1,12 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './presentation/auth.controller';
 import { AuthService } from './application/auth.service';
-import { TokenModule } from '../token/token.module';
+import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../user/user.module';
+import { TOKEN_REPOSITORY } from '@common/constants';
+import { TokenRedisRepository } from './infrastructure/token-redis.repository';
 import { RoleModule } from '../role/role.module';
+import { TokenService } from './application/token.service';
+import { TokenStorageModule } from '../../database/token-storage.module';
 
 @Module({
-  imports: [TokenModule, UserModule, RoleModule],
+  imports: [
+    JwtModule.register({ global: true }),
+    UserModule,
+    RoleModule,
+    TokenStorageModule,
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,

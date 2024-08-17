@@ -44,11 +44,15 @@ class EnvironmentVariables {
 
   @IsNotEmpty()
   @IsNumber()
-  ACCESS_TOKEN_EXPIRATION_TIME: number;
+  ACCESS_TOKEN_EXPIRY_TIME: number;
+
+  @IsNotEmpty()
+  @IsString()
+  REFRESH_TOKEN_SECRET: string;
 
   @IsNotEmpty()
   @IsNumber()
-  REFRESH_TOKEN_EXPIRATION_TIME: number;
+  REFRESH_TOKEN_EXPIRY_TIME: number;
 }
 
 export const validate = (
