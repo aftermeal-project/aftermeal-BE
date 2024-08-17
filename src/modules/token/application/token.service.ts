@@ -11,6 +11,7 @@ import { User } from '../../user/domain/user.entity';
 import { Role } from '../../role/domain/role.entity';
 import { UserService } from '../../user/application/user.service';
 import { RoleService } from '../../role/application/role.service';
+import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 
 type AccessTokenPayload = {
   sub: string;
@@ -88,13 +89,17 @@ export class TokenService {
     );
   }
 
+  getAccessTokenExpirationTime() {
+    return this.jwtConfig.accessToken.expiresIn;
+  }
+
   private async validateRefreshToken(
     currentRefreshToken: string,
   ): Promise<void> {
     const isExist: boolean =
       await this.tokenRepository.exist(currentRefreshToken);
     if (!isExist) {
-      throw new Error('Invalid refresh token');
+      throw new IllegalArgumentException('Invalid refresh token');
     }
   }
 
@@ -109,9 +114,5 @@ export class TokenService {
       throw new NotFoundException('User not found');
     }
     return userId;
-  }
-
-  getAccessTokenExpirationTime() {
-    return this.jwtConfig.accessToken.expiresIn;
   }
 }
