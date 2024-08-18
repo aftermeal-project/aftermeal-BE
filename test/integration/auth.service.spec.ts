@@ -14,6 +14,10 @@ import {
 import jwtConfig from '@config/jwt.config';
 import redisConfig from '@config/redis.config';
 import { LoginResponseDto } from '../../src/modules/auth/presentation/dto/login-response.dto';
+import { TokenRefreshResponseDto } from '../../src/modules/auth/presentation/dto/token-refresh-response.dto';
+import { generateRandomString } from '@common/utils/src/generate-random-string';
+import { REFRESH_TOKEN_REPOSITORY } from '@common/constants';
+import { RefreshTokenRepository } from '../../src/modules/auth/domain/refresh-token.repository';
 
 describe('AuthService', () => {
   // System Under Test
@@ -22,6 +26,7 @@ describe('AuthService', () => {
   // Dependencies
   let userRepository: Repository<User>;
   let roleRepository: Repository<Role>;
+  let refreshTokenRepository: RefreshTokenRepository;
   let dataSource: DataSource;
   let moduleRef: TestingModule;
 
@@ -43,12 +48,14 @@ describe('AuthService', () => {
     authService = moduleRef.get(AuthService);
     userRepository = moduleRef.get(getRepositoryToken(User));
     roleRepository = moduleRef.get(getRepositoryToken(Role));
+    refreshTokenRepository = moduleRef.get(REFRESH_TOKEN_REPOSITORY);
     dataSource = moduleRef.get(DataSource);
   });
 
   afterEach(async () => {
     await roleRepository.delete({});
     await userRepository.delete({});
+    await refreshTokenRepository.deleteAll();
   });
 
   afterAll(async () => {
@@ -76,6 +83,39 @@ describe('AuthService', () => {
 
       // when
       const actual: LoginResponseDto = await authService.login(email, password);
+
+      // then
+      expect(actual.accessToken).toBeDefined();
+      expect(actual.expiredIn).toBeDefined();
+      expect(actual.tokenType).toBeDefined();
+      expect(actual.refreshToken).toBeDefined();
+    });
+  });
+
+  describe('refresh', () => {
+    it('유효한 토큰을 통해 갱신한다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+      await roleRepository.save(role);
+
+      const email: string = 'test@example.com';
+      const password: string = 'G$K9Vss9-wNX6jOvY';
+
+      const user: User = User.createTeacher(
+        '송유현',
+        email,
+        Role.create('USER'),
+        password,
+      );
+      await user.hashPassword();
+      await userRepository.save(user);
+
+      const refreshToken: string = generateRandomString(30);
+      await refreshTokenRepository.save(refreshToken, user.id, 30);
+
+      // when
+      const actual: TokenRefreshResponseDto =
+        await authService.refresh(refreshToken);
 
       // then
       expect(actual.accessToken).toBeDefined();

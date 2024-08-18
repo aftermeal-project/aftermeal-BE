@@ -1,6 +1,6 @@
 import { Role } from '../../src/modules/role/domain/role.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
-import { TokenRefreshResponseDto } from '../../src/modules/token/presentation/dto/token-refresh-response.dto';
+import { TokenRefreshResponseDto } from '../../src/modules/auth/presentation/dto/token-refresh-response.dto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource, Repository } from 'typeorm';
 import {
@@ -12,8 +12,8 @@ import { ConfigModule } from '@nestjs/config';
 import jwtConfig from '@config/jwt.config';
 import redisConfig from '@config/redis.config';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { TokenService } from '../../src/modules/token/application/token.service';
-import { TokenModule } from '../../src/modules/token/token.module';
+import { TokenService } from '../../src/modules/auth/application/token.service';
+import { AuthModule } from '../../src/modules/auth/auth.module';
 
 describe('TokenService', () => {
   // System Under Test
@@ -35,7 +35,7 @@ describe('TokenService', () => {
           load: [jwtConfig, redisConfig],
           isGlobal: true,
         }),
-        TokenModule,
+        AuthModule,
       ],
     }).compile();
     await moduleRef.init();
@@ -56,37 +56,19 @@ describe('TokenService', () => {
     await moduleRef.close();
   });
 
-  describe('refresh', () => {
-    it('유효한 토큰을 통해 갱신한다.', async () => {
+  describe('generateAccessToken', () => {
+    it('should generate access token', async () => {
       // given
-      const role: Role = Role.create('USER');
-      await roleRepository.save(role);
+      const user = new User();
+      user.email = '';
+    });
+  });
 
-      const email: string = 'test@example.com';
-      const password: string = 'G$K9Vss9-wNX6jOvY';
-
-      const user: User = User.createTeacher(
-        '송유현',
-        email,
-        Role.create('USER'),
-        password,
-      );
-      await user.hashPassword();
-      await userRepository.save(user);
-
-      const refreshToken: string = await tokenService.generateRefreshToken(
-        user.id,
-      );
-
-      // when
-      const actual: TokenRefreshResponseDto =
-        await tokenService.refresh(refreshToken);
-
-      // then
-      expect(actual.accessToken).toBeDefined();
-      expect(actual.expiredIn).toBeDefined();
-      expect(actual.tokenType).toBeDefined();
-      expect(actual.refreshToken).toBeDefined();
+  describe('generateRefreshToken', () => {
+    it('should generate refresh token', async () => {
+      // given
+      const user = new User();
+      user.email = '';
     });
   });
 });

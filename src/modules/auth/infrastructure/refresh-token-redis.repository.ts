@@ -1,9 +1,9 @@
 import { RedisClientType } from 'redis';
-import { TokenRepository } from '../domain/token.repository';
+import { RefreshTokenRepository } from '../domain/refresh-token.repository';
 import { Inject } from '@nestjs/common';
 import { REDIS_CLIENT } from '@common/constants';
 
-export class RefreshTokenRedisRepository implements TokenRepository {
+export class RefreshTokenRedisRepository implements RefreshTokenRepository {
   constructor(
     @Inject(REDIS_CLIENT)
     private readonly client: RedisClientType,
@@ -22,14 +22,11 @@ export class RefreshTokenRedisRepository implements TokenRepository {
     });
   }
 
-  async exist(refreshToken: string): Promise<boolean> {
-    const userId: string | null = await this.client.get(
-      `refreshToken:${refreshToken}`,
-    );
-    return !!userId;
-  }
-
   async delete(refreshToken: string): Promise<void> {
     await this.client.del(`refreshToken:${refreshToken}`);
+  }
+
+  async deleteAll(): Promise<void> {
+    await this.client.flushAll();
   }
 }
