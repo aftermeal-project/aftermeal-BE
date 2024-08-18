@@ -16,8 +16,7 @@ import { createClient, RedisClientType } from 'redis';
 import { TokenService } from './application/token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { RefreshTokenRedisRepository } from './infrastructure/refresh-token-redis.repository';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './presentation/guards/auth.guard';
+import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
 
 @Module({
   imports: [JwtModule.register({ global: true }), UserModule, RoleModule],
@@ -25,7 +24,7 @@ import { AuthGuard } from './presentation/guards/auth.guard';
   providers: [
     AuthService,
     TokenService,
-    AuthGuard,
+    JwtAuthGuard,
     {
       provide: REDIS_CLIENT,
       useFactory: async (
@@ -42,7 +41,7 @@ import { AuthGuard } from './presentation/guards/auth.guard';
       useClass: RefreshTokenRedisRepository,
     },
   ],
-  exports: [REDIS_CLIENT, AuthGuard],
+  exports: [REDIS_CLIENT, JwtAuthGuard],
 })
 export class AuthModule implements OnModuleInit, OnModuleDestroy {
   private readonly logger: Logger = new Logger(AuthModule.name);
@@ -56,6 +55,7 @@ export class AuthModule implements OnModuleInit, OnModuleDestroy {
     try {
       this.logger.log('Connecting to Token Storage');
       await this.client.connect();
+      this.logger.log('Success connected to Token Storage');
     } catch (error) {
       this.logger.error('Failed to connect to Token Storage', error.stack);
       throw error;
@@ -66,9 +66,9 @@ export class AuthModule implements OnModuleInit, OnModuleDestroy {
     try {
       this.logger.log('Disconnecting from Token Storage');
       await this.client.disconnect();
+      this.logger.log('Success disconnected from Token Storage');
     } catch (error) {
       this.logger.error('Failed to disconnect from Token Storage', error.stack);
-      throw error;
     }
   }
 }
