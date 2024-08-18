@@ -8,7 +8,10 @@ export function setSwagger(app: INestApplication): void {
       '에프터밀 API 엔드포인트(Endpoint)와 객체 정보, 파라미터, 요청 및 응답 예제를 살펴보세요.',
     )
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
+
   SwaggerModule.setup('', app, document);
 }

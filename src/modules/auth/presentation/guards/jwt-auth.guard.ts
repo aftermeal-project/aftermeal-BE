@@ -12,7 +12,7 @@ import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '@common/decorators/public.decorator';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     @Inject(jwtConfiguration.KEY)

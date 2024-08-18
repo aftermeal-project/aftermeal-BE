@@ -3,6 +3,7 @@ import { InvitationService } from '../application/invitation.service';
 import { InviteRequestDto } from './dto/invite-request.dto';
 import { ResponseEntity } from '@common/models/response.entity';
 import { InvitationMemberService } from '../application/invitation-member.service';
+import { User } from '@common/decorators/user.decorator';
 
 @Controller('invitation')
 export class InvitationController {
@@ -11,13 +12,12 @@ export class InvitationController {
     private readonly invitationService: InvitationService,
   ) {}
 
-  // TODO: @UseGuards(AuthGuard)
   @Post('member')
   async invite(
     @Body() dto: InviteRequestDto,
-    // TODO @User() user: User,
+    @User('userId') userId: number,
   ): Promise<ResponseEntity<void>> {
-    await this.invitationService.invite(dto.toEntity());
+    await this.invitationService.invite(dto.toEntity(), userId);
     return ResponseEntity.OK_WITH('초대장 전송에 성공하였습니다.');
   }
 
