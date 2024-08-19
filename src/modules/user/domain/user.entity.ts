@@ -36,7 +36,7 @@ export class User extends BaseTimeEntity {
   status: UserStatus;
 
   @Column({ type: 'varchar' })
-  userType: UserType;
+  type: UserType;
 
   @Column()
   password: string;
@@ -61,7 +61,7 @@ export class User extends BaseTimeEntity {
     user.uuid = uuidv4();
     user.name = name;
     user.email = email;
-    user.userType = UserType.TEACHER;
+    user.type = UserType.TEACHER;
     user.userRoles = [UserRole.create(role, user)];
     user.status = UserStatus.ACTIVATE;
     user.password = password;
@@ -84,7 +84,7 @@ export class User extends BaseTimeEntity {
     user.uuid = uuidv4();
     user.name = name;
     user.email = schoolEmail;
-    user.userType = UserType.STUDENT;
+    user.type = UserType.STUDENT;
     user.userRoles = [UserRole.create(role, user)];
     user.status = UserStatus.ACTIVATE;
     user.password = password;
