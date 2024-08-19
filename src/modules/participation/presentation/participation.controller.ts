@@ -9,7 +9,7 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger';
 
 @ApiTags('participation')
