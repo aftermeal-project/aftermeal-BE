@@ -9,25 +9,25 @@ import { ActivitySummaryDto } from './dto/activity-summary.dto';
 export class ActivityTypeOrmRepository implements ActivityRepository {
   constructor(
     @InjectRepository(Activity)
-    private readonly activityRepository: Repository<Activity>,
+    private readonly repository: Repository<Activity>,
   ) {}
 
   async save(activity: Activity): Promise<Activity> {
-    return await this.activityRepository.save(activity);
+    return await this.repository.save(activity);
   }
 
   async saveAll(activities: Activity[]): Promise<Activity[]> {
-    return await this.activityRepository.save(activities);
+    return await this.repository.save(activities);
   }
 
   async findById(id: number): Promise<Activity> {
-    return await this.activityRepository.findOneBy({
+    return await this.repository.findOneBy({
       id: id,
     });
   }
 
   async find(): Promise<Activity[]> {
-    return await this.activityRepository.find();
+    return await this.repository.find();
   }
 
   async findActivitySummaries(): Promise<ActivitySummaryDto[]> {
@@ -45,11 +45,11 @@ export class ActivityTypeOrmRepository implements ActivityRepository {
   }
 
   async deleteAll(): Promise<void> {
-    await this.activityRepository.delete({});
+    await this.repository.delete({});
   }
 
   private buildActivitySummariesSelectQuery(): SelectQueryBuilder<Activity> {
-    return this.activityRepository
+    return this.repository
       .createQueryBuilder('activity')
       .leftJoinAndSelect('activity.participation', 'participation')
       .select('activity.id', 'id')

@@ -20,10 +20,7 @@ import { REFRESH_TOKEN_REPOSITORY } from '@common/constants';
 import { RefreshTokenRepository } from '../../src/modules/auth/domain/refresh-token.repository';
 
 describe('AuthService', () => {
-  // System Under Test
   let authService: AuthService;
-
-  // Dependencies
   let userRepository: Repository<User>;
   let roleRepository: Repository<Role>;
   let refreshTokenRepository: RefreshTokenRepository;

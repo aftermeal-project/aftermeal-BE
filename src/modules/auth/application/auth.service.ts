@@ -26,8 +26,10 @@ export class AuthService {
       this.tokenService.generateAccessToken(
         this.createAccessTokenPayload(user, roles),
       ),
-      this.tokenService.generateRefreshToken(user.id),
+      this.tokenService.generateRefreshToken(),
     ]);
+
+    await this.tokenService.saveRefreshToken(refreshToken, user.id);
 
     return new LoginResponseDto(
       accessToken,
@@ -50,10 +52,11 @@ export class AuthService {
       this.tokenService.generateAccessToken(
         this.createAccessTokenPayload(user, roles),
       ),
-      this.tokenService.generateRefreshToken(user.id),
+      this.tokenService.generateRefreshToken(),
     ]);
 
     await this.tokenService.revokeRefreshToken(currentRefreshToken);
+    await this.tokenService.saveRefreshToken(refreshToken, userId);
 
     return new TokenRefreshResponseDto(
       accessToken,

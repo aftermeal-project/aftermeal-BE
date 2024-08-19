@@ -22,31 +22,23 @@ export class TokenService {
   ) {}
 
   generateAccessToken(payload: AccessTokenPayload): string {
-    try {
-      return this.jwtService.sign(payload, {
-        secret: this.jwtConfig.accessToken.secret,
-        expiresIn: this.jwtConfig.accessToken.expiresIn,
-      });
-    } catch (error) {
-      throw new Error(`Failed to generate access token: ${error.message}`);
-    }
+    this.validatePayload(payload);
+    return this.jwtService.sign(payload, {
+      secret: this.jwtConfig.accessToken.secret,
+      expiresIn: this.jwtConfig.accessToken.expiresIn,
+    });
   }
 
-  async generateRefreshToken(userId: number): Promise<string> {
-    const refreshToken: string = generateRandomString(
-      TokenService.REFRESH_TOKEN_LENGTH,
-    );
+  generateRefreshToken(): string {
+    return generateRandomString(TokenService.REFRESH_TOKEN_LENGTH);
+  }
 
-    try {
-      await this.tokenRepository.save(
-        refreshToken,
-        userId,
-        this.jwtConfig.refreshToken.expiresIn,
-      );
-      return refreshToken;
-    } catch (error) {
-      throw new Error(`Failed to generate refresh token: ${error.message}`);
-    }
+  async saveRefreshToken(refreshToken: string, userId: number): Promise<void> {
+    await this.tokenRepository.save(
+      refreshToken,
+      userId,
+      this.jwtConfig.refreshToken.expiresIn,
+    );
   }
 
   async validateRefreshToken(refreshToken: string): Promise<number> {
@@ -68,5 +60,11 @@ export class TokenService {
 
   getTokenType(): string {
     return TokenService.TOKEN_TYPE;
+  }
+
+  private validatePayload(payload: AccessTokenPayload) {
+    if (!payload.sub || !payload.username || !payload.email || !payload.roles) {
+      throw new IllegalArgumentException('Invalid payload');
+    }
   }
 }

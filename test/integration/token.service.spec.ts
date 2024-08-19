@@ -1,27 +1,26 @@
-import { Role } from '../../src/modules/role/domain/role.entity';
-import { User } from '../../src/modules/user/domain/user.entity';
-import { TokenRefreshResponseDto } from '../../src/modules/auth/presentation/dto/token-refresh-response.dto';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
 import { getTestMysqlModule } from '../get-test-mysql.module';
-import { ConfigModule } from '@nestjs/config';
-import jwtConfig from '@config/jwt.config';
-import redisConfig from '@config/redis.config';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { ConfigModule, ConfigType } from '@nestjs/config';
+import jwtConfiguration from '@config/jwt.config';
+import redisConfiguration from '@config/redis.config';
 import { TokenService } from '../../src/modules/auth/application/token.service';
+import { AccessTokenPayload } from '../../src/modules/auth/types/jwt-payload';
+import { JwtService } from '@nestjs/jwt';
+import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
+import { REFRESH_TOKEN_REPOSITORY } from '@common/constants';
+import { RefreshTokenRepository } from '../../src/modules/auth/domain/refresh-token.repository';
 import { AuthModule } from '../../src/modules/auth/auth.module';
 
 describe('TokenService', () => {
-  // System Under Test
   let tokenService: TokenService;
-
-  // Dependencies
-  let userRepository: Repository<User>;
-  let roleRepository: Repository<Role>;
+  let jwtService: JwtService;
+  let jwtConfig: ConfigType<typeof jwtConfiguration>;
+  let tokenRepository: RefreshTokenRepository;
   let moduleRef: TestingModule;
   let dataSource: DataSource;
 
@@ -32,8 +31,8 @@ describe('TokenService', () => {
       imports: [
         getTestMysqlModule(),
         ConfigModule.forRoot({
-          load: [jwtConfig, redisConfig],
           isGlobal: true,
+          load: [jwtConfiguration, redisConfiguration],
         }),
         AuthModule,
       ],
@@ -41,14 +40,10 @@ describe('TokenService', () => {
     await moduleRef.init();
 
     tokenService = moduleRef.get(TokenService);
-    userRepository = moduleRef.get(getRepositoryToken(User));
-    roleRepository = moduleRef.get(getRepositoryToken(Role));
+    jwtService = moduleRef.get(JwtService);
+    tokenRepository = moduleRef.get(REFRESH_TOKEN_REPOSITORY);
+    jwtConfig = moduleRef.get(jwtConfiguration.KEY);
     dataSource = moduleRef.get(DataSource);
-  });
-
-  afterEach(async () => {
-    await roleRepository.delete({});
-    await userRepository.delete({});
   });
 
   afterAll(async () => {
@@ -57,18 +52,64 @@ describe('TokenService', () => {
   });
 
   describe('generateAccessToken', () => {
-    it('should generate access token', async () => {
+    it('유효한 엑세스 토큰을 생성한다.', async () => {
       // given
-      const user = new User();
-      user.email = '';
+      const payload = {
+        sub: '1',
+        username: 'test',
+        email: 'test@example.com',
+        roles: ['user'],
+      };
+
+      // when
+      const actual = tokenService.generateAccessToken(payload);
+
+      // then
+      expect(actual).toBeDefined();
+
+      const decoded: AccessTokenPayload = jwtService.verify(actual, {
+        secret: jwtConfig.accessToken.secret,
+      });
+      expect(decoded).toMatchObject(payload);
+    });
+
+    it('유효하지 않은 페이로드로 엑세스 토큰을 생성하면 에러가 발생합니다.', async () => {
+      // given
+      const payload = { hi: 'hi' };
+
+      // when
+      const actual = () => {
+        tokenService.generateAccessToken(payload as any);
+      };
+
+      // then
+      expect(actual).toThrow(IllegalArgumentException);
     });
   });
 
   describe('generateRefreshToken', () => {
-    it('should generate refresh token', async () => {
+    it('유효한 리프레시 토큰을 생성합니다.', async () => {
+      // when
+      const actual = tokenService.generateRefreshToken();
+
+      // then
+      expect(actual).toBeDefined();
+    });
+  });
+
+  describe('saveRefreshToken', () => {
+    it('리프레시 토큰을 저장합니다.', async () => {
       // given
-      const user = new User();
-      user.email = '';
+      const userId = 1;
+      const refreshToken = tokenService.generateRefreshToken();
+
+      // when
+      await tokenService.saveRefreshToken(refreshToken, userId);
+
+      // then
+      const storedUserId =
+        await tokenRepository.findByRefreshToken(refreshToken);
+      expect(storedUserId).toBe(1);
     });
   });
 });
