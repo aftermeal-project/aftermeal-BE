@@ -71,7 +71,7 @@ export class AuthService {
     roles: Role[],
   ): AccessTokenPayload {
     return {
-      sub: user.id.toString(),
+      sub: user.uuid,
       username: user.name,
       email: user.email,
       roles: roles.map((role) => role.name),
