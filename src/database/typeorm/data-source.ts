@@ -15,6 +15,8 @@ export const AppDataSource = new DataSource({
   password: dbConfig.password,
   database: dbConfig.name,
   entities: [join(__dirname, '../../modules/*/domain/*.entity{.ts,.js}')],
+  migrations: [join(__dirname, '../migrations/*{.ts,.js}')],
+  migrationsTableName: 'migrations',
   synchronize: false,
   logging: dbConfig.logging === 'true',
   namingStrategy: new SnakeNamingStrategy(),
