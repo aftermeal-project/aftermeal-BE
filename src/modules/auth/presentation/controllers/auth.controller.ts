@@ -6,13 +6,23 @@ import { LoginResponseDto } from '../dto/login-response.dto';
 import { Public } from '@common/decorators/public.decorator';
 import { TokenRefreshResponseDto } from '../dto/token-refresh-response.dto';
 import { TokenRefreshRequestDto } from '../dto/token-refresh-request.dto';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('login')
+  @ApiOperation({ summary: '로그인' })
+  @ApiCreatedResponse({ description: 'OK', type: LoginResponseDto })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
   async login(
     @Body() dto: LoginRequestDto,
   ): Promise<ResponseEntity<LoginResponseDto>> {
@@ -24,6 +34,14 @@ export class AuthController {
 
   @Public()
   @Post('refresh')
+  @ApiOperation({ summary: '토큰 갱신' })
+  @ApiCreatedResponse({
+    description: 'OK',
+    type: TokenRefreshResponseDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
   async refresh(
     @Body() dto: TokenRefreshRequestDto,
   ): Promise<ResponseEntity<TokenRefreshResponseDto>> {

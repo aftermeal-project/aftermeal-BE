@@ -1,11 +1,12 @@
 import { Exclude, Expose } from 'class-transformer';
 import { ActivitySummaryDto } from '../../infrastructure/dto/activity-summary.dto';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 export class ActivitySummaryResponseDto {
-  @Exclude() private readonly _id: number;
-  @Exclude() private readonly _name: string;
-  @Exclude() private readonly _maxParticipants: number;
-  @Exclude() private readonly _currentParticipants: number;
+  @Exclude() @ApiHideProperty() private readonly _id: number;
+  @Exclude() @ApiHideProperty() private readonly _name: string;
+  @Exclude() @ApiHideProperty() private readonly _maxParticipants: number;
+  @Exclude() @ApiHideProperty() private readonly _currentParticipants: number;
 
   constructor(
     id: number,
@@ -20,21 +21,25 @@ export class ActivitySummaryResponseDto {
   }
 
   @Expose()
+  @ApiProperty()
   get id(): number {
     return this._id;
   }
 
   @Expose()
+  @ApiProperty()
   get name(): string {
     return this._name;
   }
 
   @Expose()
+  @ApiProperty()
   get maxParticipants(): number {
     return this._maxParticipants;
   }
 
   @Expose()
+  @ApiProperty()
   get currentParticipants(): number {
     return this._currentParticipants;
   }

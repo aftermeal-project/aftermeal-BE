@@ -3,14 +3,26 @@ import { ResponseEntity } from '@common/models/response.entity';
 import { ParticipationService } from '../application/participation.service';
 import { ParticipationApplicationRequestDto } from './dto/participation-application-request.dto';
 import { User } from '@common/decorators/user.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger';
 
+@ApiTags('participation')
 @Controller('participation')
 export class ParticipationController {
   constructor(private readonly participationService: ParticipationService) {}
 
-  @ApiBearerAuth()
   @Post()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '참가 신청' })
+  @ApiCreatedResponse({ description: 'OK' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
   async applyParticipation(
     @Body() dto: ParticipationApplicationRequestDto,
     @User('userId') userId: number,
