@@ -20,6 +20,7 @@ export class ActivityController {
     );
   }
 
+  @Public()
   @Get('info')
   async getActivityInfos(): Promise<ResponseEntity<ActivityInfoResponseDto[]>> {
     return ResponseEntity.OK_WITH_DATA(

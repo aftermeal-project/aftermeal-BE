@@ -6,11 +6,13 @@ import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
-import { AuthController } from '../../src/modules/auth/presentation/auth.controller';
+import { AuthController } from '../../src/modules/auth/presentation/controllers/auth.controller';
 import { AuthService } from '../../src/modules/auth/application/auth.service';
+import { generateRandomString } from '@common/utils/src/generate-random-string';
 
 const mockAuthService = {
   login: jest.fn(),
+  refresh: jest.fn(),
 };
 
 describe('AuthController', () => {
@@ -66,6 +68,34 @@ describe('AuthController', () => {
         .send({
           email: 'test@example.com',
         });
+
+      // then
+      expect(response.status).toBe(400);
+    });
+  });
+
+  describe('refresh', () => {
+    it('토큰을 갱신한다.', async () => {
+      // given
+      const refreshToken: string = generateRandomString(30);
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post('/v1/auth/refresh')
+        .send({ refreshToken });
+
+      // then
+      expect(response.status).toBe(201);
+    });
+
+    it('리프레시 토큰은 문자열이어야 한다.', async () => {
+      // given
+      const refreshToken: number = 1234;
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post('/v1/auth/refresh')
+        .send({ refreshToken: refreshToken });
 
       // then
       expect(response.status).toBe(400);

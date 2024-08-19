@@ -12,7 +12,7 @@ import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '@common/decorators/public.decorator';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     @Inject(jwtConfiguration.KEY)
@@ -25,22 +25,26 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+
     if (isPublic) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException('Token not found');
     }
+
     try {
       request['user'] = await this.jwtService.verifyAsync(token, {
         secret: this.jwtConfig.accessToken.secret,
       });
-    } catch (e) {
-      throw new UnauthorizedException(e);
+    } catch (error) {
+      throw new UnauthorizedException(error);
     }
+
     return true;
   }
 
