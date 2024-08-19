@@ -1,10 +1,11 @@
 import { Exclude, Expose } from 'class-transformer';
 import { Activity } from '../../domain/activity.entity';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 export class ActivityInfoResponseDto {
-  @Exclude() private readonly _id: number;
-  @Exclude() private readonly _name: string;
-  @Exclude() private readonly _maxParticipants: number;
+  @Exclude() @ApiHideProperty() private readonly _id: number;
+  @Exclude() @ApiHideProperty() private readonly _name: string;
+  @Exclude() @ApiHideProperty() private readonly _maxParticipants: number;
 
   constructor(id: number, name: string, maxParticipants: number) {
     this._id = id;
@@ -13,16 +14,19 @@ export class ActivityInfoResponseDto {
   }
 
   @Expose()
+  @ApiProperty()
   get id(): number {
     return this._id;
   }
 
   @Expose()
+  @ApiProperty()
   get name(): string {
     return this._name;
   }
 
   @Expose()
+  @ApiProperty()
   get maxParticipants(): number {
     return this._maxParticipants;
   }

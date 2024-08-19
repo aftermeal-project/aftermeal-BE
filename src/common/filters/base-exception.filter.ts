@@ -8,6 +8,7 @@ import { Request, Response } from 'express';
 import { BaseException } from '@common/exceptions/base.exception';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
+import { UserAlreadyExistException } from '@common/exceptions/user-already-exist.exception';
 
 @Catch(BaseException)
 export class BaseExceptionFilter implements ExceptionFilter {
@@ -23,6 +24,9 @@ export class BaseExceptionFilter implements ExceptionFilter {
         break;
       case IllegalArgumentException:
         status = HttpStatus.BAD_REQUEST;
+        break;
+      case UserAlreadyExistException:
+        status = HttpStatus.CONFLICT;
         break;
       default:
         status = HttpStatus.INTERNAL_SERVER_ERROR;

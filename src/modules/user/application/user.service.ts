@@ -8,9 +8,9 @@ import { GenerationService } from '../../generation/application/generation.servi
 import { RoleService } from '../../role/application/role.service';
 import { Transactional } from 'typeorm-transactional';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { UserRegistrationRequestDto } from '../presentation/dto/user-registration-request.dto';
 import { Generation } from '../../generation/domain/generation.entity';
+import { UserAlreadyExistException } from '@common/exceptions/user-already-exist.exception';
 
 @Injectable()
 export class UserService {
@@ -66,7 +66,7 @@ export class UserService {
       },
     });
     if (isMemberExists) {
-      throw new IllegalArgumentException('이미 등록된 이메일입니다.');
+      throw new UserAlreadyExistException('이미 등록된 이메일입니다.');
     }
   }
 }
