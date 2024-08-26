@@ -12,11 +12,17 @@ export class UserRole extends BaseTimeEntity {
   userId: number;
 
   @ManyToOne(() => Role, { eager: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'role_id' })
+  @JoinColumn({
+    name: 'role_id',
+    foreignKeyConstraintName: 'fk_user_role_role',
+  })
   role: Role;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => User, { eager: false, onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'user_id',
+    foreignKeyConstraintName: 'fk_user_role_user',
+  })
   user: User;
 
   static create(role: Role, user: User): UserRole {
