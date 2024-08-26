@@ -9,11 +9,17 @@ export class Participation extends BaseTimeEntity {
   id: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({
+    name: 'user_id',
+    foreignKeyConstraintName: 'fk_participation_user',
+  })
   user: User;
 
   @ManyToOne(() => Activity)
-  @JoinColumn({ name: 'activity_id' })
+  @JoinColumn({
+    name: 'activity_id',
+    foreignKeyConstraintName: 'fk_participation_activity',
+  })
   activity: Activity;
 
   static create(user: User, activity: Activity) {

@@ -22,6 +22,9 @@ export class ActivitySchedule extends BaseTimeEntity {
   timeSlot: TimeSlot;
 
   @ManyToOne(() => Activity)
-  @JoinColumn({ name: 'activity_id' })
+  @JoinColumn({
+    name: 'activity_id',
+    foreignKeyConstraintName: 'fk_activity_schedule_activity',
+  })
   activity: Activity;
 }
