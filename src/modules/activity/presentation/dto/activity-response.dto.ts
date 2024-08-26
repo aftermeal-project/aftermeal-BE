@@ -1,23 +1,16 @@
 import { Exclude, Expose } from 'class-transformer';
-import { ActivitySummaryDto } from '../../infrastructure/dto/activity-summary.dto';
+import { Activity } from '../../domain/activity.entity';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
-export class ActivitySummaryResponseDto {
+export class ActivityResponseDto {
   @Exclude() @ApiHideProperty() private readonly _id: number;
   @Exclude() @ApiHideProperty() private readonly _name: string;
   @Exclude() @ApiHideProperty() private readonly _maxParticipants: number;
-  @Exclude() @ApiHideProperty() private readonly _currentParticipants: number;
 
-  constructor(
-    id: number,
-    name: string,
-    maxParticipants: number,
-    currentParticipants: number,
-  ) {
+  constructor(id: number, name: string, maxParticipants: number) {
     this._id = id;
     this._name = name;
     this._maxParticipants = maxParticipants;
-    this._currentParticipants = currentParticipants;
   }
 
   @Expose()
@@ -38,18 +31,11 @@ export class ActivitySummaryResponseDto {
     return this._maxParticipants;
   }
 
-  @Expose()
-  @ApiProperty()
-  get currentParticipants(): number {
-    return this._currentParticipants;
-  }
-
-  static from(activity: ActivitySummaryDto) {
-    return new ActivitySummaryResponseDto(
+  static from(activity: Activity): ActivityResponseDto {
+    return new ActivityResponseDto(
       activity.id,
       activity.name,
       activity.maxParticipants,
-      activity.currentParticipants,
     );
   }
 }

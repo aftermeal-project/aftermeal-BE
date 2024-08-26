@@ -1,13 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ActivityService } from '../../src/modules/activity/application/activity.service';
+import { ActivityScheduleService } from '../../src/modules/activity/application/activity-schedule.service';
 import { ActivityController } from '../../src/modules/activity/presentation/activity.controller';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { setNestApp } from '../../src/set-nest-app';
+import { ActivityService } from '../../src/modules/activity/application/activity.service';
 
 const mockActivityService = {
-  getActivityInfos: jest.fn(),
-  getActivitySummaries: jest.fn(),
+  getActivities: jest.fn(),
+};
+
+const mockActivityScheduleService = {
+  getActivityScheduleSummaries: jest.fn(),
 };
 
 describe('ActivityController', () => {
@@ -17,6 +21,10 @@ describe('ActivityController', () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [ActivityController],
       providers: [
+        {
+          provide: ActivityScheduleService,
+          useValue: mockActivityScheduleService,
+        },
         {
           provide: ActivityService,
           useValue: mockActivityService,
@@ -29,22 +37,22 @@ describe('ActivityController', () => {
     await app.init();
   });
 
-  describe('getActivitySummaries', () => {
-    it('활동 요약 목록을 가져온다.', async () => {
+  describe('getActivityScheduleSummaries', () => {
+    it('활동 일정 요약 목록을 가져온다.', async () => {
       // when
-      const response = await request(app.getHttpServer()).get('/v1/activities');
+      const response = await request(app.getHttpServer()).get(
+        '/v1/activities/summary',
+      );
 
       // then
       expect(response.status).toBe(200);
     });
   });
 
-  describe('getActivityInfos', () => {
-    it('활동 정보 목록을 가져온다.', async () => {
+  describe('getActivities', () => {
+    it('활동 목록을 가져온다.', async () => {
       // when
-      const response = await request(app.getHttpServer()).get(
-        '/v1/activities/info',
-      );
+      const response = await request(app.getHttpServer()).get('/v1/activities');
 
       // then
       expect(response.status).toBe(200);

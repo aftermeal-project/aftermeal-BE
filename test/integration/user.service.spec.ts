@@ -11,12 +11,12 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 import { UserModule } from '../../src/modules/user/user.module';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { Generation } from '../../src/modules/generation/domain/generation.entity';
 import { UserRegistrationRequestDto } from '../../src/modules/user/presentation/dto/user-registration-request.dto';
+import { UserAlreadyExistException } from '@common/exceptions/user-already-exist.exception';
 
 describe('UserService', () => {
-  let sut: UserService;
+  let userService: UserService;
   let userRepository: Repository<User>;
   let roleRepository: Repository<Role>;
   let generationRepository: Repository<Generation>;
@@ -28,7 +28,7 @@ describe('UserService', () => {
       imports: [getTestMysqlModule(), UserModule],
     }).compile();
 
-    sut = moduleRef.get<UserService>(UserService);
+    userService = moduleRef.get<UserService>(UserService);
     userRepository = moduleRef.get<Repository<User>>(getRepositoryToken(User));
     roleRepository = moduleRef.get<Repository<Role>>(getRepositoryToken(Role));
     generationRepository = moduleRef.get<Repository<Generation>>(
@@ -61,10 +61,10 @@ describe('UserService', () => {
       );
 
       // when
-      await sut.register(dto);
+      await userService.register(dto);
 
       // then
-      const user: User = await sut.getUserByEmail('test@example.com');
+      const user: User = await userService.getUserByEmail('test@example.com');
       expect(user).toBeDefined();
     });
 
@@ -90,12 +90,12 @@ describe('UserService', () => {
       );
 
       // when
-      const actual = async () => {
-        await sut.register(dto);
+      const result = async () => {
+        await userService.register(dto);
       };
 
       // then
-      await expect(actual).rejects.toThrow(IllegalArgumentException);
+      await expect(result).rejects.toThrow(UserAlreadyExistException);
     });
   });
 });

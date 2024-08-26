@@ -49,7 +49,7 @@ export class User extends BaseTimeEntity {
     name: 'generation_number',
     foreignKeyConstraintName: 'fk_user_generation',
   })
-  generation?: Generation | null;
+  generation: Generation | null;
 
   static createTeacher(
     name: string,

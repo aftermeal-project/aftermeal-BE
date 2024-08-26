@@ -62,12 +62,12 @@ describe('TokenService', () => {
       };
 
       // when
-      const actual = tokenService.generateAccessToken(payload);
+      const result = tokenService.generateAccessToken(payload);
 
       // then
-      expect(actual).toBeDefined();
+      expect(result).toBeDefined();
 
-      const decoded: AccessTokenPayload = jwtService.verify(actual, {
+      const decoded: AccessTokenPayload = jwtService.verify(result, {
         secret: jwtConfig.accessToken.secret,
       });
       expect(decoded).toMatchObject(payload);
@@ -78,22 +78,22 @@ describe('TokenService', () => {
       const payload = { hi: 'hi' };
 
       // when
-      const actual = () => {
+      const result = () => {
         tokenService.generateAccessToken(payload as any);
       };
 
       // then
-      expect(actual).toThrow(IllegalArgumentException);
+      expect(result).toThrow(IllegalArgumentException);
     });
   });
 
   describe('generateRefreshToken', () => {
     it('유효한 리프레시 토큰을 생성합니다.', async () => {
       // when
-      const actual = tokenService.generateRefreshToken();
+      const result = tokenService.generateRefreshToken();
 
       // then
-      expect(actual).toBeDefined();
+      expect(result).toBeDefined();
     });
   });
 

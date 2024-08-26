@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getTestMysqlModule } from '../get-test-mysql.module';
 import { DataSource, Repository } from 'typeorm';
 import { ActivityRepository } from '../../src/modules/activity/domain/activity.repository';
-import { ACTIVITY_REPOSITORY } from '@common/constants';
+import {
+  ACTIVITY_REPOSITORY,
+  ACTIVITY_SCHEDULE_REPOSITORY,
+} from '@common/constants';
 import { Activity } from '../../src/modules/activity/domain/activity.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
@@ -14,11 +17,16 @@ import {
 } from 'typeorm-transactional';
 import { ParticipationService } from '../../src/modules/participation/application/participation.service';
 import { ParticipationModule } from '../../src/modules/participation/participation.module';
+import { ActivityScheduleRepository } from '../../src/modules/activity/domain/activity-schedule.repository';
+import { DAY_OF_WEEK } from '../../src/modules/activity/domain/day-of-week';
+import { TimeSlot } from '../../src/modules/activity/domain/time-slot';
+import { ActivitySchedule } from '../../src/modules/activity/domain/activity-schedule.entity';
 
 describe('ParticipationService', () => {
-  let sut: ParticipationService;
+  let participationService: ParticipationService;
   let participationRepository: Repository<Participation>;
   let userRepository: Repository<User>;
+  let activityScheduleRepository: ActivityScheduleRepository;
   let activityRepository: ActivityRepository;
   let dataSource: DataSource;
 
@@ -28,7 +36,11 @@ describe('ParticipationService', () => {
       imports: [getTestMysqlModule(), ParticipationModule],
     }).compile();
 
-    sut = moduleRef.get<ParticipationService>(ParticipationService);
+    participationService =
+      moduleRef.get<ParticipationService>(ParticipationService);
+    activityScheduleRepository = moduleRef.get<ActivityScheduleRepository>(
+      ACTIVITY_SCHEDULE_REPOSITORY,
+    );
     activityRepository = moduleRef.get<ActivityRepository>(ACTIVITY_REPOSITORY);
     userRepository = moduleRef.get<Repository<User>>(getRepositoryToken(User));
     participationRepository = moduleRef.get<Repository<Participation>>(
@@ -39,6 +51,7 @@ describe('ParticipationService', () => {
 
   afterEach(async () => {
     await participationRepository.delete({});
+    await activityScheduleRepository.deleteAll();
     await activityRepository.deleteAll();
     await userRepository.delete({});
   });
@@ -51,7 +64,15 @@ describe('ParticipationService', () => {
     it('활동에 참가를 신청한다.', async () => {
       // given
       const activity: Activity = Activity.create('배구', 18);
-      const savedActivity: Activity = await activityRepository.save(activity);
+      await activityRepository.save(activity);
+
+      const activitySchedule = ActivitySchedule.create(
+        DAY_OF_WEEK.FRIDAY,
+        TimeSlot.LUNCH,
+        activity,
+      );
+      await activityScheduleRepository.save(activitySchedule);
+      const savedActivityScheduleId = activitySchedule.id;
 
       const user: User = User.createTeacher(
         '송유현',
@@ -59,31 +80,37 @@ describe('ParticipationService', () => {
         Role.create('USER'),
         'G$K9Vss9-wNX6jOvY',
       );
-      const savedUser: User = await userRepository.save(user);
+      await userRepository.save(user);
+      const savedUserId = user.id;
 
       // when
-      await sut.applyParticipation(savedActivity.id, savedUser.id);
+      await participationService.applyParticipation(
+        savedActivityScheduleId,
+        savedUserId,
+      );
 
       // then
       const participation: Participation =
         await participationRepository.findOne({
           where: {
             user: {
-              id: savedUser.id,
+              id: savedUserId,
             },
-            activity: {
-              id: savedActivity.id,
+            activitySchedule: {
+              id: savedActivityScheduleId,
             },
           },
           relations: {
             user: true,
-            activity: true,
+            activitySchedule: true,
           },
         });
 
       expect(participation.id).toBeDefined();
-      expect(participation.user.id).toEqual(savedUser.id);
-      expect(participation.activity.id).toEqual(savedActivity.id);
+      expect(participation.user.id).toEqual(savedUserId);
+      expect(participation.activitySchedule.id).toEqual(
+        savedActivityScheduleId,
+      );
     });
   });
 });

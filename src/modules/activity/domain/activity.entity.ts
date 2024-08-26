@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Participation } from '../../participation/domain/participation.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTimeEntity } from '@common/models/base-time.entity';
 
 @Entity()
@@ -12,9 +11,6 @@ export class Activity extends BaseTimeEntity {
 
   @Column()
   maxParticipants: number;
-
-  @OneToMany(() => Participation, (participation) => participation.activity)
-  participation: Participation[];
 
   static create(name: string, maxParticipants: number): Activity {
     const activity = new Activity();

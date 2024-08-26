@@ -79,13 +79,13 @@ describe('AuthService', () => {
       await userRepository.save(user);
 
       // when
-      const actual: LoginResponseDto = await authService.login(email, password);
+      const result: LoginResponseDto = await authService.login(email, password);
 
       // then
-      expect(actual.accessToken).toBeDefined();
-      expect(actual.expiredIn).toBeDefined();
-      expect(actual.tokenType).toBeDefined();
-      expect(actual.refreshToken).toBeDefined();
+      expect(result.accessToken).toBeDefined();
+      expect(result.expiredIn).toBeDefined();
+      expect(result.tokenType).toBeDefined();
+      expect(result.refreshToken).toBeDefined();
     });
   });
 
@@ -111,14 +111,14 @@ describe('AuthService', () => {
       await refreshTokenRepository.save(refreshToken, user.id, 30);
 
       // when
-      const actual: TokenRefreshResponseDto =
+      const result: TokenRefreshResponseDto =
         await authService.refresh(refreshToken);
 
       // then
-      expect(actual.accessToken).toBeDefined();
-      expect(actual.expiredIn).toBeDefined();
-      expect(actual.tokenType).toBeDefined();
-      expect(actual.refreshToken).toBeDefined();
+      expect(result.accessToken).toBeDefined();
+      expect(result.expiredIn).toBeDefined();
+      expect(result.tokenType).toBeDefined();
+      expect(result.refreshToken).toBeDefined();
     });
   });
 });

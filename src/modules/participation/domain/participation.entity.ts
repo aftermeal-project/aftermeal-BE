@@ -1,7 +1,7 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTimeEntity } from '@common/models/base-time.entity';
 import { User } from '../../user/domain/user.entity';
-import { Activity } from '../../activity/domain/activity.entity';
+import { ActivitySchedule } from '../../activity/domain/activity-schedule.entity';
 
 @Entity()
 export class Participation extends BaseTimeEntity {
@@ -15,17 +15,17 @@ export class Participation extends BaseTimeEntity {
   })
   user: User;
 
-  @ManyToOne(() => Activity)
+  @ManyToOne(() => ActivitySchedule)
   @JoinColumn({
-    name: 'activity_id',
-    foreignKeyConstraintName: 'fk_participation_activity',
+    name: 'activity_schedule_id',
+    foreignKeyConstraintName: 'fk_participation_activity_schedule',
   })
-  activity: Activity;
+  activitySchedule: ActivitySchedule;
 
-  static create(user: User, activity: Activity) {
+  static create(user: User, activitySchedule: ActivitySchedule) {
     const participation = new Participation();
     participation.user = user;
-    participation.activity = activity;
+    participation.activitySchedule = activitySchedule;
     return participation;
   }
 }
