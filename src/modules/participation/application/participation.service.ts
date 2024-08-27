@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Participation } from '../domain/participation.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ActivityScheduleService } from '../../activity/application/activity-schedule.service';
-import { ActivitySchedule } from '../../activity/domain/activity-schedule.entity';
+import { ActivitySchedule } from '../../activity/domain/entities/activity-schedule.entity';
 import { UserService } from '../../user/application/user.service';
 import { User } from '../../user/domain/user.entity';
 

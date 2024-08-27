@@ -5,7 +5,7 @@ import {
   IsOptional,
   IsPositive,
 } from 'class-validator';
-import { UserType } from '../../domain/user-type';
+import { UserType } from '../../domain/types/user-type';
 import { User } from '../../domain/user.entity';
 import { Role } from '../../../role/domain/role.entity';
 import { Generation } from '../../../generation/domain/generation.entity';

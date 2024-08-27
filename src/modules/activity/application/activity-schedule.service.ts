@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ActivityScheduleRepository } from '../domain/activity-schedule.repository';
+import { ActivityScheduleRepository } from '../domain/repositories/activity-schedule.repository';
 import { ACTIVITY_SCHEDULE_REPOSITORY } from '@common/constants';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { ActivityScheduleSummaryDto } from '../infrastructure/dto/activity-schedule-summary.dto';
 import { ActivityScheduleSummaryResponseDto } from '../presentation/dto/activity-schedule-summary-response.dto';
-import { ActivitySchedule } from '../domain/activity-schedule.entity';
+import { ActivitySchedule } from '../domain/entities/activity-schedule.entity';
 
 @Injectable()
 export class ActivityScheduleService {

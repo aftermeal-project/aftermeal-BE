@@ -1,6 +1,6 @@
-import { Activity } from '../domain/activity.entity';
+import { Activity } from '../domain/entities/activity.entity';
 import { Injectable } from '@nestjs/common';
-import { ActivityRepository } from '../domain/activity.repository';
+import { ActivityRepository } from '../domain/repositories/activity.repository';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 

@@ -1,7 +1,7 @@
-import { ActivityScheduleRepository } from '../domain/activity-schedule.repository';
+import { ActivityScheduleRepository } from '../domain/repositories/activity-schedule.repository';
 import { ActivityScheduleSummaryDto } from './dto/activity-schedule-summary.dto';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { ActivitySchedule } from '../domain/activity-schedule.entity';
+import { ActivitySchedule } from '../domain/entities/activity-schedule.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 export class ActivityScheduleTypeormRepository

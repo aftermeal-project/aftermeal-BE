@@ -8,10 +8,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Activity } from './activity.entity';
-import { DAY_OF_WEEK } from './types/day-of-week';
-import { EActivityScheduleType } from './types/activity-schedule-type';
-import { Participation } from '../../participation/domain/participation.entity';
-import { ActivityScheduleTypeTransformer } from './types/activity-schedule-type.transformer';
+import { DAY_OF_WEEK } from '../types/day-of-week';
+import { EActivityScheduleType } from '../types/activity-schedule-type';
+import { Participation } from '../../../participation/domain/participation.entity';
+import { ActivityScheduleTypeTransformer } from '../types/activity-schedule-type.transformer';
 
 @Entity()
 export class ActivitySchedule extends BaseTimeEntity {

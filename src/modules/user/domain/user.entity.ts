@@ -8,12 +8,12 @@ import {
 } from 'typeorm';
 import { BaseTimeEntity } from '@common/models/base-time.entity';
 import { Generation } from '../../generation/domain/generation.entity';
-import { UserType } from './user-type';
-import { UserStatus } from './user-status';
+import { UserType } from './types/user-type';
+import { UserStatus } from './types/user-status';
 import { UserRole } from '../../role/domain/user-role.entity';
 import { compare, genSalt, hash } from 'bcrypt';
 import { Role } from '../../role/domain/role.entity';
-import { ESchool } from './school';
+import { ESchool } from './types/school';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { isStrongPassword } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';

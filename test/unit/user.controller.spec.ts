@@ -4,7 +4,7 @@ import { UserController } from '../../src/modules/user/presentation/user.control
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { setNestApp } from '../../src/set-nest-app';
-import { UserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/types/user-type';
 
 const mockUserService = {
   register: jest.fn(),

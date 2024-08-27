@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../domain/user.entity';
 import { Role } from '../../role/domain/role.entity';
-import { UserType } from '../domain/user-type';
+import { UserType } from '../domain/types/user-type';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GenerationService } from '../../generation/application/generation.service';
 import { RoleService } from '../../role/application/role.service';

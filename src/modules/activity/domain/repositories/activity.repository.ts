@@ -1,4 +1,4 @@
-import { Activity } from './activity.entity';
+import { Activity } from '../entities/activity.entity';
 
 export interface ActivityRepository {
   save(activity: Activity): Promise<void>;

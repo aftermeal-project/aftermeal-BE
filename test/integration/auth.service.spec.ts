@@ -17,7 +17,7 @@ import { LoginResponseDto } from '../../src/modules/auth/presentation/dto/login-
 import { TokenRefreshResponseDto } from '../../src/modules/auth/presentation/dto/token-refresh-response.dto';
 import { generateRandomString } from '@common/utils/src/generate-random-string';
 import { REFRESH_TOKEN_REPOSITORY } from '@common/constants';
-import { RefreshTokenRepository } from '../../src/modules/auth/domain/refresh-token.repository';
+import { RefreshTokenRepository } from '../../src/modules/auth/domain/repositories/refresh-token.repository';
 
 describe('AuthService', () => {
   let authService: AuthService;

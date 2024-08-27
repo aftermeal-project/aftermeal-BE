@@ -6,9 +6,10 @@ import { Public } from '@common/decorators/public.decorator';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
-  ApiCreatedResponse, ApiNotFoundResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger';
 
 @ApiTags('users')

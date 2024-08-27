@@ -1,7 +1,7 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTimeEntity } from '@common/models/base-time.entity';
 import { User } from '../../user/domain/user.entity';
-import { ActivitySchedule } from '../../activity/domain/activity-schedule.entity';
+import { ActivitySchedule } from '../../activity/domain/entities/activity-schedule.entity';
 
 @Entity()
 export class Participation extends BaseTimeEntity {

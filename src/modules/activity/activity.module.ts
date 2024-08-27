@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { ActivityScheduleService } from './application/activity-schedule.service';
 import { ActivityController } from './presentation/activity.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Activity } from './domain/activity.entity';
+import { Activity } from './domain/entities/activity.entity';
 import { ActivityTypeormRepository } from './infrastructure/activity-item-typeorm.repository';
 import {
   ACTIVITY_REPOSITORY,
   ACTIVITY_SCHEDULE_REPOSITORY,
 } from '@common/constants';
-import { ActivitySchedule } from './domain/activity-schedule.entity';
+import { ActivitySchedule } from './domain/entities/activity-schedule.entity';
 import { ActivityScheduleTypeormRepository } from './infrastructure/activity-schedule-typeorm.repository';
 import { ActivityService } from './application/activity.service';
 

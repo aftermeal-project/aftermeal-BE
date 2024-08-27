@@ -3,7 +3,7 @@ import { UserService } from '../../src/modules/user/application/user.service';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../../src/modules/user/domain/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserType } from '../../src/modules/user/domain/user-type';
+import { UserType } from '../../src/modules/user/domain/types/user-type';
 import { Role } from '../../src/modules/role/domain/role.entity';
 import { getTestMysqlModule } from '../get-test-mysql.module';
 import {

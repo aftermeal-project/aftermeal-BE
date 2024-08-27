@@ -9,11 +9,11 @@ import { ConfigModule, ConfigType } from '@nestjs/config';
 import jwtConfiguration from '@config/jwt.config';
 import redisConfiguration from '@config/redis.config';
 import { TokenService } from '../../src/modules/auth/application/token.service';
-import { AccessTokenPayload } from '../../src/modules/auth/types/jwt-payload';
+import { AccessTokenPayload } from '../../src/modules/auth/domain/types/jwt-payload';
 import { JwtService } from '@nestjs/jwt';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { REFRESH_TOKEN_REPOSITORY } from '@common/constants';
-import { RefreshTokenRepository } from '../../src/modules/auth/domain/refresh-token.repository';
+import { RefreshTokenRepository } from '../../src/modules/auth/domain/repositories/refresh-token.repository';
 import { AuthModule } from '../../src/modules/auth/auth.module';
 
 describe('TokenService', () => {

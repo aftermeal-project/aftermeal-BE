@@ -3,12 +3,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getTestMysqlModule } from '../get-test-mysql.module';
 import { ActivityModule } from '../../src/modules/activity/activity.module';
 import { DataSource, Repository } from 'typeorm';
-import { ActivityRepository } from '../../src/modules/activity/domain/activity.repository';
+import { ActivityRepository } from '../../src/modules/activity/domain/repositories/activity.repository';
 import {
   ACTIVITY_REPOSITORY,
   ACTIVITY_SCHEDULE_REPOSITORY,
 } from '@common/constants';
-import { Activity } from '../../src/modules/activity/domain/activity.entity';
+import { Activity } from '../../src/modules/activity/domain/entities/activity.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';
 import { User } from '../../src/modules/user/domain/user.entity';
@@ -19,8 +19,8 @@ import {
 } from 'typeorm-transactional';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { ActivityScheduleSummaryResponseDto } from '../../src/modules/activity/presentation/dto/activity-schedule-summary-response.dto';
-import { ActivitySchedule } from '../../src/modules/activity/domain/activity-schedule.entity';
-import { ActivityScheduleRepository } from '../../src/modules/activity/domain/activity-schedule.repository';
+import { ActivitySchedule } from '../../src/modules/activity/domain/entities/activity-schedule.entity';
+import { ActivityScheduleRepository } from '../../src/modules/activity/domain/repositories/activity-schedule.repository';
 import { DAY_OF_WEEK } from '../../src/modules/activity/domain/types/day-of-week';
 import { EActivityScheduleType } from '../../src/modules/activity/domain/types/activity-schedule-type';
 

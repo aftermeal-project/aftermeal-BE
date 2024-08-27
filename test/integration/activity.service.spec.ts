@@ -1,6 +1,6 @@
-import { Activity } from '../../src/modules/activity/domain/activity.entity';
+import { Activity } from '../../src/modules/activity/domain/entities/activity.entity';
 import { ActivityResponseDto } from '../../src/modules/activity/presentation/dto/activity-response.dto';
-import { ActivityRepository } from '../../src/modules/activity/domain/activity.repository';
+import { ActivityRepository } from '../../src/modules/activity/domain/repositories/activity.repository';
 import { DataSource } from 'typeorm';
 import { User } from '../../src/modules/user/domain/user.entity';
 import { Participation } from '../../src/modules/participation/domain/participation.entity';

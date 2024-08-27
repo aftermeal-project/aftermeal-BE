@@ -1,5 +1,5 @@
 import { RedisClientType } from 'redis';
-import { RefreshTokenRepository } from '../domain/refresh-token.repository';
+import { RefreshTokenRepository } from '../domain/repositories/refresh-token.repository';
 import { Inject } from '@nestjs/common';
 import { REDIS_CLIENT } from '@common/constants';
 

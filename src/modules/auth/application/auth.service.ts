@@ -6,7 +6,7 @@ import { User } from '../../user/domain/user.entity';
 import { Role } from '../../role/domain/role.entity';
 import { RoleService } from '../../role/application/role.service';
 import { TokenRefreshResponseDto } from '../presentation/dto/token-refresh-response.dto';
-import { AccessTokenPayload } from '../types/jwt-payload';
+import { AccessTokenPayload } from '../domain/types/jwt-payload';
 
 @Injectable()
 export class AuthService {

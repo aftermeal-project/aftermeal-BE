@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
   username: dbConfig.user,
   password: dbConfig.password,
   database: dbConfig.name,
-  entities: [join(__dirname, '../../modules/*/domain/*.entity{.ts,.js}')],
+  entities: [join(__dirname, '../../modules/*/domain/**/*.entity{.ts,.js}')],
   migrations: [join(__dirname, '../migrations/*{.ts,.js}')],
   migrationsTableName: 'migrations',
   synchronize: false,

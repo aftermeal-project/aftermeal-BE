@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { Activity } from '../../domain/activity.entity';
+import { Activity } from '../../domain/entities/activity.entity';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 export class ActivityResponseDto {
