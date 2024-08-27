@@ -19,7 +19,7 @@ import { ParticipationService } from '../../src/modules/participation/applicatio
 import { ParticipationModule } from '../../src/modules/participation/participation.module';
 import { ActivityScheduleRepository } from '../../src/modules/activity/domain/activity-schedule.repository';
 import { DAY_OF_WEEK } from '../../src/modules/activity/domain/day-of-week';
-import { TimeSlot } from '../../src/modules/activity/domain/time-slot';
+import { ActivityScheduleType } from '../../src/modules/activity/domain/activity-schedule-type';
 import { ActivitySchedule } from '../../src/modules/activity/domain/activity-schedule.entity';
 
 describe('ParticipationService', () => {
@@ -68,7 +68,7 @@ describe('ParticipationService', () => {
 
       const activitySchedule = ActivitySchedule.create(
         DAY_OF_WEEK.FRIDAY,
-        TimeSlot.LUNCH,
+        ActivityScheduleType.LUNCH,
         activity,
       );
       await activityScheduleRepository.save(activitySchedule);

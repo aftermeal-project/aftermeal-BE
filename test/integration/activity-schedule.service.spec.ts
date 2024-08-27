@@ -22,7 +22,7 @@ import { ActivityScheduleSummaryResponseDto } from '../../src/modules/activity/p
 import { ActivitySchedule } from '../../src/modules/activity/domain/activity-schedule.entity';
 import { ActivityScheduleRepository } from '../../src/modules/activity/domain/activity-schedule.repository';
 import { DAY_OF_WEEK } from '../../src/modules/activity/domain/day-of-week';
-import { TimeSlot } from '../../src/modules/activity/domain/time-slot';
+import { ActivityScheduleType } from '../../src/modules/activity/domain/activity-schedule-type';
 
 describe('ActivityScheduleService', () => {
   let activityScheduleService: ActivityScheduleService;
@@ -73,7 +73,7 @@ describe('ActivityScheduleService', () => {
       const activity: Activity = Activity.create('배구', 18);
       const activitySchedule: ActivitySchedule = ActivitySchedule.create(
         DAY_OF_WEEK.FRIDAY,
-        TimeSlot.LUNCH,
+        ActivityScheduleType.LUNCH,
         activity,
       );
       await activityScheduleRepository.save(activitySchedule);
@@ -97,7 +97,7 @@ describe('ActivityScheduleService', () => {
 
       const activitySchedule: ActivitySchedule = ActivitySchedule.create(
         DAY_OF_WEEK.FRIDAY,
-        TimeSlot.LUNCH,
+        ActivityScheduleType.LUNCH,
         activity,
       );
       await activityScheduleRepository.save(activitySchedule);
@@ -122,17 +122,17 @@ describe('ActivityScheduleService', () => {
 
       const activitySchedule1: ActivitySchedule = ActivitySchedule.create(
         DAY_OF_WEEK.FRIDAY,
-        TimeSlot.LUNCH,
+        ActivityScheduleType.LUNCH,
         activity1,
       );
       const activitySchedule2: ActivitySchedule = ActivitySchedule.create(
         DAY_OF_WEEK.FRIDAY,
-        TimeSlot.LUNCH,
+        ActivityScheduleType.LUNCH,
         activity2,
       );
       const activitySchedule3: ActivitySchedule = ActivitySchedule.create(
         DAY_OF_WEEK.FRIDAY,
-        TimeSlot.LUNCH,
+        ActivityScheduleType.LUNCH,
         activity3,
       );
       await activityScheduleRepository.saveAll([

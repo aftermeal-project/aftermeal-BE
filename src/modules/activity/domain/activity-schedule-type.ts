@@ -1,4 +1,4 @@
-export enum TimeSlot {
+export enum ActivityScheduleType {
   LUNCH = 'LUNCH',
   DINNER = 'DINNER',
 }
