@@ -1,6 +1,6 @@
 import { Enum, EnumType } from 'ts-jenum';
 
-@Enum('_code')
+@Enum('code')
 export class ESchool extends EnumType<ESchool>() {
   static readonly GSM: ESchool = new ESchool(
     'GSM',
@@ -14,6 +14,10 @@ export class ESchool extends EnumType<ESchool>() {
     readonly _emailFormat: RegExp,
   ) {
     super();
+  }
+
+  get code(): string {
+    return this._code;
   }
 
   get emailFormat(): RegExp {

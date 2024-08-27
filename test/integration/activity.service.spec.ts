@@ -15,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ACTIVITY_REPOSITORY } from '@common/constants';
 import { ActivityService } from '../../src/modules/activity/application/activity.service';
 
-describe('ActivityItemService', () => {
+describe('ActivityService', () => {
   let activityService: ActivityService;
   let activityRepository: ActivityRepository;
   let dataSource: DataSource;
@@ -31,9 +31,7 @@ describe('ActivityItemService', () => {
     }).compile();
 
     activityService = moduleRef.get<ActivityService>(ActivityService);
-    activityRepository = moduleRef.get<ActivityRepository>(
-      ACTIVITY_REPOSITORY,
-    );
+    activityRepository = moduleRef.get<ActivityRepository>(ACTIVITY_REPOSITORY);
     dataSource = moduleRef.get<DataSource>(DataSource);
   });
 
@@ -45,7 +43,7 @@ describe('ActivityItemService', () => {
     await dataSource.destroy();
   });
 
-  describe('getActivityItems', () => {
+  describe('getActivities', () => {
     it('활동 항목 목록을 가져온다.', async () => {
       // given
       const activity1: Activity = Activity.create('배구', 18);

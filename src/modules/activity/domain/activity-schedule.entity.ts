@@ -8,9 +8,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Activity } from './activity.entity';
-import { DAY_OF_WEEK } from './day-of-week';
-import { ActivityScheduleType } from './activity-schedule-type';
+import { DAY_OF_WEEK } from './types/day-of-week';
+import { EActivityScheduleType } from './types/activity-schedule-type';
 import { Participation } from '../../participation/domain/participation.entity';
+import { ActivityScheduleTypeTransformer } from './types/activity-schedule-type.transformer';
 
 @Entity()
 export class ActivitySchedule extends BaseTimeEntity {
@@ -20,8 +21,10 @@ export class ActivitySchedule extends BaseTimeEntity {
   @Column()
   dayOfWeek: DAY_OF_WEEK;
 
-  @Column()
-  type: ActivityScheduleType;
+  @Column({
+    transformer: new ActivityScheduleTypeTransformer(),
+  })
+  type: EActivityScheduleType;
 
   @ManyToOne(() => Activity)
   @JoinColumn({
@@ -38,12 +41,12 @@ export class ActivitySchedule extends BaseTimeEntity {
 
   static create(
     day: DAY_OF_WEEK,
-    timeSlot: ActivityScheduleType,
+    type: EActivityScheduleType,
     activity: Activity,
   ): ActivitySchedule {
     const activitySchedule = new ActivitySchedule();
     activitySchedule.dayOfWeek = day;
-    activitySchedule.type = timeSlot;
+    activitySchedule.type = type;
     activitySchedule.activity = activity;
     return activitySchedule;
   }
