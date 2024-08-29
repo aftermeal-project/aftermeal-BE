@@ -8,23 +8,29 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Activity } from './activity.entity';
-import { DAY_OF_WEEK } from '../types/day-of-week';
 import { EActivityScheduleType } from '../types/activity-schedule-type';
 import { Participation } from '../../../participation/domain/participation.entity';
 import { ActivityScheduleTypeTransformer } from '../types/activity-schedule-type.transformer';
+import { LocalDate } from '@js-joda/core';
+import { LocalDateTransformer } from '@common/transformers/local-date.transformer';
 
 @Entity()
 export class ActivitySchedule extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  dayOfWeek: DAY_OF_WEEK;
-
   @Column({
+    type: 'enum',
+    enum: EActivityScheduleType.values(),
     transformer: new ActivityScheduleTypeTransformer(),
   })
   type: EActivityScheduleType;
+
+  @Column({
+    type: 'date',
+    transformer: new LocalDateTransformer(),
+  })
+  scheduledDate: LocalDate;
 
   @ManyToOne(() => Activity)
   @JoinColumn({
@@ -40,13 +46,13 @@ export class ActivitySchedule extends BaseTimeEntity {
   participation: Participation[];
 
   static create(
-    day: DAY_OF_WEEK,
     type: EActivityScheduleType,
+    scheduledDate: LocalDate,
     activity: Activity,
   ): ActivitySchedule {
     const activitySchedule = new ActivitySchedule();
-    activitySchedule.dayOfWeek = day;
     activitySchedule.type = type;
+    activitySchedule.scheduledDate = scheduledDate;
     activitySchedule.activity = activity;
     return activitySchedule;
   }

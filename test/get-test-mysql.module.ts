@@ -21,7 +21,7 @@ export function getTestMysqlModule(): DynamicModule {
         password: 'test',
         database: 'test',
         entities: [
-          join(__dirname, '../src/modules/*/domain/*.entity{.ts,.js}'),
+          join(__dirname, '../src/modules/*/domain/**/*.entity{.ts,.js}'),
         ],
         synchronize: false,
         logging: process.env.DB_LOGGING === 'true',

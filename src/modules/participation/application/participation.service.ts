@@ -12,16 +12,19 @@ export class ParticipationService {
   constructor(
     @InjectRepository(Participation)
     private readonly participationRepository: Repository<Participation>,
-    private readonly activityService: ActivityScheduleService,
+    private readonly activityScheduleService: ActivityScheduleService,
     private readonly userService: UserService,
   ) {}
 
   async applyParticipation(activityId: number, userId: number): Promise<void> {
     const user: User = await this.userService.getUserById(userId);
-    const activity: ActivitySchedule =
-      await this.activityService.getActivityScheduleById(activityId);
+    const activitySchedule: ActivitySchedule =
+      await this.activityScheduleService.getActivityScheduleById(activityId);
 
-    const participation: Participation = Participation.create(user, activity);
+    const participation: Participation = Participation.create(
+      user,
+      activitySchedule,
+    );
     await this.participationRepository.save(participation);
   }
 }

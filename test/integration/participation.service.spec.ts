@@ -18,9 +18,9 @@ import {
 import { ParticipationService } from '../../src/modules/participation/application/participation.service';
 import { ParticipationModule } from '../../src/modules/participation/participation.module';
 import { ActivityScheduleRepository } from '../../src/modules/activity/domain/repositories/activity-schedule.repository';
-import { DAY_OF_WEEK } from '../../src/modules/activity/domain/types/day-of-week';
 import { EActivityScheduleType } from '../../src/modules/activity/domain/types/activity-schedule-type';
 import { ActivitySchedule } from '../../src/modules/activity/domain/entities/activity-schedule.entity';
+import { LocalDate } from '@js-joda/core';
 
 describe('ParticipationService', () => {
   let participationService: ParticipationService;
@@ -67,8 +67,8 @@ describe('ParticipationService', () => {
       await activityRepository.save(activity);
 
       const activitySchedule = ActivitySchedule.create(
-        DAY_OF_WEEK.FRIDAY,
         EActivityScheduleType.LUNCH,
+        LocalDate.now(),
         activity,
       );
       await activityScheduleRepository.save(activitySchedule);

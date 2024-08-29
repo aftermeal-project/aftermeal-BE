@@ -21,8 +21,8 @@ import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { ActivityScheduleSummaryResponseDto } from '../../src/modules/activity/presentation/dto/activity-schedule-summary-response.dto';
 import { ActivitySchedule } from '../../src/modules/activity/domain/entities/activity-schedule.entity';
 import { ActivityScheduleRepository } from '../../src/modules/activity/domain/repositories/activity-schedule.repository';
-import { DAY_OF_WEEK } from '../../src/modules/activity/domain/types/day-of-week';
 import { EActivityScheduleType } from '../../src/modules/activity/domain/types/activity-schedule-type';
+import { LocalDate } from '@js-joda/core';
 
 describe('ActivityScheduleService', () => {
   let activityScheduleService: ActivityScheduleService;
@@ -72,8 +72,8 @@ describe('ActivityScheduleService', () => {
       // given
       const activity: Activity = Activity.create('배구', 18);
       const activitySchedule: ActivitySchedule = ActivitySchedule.create(
-        DAY_OF_WEEK.FRIDAY,
         EActivityScheduleType.LUNCH,
+        LocalDate.now(),
         activity,
       );
       await activityScheduleRepository.save(activitySchedule);
@@ -96,8 +96,8 @@ describe('ActivityScheduleService', () => {
       await activityRepository.save(activity);
 
       const activitySchedule: ActivitySchedule = ActivitySchedule.create(
-        DAY_OF_WEEK.FRIDAY,
         EActivityScheduleType.LUNCH,
+        LocalDate.now(),
         activity,
       );
       await activityScheduleRepository.save(activitySchedule);
@@ -121,18 +121,18 @@ describe('ActivityScheduleService', () => {
       await activityRepository.saveAll([activity1, activity2, activity3]);
 
       const activitySchedule1: ActivitySchedule = ActivitySchedule.create(
-        DAY_OF_WEEK.FRIDAY,
         EActivityScheduleType.LUNCH,
+        LocalDate.now(),
         activity1,
       );
       const activitySchedule2: ActivitySchedule = ActivitySchedule.create(
-        DAY_OF_WEEK.FRIDAY,
         EActivityScheduleType.LUNCH,
+        LocalDate.now(),
         activity2,
       );
       const activitySchedule3: ActivitySchedule = ActivitySchedule.create(
-        DAY_OF_WEEK.FRIDAY,
         EActivityScheduleType.LUNCH,
+        LocalDate.now(),
         activity3,
       );
       await activityScheduleRepository.saveAll([
