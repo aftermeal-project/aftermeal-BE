@@ -13,6 +13,7 @@ import { Participation } from '../../../participation/domain/participation.entit
 import { ActivityScheduleTypeTransformer } from '../types/activity-schedule-type.transformer';
 import { LocalDate } from '@js-joda/core';
 import { LocalDateTransformer } from '@common/transformers/local-date.transformer';
+import { ActivityScheduleStatus } from '../types/activity-schedule-status';
 
 @Entity()
 export class ActivitySchedule extends BaseTimeEntity {
@@ -31,6 +32,13 @@ export class ActivitySchedule extends BaseTimeEntity {
     transformer: new LocalDateTransformer(),
   })
   scheduledDate: LocalDate;
+
+  @Column({
+    type: 'enum',
+    enum: ActivityScheduleStatus,
+    default: ActivityScheduleStatus.SCHEDULED,
+  })
+  status: ActivityScheduleStatus;
 
   @ManyToOne(() => Activity)
   @JoinColumn({
