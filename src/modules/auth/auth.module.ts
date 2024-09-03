@@ -9,13 +9,16 @@ import { AuthController } from './presentation/controllers/auth.controller';
 import { AuthService } from './application/auth.service';
 import { UserModule } from '../user/user.module';
 import { RoleModule } from '../role/role.module';
-import { REDIS_CLIENT, REFRESH_TOKEN_REPOSITORY } from '@common/constants';
+import {
+  REDIS_CLIENT,
+  REFRESH_TOKEN_REPOSITORY,
+} from '@common/constants/dependency-token';
 import { ConfigType } from '@nestjs/config';
 import redisConfiguration from '@config/redis.config';
 import { createClient, RedisClientType } from 'redis';
 import { TokenService } from './application/token.service';
 import { JwtModule } from '@nestjs/jwt';
-import { RefreshTokenRedisRepository } from './infrastructure/refresh-token-redis.repository';
+import { RefreshTokenRedisRepository } from './infrastructure/persistence/refresh-token-redis.repository';
 import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
 
 @Module({

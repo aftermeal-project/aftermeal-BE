@@ -1,6 +1,6 @@
-import { User } from '../../src/modules/user/domain/user.entity';
-import { Role } from '../../src/modules/role/domain/role.entity';
-import { Generation } from '../../src/modules/generation/domain/generation.entity';
+import { User } from '../../src/modules/user/domain/entities/user.entity';
+import { Role } from '../../src/modules/role/domain/entities/role.entity';
+import { Generation } from '../../src/modules/generation/domain/entities/generation.entity';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 
 describe('User', () => {

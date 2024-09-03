@@ -1,6 +1,6 @@
 import { UserService } from '../../src/modules/user/application/user.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from '../../src/modules/user/presentation/user.controller';
+import { UserController } from '../../src/modules/user/presentation/controllers/user.controller';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { setNestApp } from '../../src/set-nest-app';

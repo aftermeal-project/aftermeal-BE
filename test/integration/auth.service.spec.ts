@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from '../../src/modules/user/domain/user.entity';
-import { Role } from '../../src/modules/role/domain/role.entity';
+import { User } from '../../src/modules/user/domain/entities/user.entity';
+import { Role } from '../../src/modules/role/domain/entities/role.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { getTestMysqlModule } from '../get-test-mysql.module';
 import { ConfigModule } from '@nestjs/config';
@@ -16,12 +16,14 @@ import redisConfig from '@config/redis.config';
 import { LoginResponseDto } from '../../src/modules/auth/presentation/dto/login-response.dto';
 import { TokenRefreshResponseDto } from '../../src/modules/auth/presentation/dto/token-refresh-response.dto';
 import { generateRandomString } from '@common/utils/src/generate-random-string';
-import { REFRESH_TOKEN_REPOSITORY } from '@common/constants';
+import { REFRESH_TOKEN_REPOSITORY } from '@common/constants/dependency-token';
 import { RefreshTokenRepository } from '../../src/modules/auth/domain/repositories/refresh-token.repository';
+import { UserRepository } from '../../src/modules/user/domain/repositories/user.repository';
+import { USER_REPOSITORY } from '@common/constants/dependency-token';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let userRepository: Repository<User>;
+  let userRepository: UserRepository;
   let roleRepository: Repository<Role>;
   let refreshTokenRepository: RefreshTokenRepository;
   let dataSource: DataSource;
@@ -42,16 +44,16 @@ describe('AuthService', () => {
     }).compile();
     await moduleRef.init();
 
-    authService = moduleRef.get(AuthService);
-    userRepository = moduleRef.get(getRepositoryToken(User));
-    roleRepository = moduleRef.get(getRepositoryToken(Role));
+    authService = moduleRef.get<AuthService>(AuthService);
+    userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
+    roleRepository = moduleRef.get<Repository<Role>>(getRepositoryToken(Role));
     refreshTokenRepository = moduleRef.get(REFRESH_TOKEN_REPOSITORY);
     dataSource = moduleRef.get(DataSource);
   });
 
   afterEach(async () => {
     await roleRepository.delete({});
-    await userRepository.delete({});
+    await userRepository.deleteAll();
     await refreshTokenRepository.deleteAll();
   });
 

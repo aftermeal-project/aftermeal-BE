@@ -6,9 +6,9 @@ import {
   IsPositive,
 } from 'class-validator';
 import { UserType } from '../../domain/types/user-type';
-import { User } from '../../domain/user.entity';
-import { Role } from '../../../role/domain/role.entity';
-import { Generation } from '../../../generation/domain/generation.entity';
+import { User } from '../../domain/entities/user.entity';
+import { Role } from '../../../role/domain/entities/role.entity';
+import { Generation } from '../../../generation/domain/entities/generation.entity';
 
 export class UserRegistrationRequestDto {
   constructor(

@@ -12,7 +12,7 @@ import { TokenService } from '../../src/modules/auth/application/token.service';
 import { AccessTokenPayload } from '../../src/modules/auth/domain/types/jwt-payload';
 import { JwtService } from '@nestjs/jwt';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
-import { REFRESH_TOKEN_REPOSITORY } from '@common/constants';
+import { REFRESH_TOKEN_REPOSITORY } from '@common/constants/dependency-token';
 import { RefreshTokenRepository } from '../../src/modules/auth/domain/repositories/refresh-token.repository';
 import { AuthModule } from '../../src/modules/auth/auth.module';
 

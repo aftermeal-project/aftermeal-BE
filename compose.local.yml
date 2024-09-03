@@ -21,6 +21,7 @@ services:
     image: redis:7.4
     ports:
       - "6379:6379"
+    command: redis-server --requirepass test
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping"]
       interval: 5s

@@ -7,7 +7,7 @@ import {
   ValidationError,
 } from 'class-validator';
 import { IsNumber, IsString } from 'class-validator';
-import { ENVIRONMENT } from '@common/constants';
+import { ENVIRONMENT } from '@common/constants/environment';
 
 class EnvironmentVariables {
   @IsEnum(ENVIRONMENT)

@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { User } from '../../domain/user.entity';
+import { User } from '../../domain/entities/user.entity';
 
 export class UserRegistrationResponseDto {
   @Exclude() private readonly _id: number;

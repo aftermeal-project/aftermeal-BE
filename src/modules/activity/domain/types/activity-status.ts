@@ -1,0 +1,6 @@
+export enum ActivityStatus {
+  SCHEDULED = 'SCHEDULED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  CANCELED = 'CANCELED',
+  COMPLETED = 'COMPLETED',
+}

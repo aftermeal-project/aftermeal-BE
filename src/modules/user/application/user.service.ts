@@ -1,30 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { User } from '../domain/user.entity';
-import { Role } from '../../role/domain/role.entity';
+import { Inject, Injectable } from '@nestjs/common';
+import { User } from '../domain/entities/user.entity';
+import { Role } from '../../role/domain/entities/role.entity';
 import { UserType } from '../domain/types/user-type';
-import { InjectRepository } from '@nestjs/typeorm';
 import { GenerationService } from '../../generation/application/generation.service';
 import { RoleService } from '../../role/application/role.service';
 import { Transactional } from 'typeorm-transactional';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { UserRegistrationRequestDto } from '../presentation/dto/user-registration-request.dto';
-import { Generation } from '../../generation/domain/generation.entity';
-import { UserAlreadyExistException } from '@common/exceptions/user-already-exist.exception';
+import { Generation } from '../../generation/domain/entities/generation.entity';
+import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
+import { USER_REPOSITORY } from '@common/constants/dependency-token';
+import { UserRepository } from '../domain/repositories/user.repository';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: UserRepository,
     private readonly roleService: RoleService,
     private readonly generationService: GenerationService,
   ) {}
 
   async getUserById(userId: number): Promise<User> {
-    const user: User | undefined = await this.userRepository.findOneBy({
-      id: userId,
-    });
+    const user: User | undefined =
+      await this.userRepository.findOneById(userId);
     if (!user) {
       throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
@@ -32,9 +31,8 @@ export class UserService {
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const user: User | undefined = await this.userRepository.findOneBy({
-      email: email,
-    });
+    const user: User | undefined =
+      await this.userRepository.findOneByEmail(email);
     if (!user) {
       throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
@@ -60,13 +58,10 @@ export class UserService {
   }
 
   private async validateEmailDuplication(email: string): Promise<void> {
-    const isMemberExists: boolean = await this.userRepository.exists({
-      where: {
-        email: email,
-      },
-    });
+    const isMemberExists: boolean =
+      await this.userRepository.existsByEmail(email);
     if (isMemberExists) {
-      throw new UserAlreadyExistException('이미 등록된 이메일입니다.');
+      throw new AlreadyExistException('이미 등록된 이메일입니다.');
     }
   }
 }

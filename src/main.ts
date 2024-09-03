@@ -10,7 +10,7 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 import * as process from 'process';
-import { ENVIRONMENT } from '@common/constants';
+import { ENVIRONMENT } from '@common/constants/environment';
 
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });

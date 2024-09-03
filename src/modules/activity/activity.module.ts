@@ -1,32 +1,27 @@
 import { Module } from '@nestjs/common';
-import { ActivityScheduleService } from './application/activity-schedule.service';
-import { ActivityController } from './presentation/activity.controller';
+import { ActivityService } from './application/activity.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Activity } from './domain/entities/activity.entity';
-import { ActivityTypeormRepository } from './infrastructure/activity-item-typeorm.repository';
-import {
-  ACTIVITY_REPOSITORY,
-  ACTIVITY_SCHEDULE_REPOSITORY,
-} from '@common/constants';
-import { ActivitySchedule } from './domain/entities/activity-schedule.entity';
-import { ActivityScheduleTypeormRepository } from './infrastructure/activity-schedule-typeorm.repository';
-import { ActivityService } from './application/activity.service';
+import { ACTIVITY_REPOSITORY } from '@common/constants/dependency-token';
+import { ActivityTypeormRepository } from './infrastructure/persistence/activity-typeorm.repository';
+import { ActivityController } from './presentation/controllers/activity.controller';
+import { ParticipationModule } from '../participation/participation.module';
+import { AdminActivityController } from './presentation/controllers/admin-activity.controller';
+import { ActivityLocationModule } from '../activity-location/activity-location.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ActivitySchedule, Activity])],
-  controllers: [ActivityController],
+  imports: [
+    TypeOrmModule.forFeature([Activity]),
+    ParticipationModule,
+    ActivityLocationModule,
+  ],
+  controllers: [ActivityController, AdminActivityController],
   providers: [
-    ActivityScheduleService,
     ActivityService,
     {
       provide: ACTIVITY_REPOSITORY,
       useClass: ActivityTypeormRepository,
     },
-    {
-      provide: ACTIVITY_SCHEDULE_REPOSITORY,
-      useClass: ActivityScheduleTypeormRepository,
-    },
   ],
-  exports: [ActivityScheduleService],
 })
 export class ActivityModule {}

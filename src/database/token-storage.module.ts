@@ -8,7 +8,7 @@ import {
 import { ConfigType } from '@nestjs/config';
 import { createClient, RedisClientType } from 'redis';
 import redisConfiguration from '@config/redis.config';
-import { REDIS_CLIENT } from '@common/constants';
+import { REDIS_CLIENT } from '@common/constants/dependency-token';
 
 @Module({
   providers: [

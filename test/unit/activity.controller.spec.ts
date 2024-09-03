@@ -1,17 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ActivityScheduleService } from '../../src/modules/activity/application/activity-schedule.service';
-import { ActivityController } from '../../src/modules/activity/presentation/activity.controller';
+import { ActivityService } from '../../src/modules/activity/application/activity.service';
+import { ActivityController } from '../../src/modules/activity/presentation/controllers/activity.controller';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { setNestApp } from '../../src/set-nest-app';
-import { ActivityService } from '../../src/modules/activity/application/activity.service';
 
 const mockActivityService = {
-  getActivities: jest.fn(),
-};
-
-const mockActivityScheduleService = {
-  getActivityScheduleSummaries: jest.fn(),
+  participate: jest.fn(),
+  getActivityList: jest.fn(),
+  getActivityDetails: jest.fn(),
+  cancelActivityJoin: jest.fn(),
 };
 
 describe('ActivityController', () => {
@@ -21,10 +19,6 @@ describe('ActivityController', () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [ActivityController],
       providers: [
-        {
-          provide: ActivityScheduleService,
-          useValue: mockActivityScheduleService,
-        },
         {
           provide: ActivityService,
           useValue: mockActivityService,
@@ -37,11 +31,33 @@ describe('ActivityController', () => {
     await app.init();
   });
 
-  describe('getActivityScheduleSummaries', () => {
-    it('활동 일정 요약 목록을 가져온다.', async () => {
+  describe('participate', () => {
+    it('활동에 참가한다.', async () => {
+      // given
+      const activityId = 1;
+      const user = {
+        id: 1,
+        email: 'test@example.com',
+      };
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post(`/v1/activities/${activityId}/joins`)
+        .send(user);
+
+      // then
+      expect(response.status).toBe(201);
+    });
+  });
+
+  describe('getActivityByActivityId', () => {
+    it('활동 ID를 통해 활동을 가져온다.', async () => {
+      // given
+      const activityId = 1;
+
       // when
       const response = await request(app.getHttpServer()).get(
-        '/v1/activities/summary',
+        `/v1/activities/${activityId}`,
       );
 
       // then
@@ -49,10 +65,46 @@ describe('ActivityController', () => {
     });
   });
 
-  describe('getActivities', () => {
+  describe('getActivityList', () => {
     it('활동 목록을 가져온다.', async () => {
       // when
       const response = await request(app.getHttpServer()).get('/v1/activities');
+
+      // then
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe('getActivityDetailsByActivityId', () => {
+    it('활동 ID를 통해 해당하는 활동의 상세 정보를 가져온다.', async () => {
+      // given
+      const activityId = 1;
+
+      // when
+      const response = await request(app.getHttpServer()).get(
+        `/v1/activities/${activityId}`,
+      );
+
+      // then
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe('cancelActivityJoin', () => {
+    it('활동 참가를 취소한다.', async () => {
+      // given
+      const activityId = 1;
+      const participationId = 1;
+
+      const user = {
+        id: 1,
+        email: 'test@example.com',
+      };
+
+      // when
+      const response = await request(app.getHttpServer())
+        .delete(`/v1/activities/${activityId}/joins/${participationId}`)
+        .send(user);
 
       // then
       expect(response.status).toBe(200);

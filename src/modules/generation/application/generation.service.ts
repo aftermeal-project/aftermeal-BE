@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Generation } from '../domain/generation.entity';
+import { Generation } from '../domain/entities/generation.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException } from '@common/exceptions/not-found.exception';

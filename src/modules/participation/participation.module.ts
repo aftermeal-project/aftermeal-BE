@@ -1,18 +1,19 @@
 import { Module } from '@nestjs/common';
-import { ParticipationController } from './presentation/participation.controller';
 import { ParticipationService } from './application/participation.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Participation } from './domain/participation.entity';
-import { ActivityModule } from '../activity/activity.module';
-import { UserModule } from '../user/user.module';
+import { Participation } from './domain/entities/participation.entity';
+import { PARTICIPATION_REPOSITORY } from '@common/constants/dependency-token';
+import { ParticipationTypeormRepository } from './domain/repositories/participation-typeorm.repository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Participation]),
-    ActivityModule,
-    UserModule,
+  imports: [TypeOrmModule.forFeature([Participation])],
+  providers: [
+    ParticipationService,
+    {
+      provide: PARTICIPATION_REPOSITORY,
+      useClass: ParticipationTypeormRepository,
+    },
   ],
-  controllers: [ParticipationController],
-  providers: [ParticipationService],
+  exports: [ParticipationService],
 })
 export class ParticipationModule {}

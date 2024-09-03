@@ -1,23 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../../src/modules/user/application/user.service';
 import { DataSource, Repository } from 'typeorm';
-import { User } from '../../src/modules/user/domain/user.entity';
+import { User } from '../../src/modules/user/domain/entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserType } from '../../src/modules/user/domain/types/user-type';
-import { Role } from '../../src/modules/role/domain/role.entity';
+import { Role } from '../../src/modules/role/domain/entities/role.entity';
 import { getTestMysqlModule } from '../get-test-mysql.module';
 import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
 import { UserModule } from '../../src/modules/user/user.module';
-import { Generation } from '../../src/modules/generation/domain/generation.entity';
+import { Generation } from '../../src/modules/generation/domain/entities/generation.entity';
 import { UserRegistrationRequestDto } from '../../src/modules/user/presentation/dto/user-registration-request.dto';
-import { UserAlreadyExistException } from '@common/exceptions/user-already-exist.exception';
+import { UserRepository } from '../../src/modules/user/domain/repositories/user.repository';
+import { USER_REPOSITORY } from '@common/constants/dependency-token';
+import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 
 describe('UserService', () => {
   let userService: UserService;
-  let userRepository: Repository<User>;
+  let userRepository: UserRepository;
   let roleRepository: Repository<Role>;
   let generationRepository: Repository<Generation>;
   let dataSource: DataSource;
@@ -29,7 +31,7 @@ describe('UserService', () => {
     }).compile();
 
     userService = moduleRef.get<UserService>(UserService);
-    userRepository = moduleRef.get<Repository<User>>(getRepositoryToken(User));
+    userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
     roleRepository = moduleRef.get<Repository<Role>>(getRepositoryToken(Role));
     generationRepository = moduleRef.get<Repository<Generation>>(
       getRepositoryToken(Generation),
@@ -38,7 +40,7 @@ describe('UserService', () => {
   });
 
   afterEach(async () => {
-    await userRepository.delete({});
+    await userRepository.deleteAll();
     await roleRepository.delete({});
     await generationRepository.delete({});
   });
@@ -95,7 +97,7 @@ describe('UserService', () => {
       };
 
       // then
-      await expect(result).rejects.toThrow(UserAlreadyExistException);
+      await expect(result).rejects.toThrow(AlreadyExistException);
     });
   });
 });
