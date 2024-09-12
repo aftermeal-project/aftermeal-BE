@@ -11,8 +11,9 @@ import { ParticipationModule } from './modules/participation/participation.modul
 import { ActivityModule } from './modules/activity/activity.module';
 import { UserModule } from './modules/user/user.module';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './modules/auth/presentation/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { DatabaseModule } from './database/database.module';
+import { RolesGuard } from '@common/guards/roles.guard';
 
 @Module({
   imports: [
@@ -37,7 +38,11 @@ import { DatabaseModule } from './database/database.module';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useExisting: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useExisting: RolesGuard,
     },
   ],
 })

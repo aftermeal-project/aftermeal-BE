@@ -6,17 +6,21 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { AuthController } from './presentation/controllers/auth.controller';
-import { AuthService } from './application/auth.service';
+import { AuthService } from './application/services/auth.service';
 import { UserModule } from '../user/user.module';
 import { RoleModule } from '../role/role.module';
-import { REDIS_CLIENT, REFRESH_TOKEN_REPOSITORY } from '@common/constants';
+import {
+  REDIS_CLIENT,
+  REFRESH_TOKEN_REPOSITORY,
+} from '@common/constants/dependency-token';
 import { ConfigType } from '@nestjs/config';
 import redisConfiguration from '@config/redis.config';
 import { createClient, RedisClientType } from 'redis';
-import { TokenService } from './application/token.service';
+import { TokenService } from './application/services/token.service';
 import { JwtModule } from '@nestjs/jwt';
-import { RefreshTokenRedisRepository } from './infrastructure/refresh-token-redis.repository';
-import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
+import { RefreshTokenRedisRepository } from './infrastructure/persistence/refresh-token-redis.repository';
+import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
+import { RolesGuard } from '@common/guards/roles.guard';
 
 @Module({
   imports: [JwtModule.register({ global: true }), UserModule, RoleModule],
@@ -25,6 +29,7 @@ import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
     AuthService,
     TokenService,
     JwtAuthGuard,
+    RolesGuard,
     {
       provide: REDIS_CLIENT,
       useFactory: async (
@@ -41,7 +46,7 @@ import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
       useClass: RefreshTokenRedisRepository,
     },
   ],
-  exports: [REDIS_CLIENT, JwtAuthGuard],
+  exports: [REDIS_CLIENT, JwtAuthGuard, RolesGuard],
 })
 export class AuthModule implements OnModuleInit, OnModuleDestroy {
   private readonly logger: Logger = new Logger(AuthModule.name);
