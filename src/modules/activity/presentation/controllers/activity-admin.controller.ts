@@ -10,7 +10,6 @@ import {
 import { ActivityCreationRequestDto } from '../dto/activity-creation-request.dto';
 import { ResponseEntity } from '@common/models/response.entity';
 import { ActivityUpdateRequestDto } from '../dto/activity-update-request.dto';
-import { ActivityListResponseDto } from '../dto/activity-list-response.dto';
 import { ActivityDetailResponseDto } from '../dto/activity-detail-response.dto';
 import { Roles } from '@common/decorators/roles.decorator';
 import { ActivityAdminService } from '../../application/services/activity-admin.service';
@@ -30,7 +29,9 @@ export class ActivityAdminController {
   }
 
   @Get()
-  async getAllActivities(): Promise<ResponseEntity<ActivityAdminResponseDto[]>> {
+  async getAllActivities(): Promise<
+    ResponseEntity<ActivityAdminResponseDto[]>
+  > {
     const activities: ActivityAdminResponseDto[] =
       await this.activityService.getAllActivities();
     return ResponseEntity.OK_WITH_DATA(
