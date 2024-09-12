@@ -5,7 +5,7 @@ import { User } from '../../../user/domain/entities/user.entity';
 export class ActivityDetailResponseDto {
   private readonly _id: number;
   private readonly _title: string;
-  private readonly _maxParticipation: number;
+  private readonly _maxParticipants: number;
   private readonly _location: string;
   private readonly _type: string;
   private readonly _scheduledDate: LocalDate;
@@ -14,7 +14,7 @@ export class ActivityDetailResponseDto {
   constructor(
     id: number,
     title: string,
-    maxParticipation: number,
+    maxParticipants: number,
     location: string,
     type: string,
     scheduledDate: LocalDate,
@@ -22,7 +22,7 @@ export class ActivityDetailResponseDto {
   ) {
     this._id = id;
     this._title = title;
-    this._maxParticipation = maxParticipation;
+    this._maxParticipants = maxParticipants;
     this._location = location;
     this._type = type;
     this._scheduledDate = scheduledDate;
@@ -37,8 +37,8 @@ export class ActivityDetailResponseDto {
     return this._title;
   }
 
-  get maxParticipation(): number {
-    return this._maxParticipation;
+  get maxParticipants(): number {
+    return this._maxParticipants;
   }
 
   get location(): string {
@@ -63,7 +63,7 @@ export class ActivityDetailResponseDto {
     });
   }
 
-  static from(activity: Activity): ActivityDetailResponseDto {
+  static async from(activity: Activity): Promise<ActivityDetailResponseDto> {
     return new ActivityDetailResponseDto(
       activity.id,
       activity.title,
@@ -71,7 +71,9 @@ export class ActivityDetailResponseDto {
       activity.location.name,
       activity.type.enumName,
       activity.scheduledDate,
-      activity.participations.map((participation) => participation.user),
+      (await activity.participations).map(
+        (participation) => participation.user,
+      ),
     );
   }
 }

@@ -11,20 +11,6 @@ import { Role } from '../../../role/domain/entities/role.entity';
 import { Generation } from '../../../generation/domain/entities/generation.entity';
 
 export class UserRegistrationRequestDto {
-  constructor(
-    name: string,
-    email: string,
-    userType: UserType,
-    password: string,
-    generationNumber?: number,
-  ) {
-    this.name = name;
-    this.email = email;
-    this.userType = userType;
-    this.generationNumber = generationNumber;
-    this.password = password;
-  }
-
   @IsNotEmpty({ message: '이름은 필수값입니다.' })
   name: string;
 

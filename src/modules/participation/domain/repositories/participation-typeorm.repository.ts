@@ -9,11 +9,15 @@ export class ParticipationTypeormRepository implements ParticipationRepository {
     private readonly repository: Repository<Participation>,
   ) {}
 
+  async find(): Promise<Participation[]> {
+    return await this.repository.find();
+  }
+
   async findOneById(id: number): Promise<Participation> {
     return await this.repository.findOne({ where: { id: id } });
   }
 
-  async findByUserIdAndActivityId(
+  async findOneByUserIdAndActivityId(
     userId: number,
     activityId: number,
   ): Promise<Participation> {

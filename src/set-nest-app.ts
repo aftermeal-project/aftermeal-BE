@@ -8,8 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { BaseExceptionFilter } from '@common/filters/base-exception.filter';
 
 /**
- * 글로벌 미들웨어 구성을 모아두는 함수입니다.
- * E2E (End To End) 테스트에서도 실 서비스와 동일한 인터셉터 설정을 위해 공통적으로 사용하기 위함
+ * E2E (End To End) 테스트에서도 실 서비스와 동일한 설정을 위해 글로벌 미들웨어 구성을 모아두는 함수입니다.
  * @param {INestApplication} app
  */
 export function setNestApp<T extends INestApplication>(app: T): void {

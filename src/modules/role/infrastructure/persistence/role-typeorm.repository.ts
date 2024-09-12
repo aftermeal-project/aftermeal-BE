@@ -20,4 +20,8 @@ export class RoleTypeormRepository implements RoleRepository {
   async save(role: Role): Promise<void> {
     await this.repository.save(role);
   }
+
+  async deleteAll(): Promise<void> {
+    await this.repository.delete({});
+  }
 }

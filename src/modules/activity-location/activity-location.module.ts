@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActivityLocation } from './domain/entities/activity-location.entity';
-import { ActivityLocationService } from './application/activity-location.service';
+import { ActivityLocationAdminService } from './application/services/activity-location-admin.service';
 import { ACTIVITY_LOCATION_REPOSITORY } from '@common/constants/dependency-token';
 import { ActivityLocationTypeormRepository } from './infrastructure/persistence/activity-location-typeorm.repository';
-import { AdminActivityLocationController } from './presentation/controllers/admin-activity-location.controller';
+import { ActivityLocationAdminController } from './presentation/controllers/activity-location-admin.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ActivityLocation])],
-  controllers: [AdminActivityLocationController],
+  controllers: [ActivityLocationAdminController],
   providers: [
-    ActivityLocationService,
+    ActivityLocationAdminService,
     {
       provide: ACTIVITY_LOCATION_REPOSITORY,
       useClass: ActivityLocationTypeormRepository,
     },
   ],
-  exports: [ActivityLocationService],
+  exports: [ActivityLocationAdminService],
 })
 export class ActivityLocationModule {}

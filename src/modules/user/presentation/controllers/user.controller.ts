@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { UserRegistrationRequestDto } from '../dto/user-registration-request.dto';
 import { ResponseEntity } from '@common/models/response.entity';
-import { UserService } from '../../application/user.service';
+import { UserService } from '../../application/services/user.service';
 import { Public } from '@common/decorators/public.decorator';
 import {
   ApiBadRequestResponse,

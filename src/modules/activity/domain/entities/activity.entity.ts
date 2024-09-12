@@ -53,8 +53,10 @@ export class Activity extends BaseTimeEntity {
   })
   location: ActivityLocation;
 
-  @OneToMany(() => Participation, (participation) => participation.activity)
-  participations: Participation[];
+  @OneToMany(() => Participation, (participation) => participation.activity, {
+    lazy: true,
+  })
+  participations: Promise<Participation[]>;
 
   static create(
     title: string,
@@ -84,5 +86,9 @@ export class Activity extends BaseTimeEntity {
     this.location = activityLocation;
     this.type = type;
     this.scheduledDate = scheduledDate;
+  }
+
+  isStarted(): boolean {
+    return this.status === ActivityStatus.IN_PROGRESS;
   }
 }

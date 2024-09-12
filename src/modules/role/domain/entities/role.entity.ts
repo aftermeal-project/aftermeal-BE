@@ -6,7 +6,7 @@ export class Role extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   static create(name: string): Role {
