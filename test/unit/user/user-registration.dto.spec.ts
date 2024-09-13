@@ -8,7 +8,7 @@ describe('UserRegistrationRequestDto', () => {
     const dto = new UserRegistrationRequestDto();
     dto.name = '테스트';
     dto.email = 'test@example.com';
-    dto.userType = UserType.STUDENT;
+    dto.type = UserType.STUDENT;
     dto.generationNumber = 1;
     dto.password = 'G$K9Vss9-wNX6jOvY';
 
@@ -24,7 +24,7 @@ describe('UserRegistrationRequestDto', () => {
     const dto = new UserRegistrationRequestDto();
     dto.name = ''; // Invalid value
     dto.email = 'test@example.com';
-    dto.userType = UserType.STUDENT;
+    dto.type = UserType.STUDENT;
     dto.generationNumber = 1;
     dto.password = 'G$K9Vss9-wNX6jOvY';
 
@@ -41,7 +41,7 @@ describe('UserRegistrationRequestDto', () => {
     const dto = new UserRegistrationRequestDto();
     dto.name = '테스트';
     dto.email = 'invalid-email'; // Invalid value
-    dto.userType = UserType.STUDENT;
+    dto.type = UserType.STUDENT;
     dto.generationNumber = 1;
     dto.password = 'G$K9Vss9-wNX6jOvY';
 
@@ -58,7 +58,7 @@ describe('UserRegistrationRequestDto', () => {
     const dto = new UserRegistrationRequestDto();
     dto.name = '테스트';
     dto.email = 'test@example.com';
-    dto.userType = 'INVALID_TYPE' as UserType; // Invalid value
+    dto.type = 'INVALID_TYPE' as UserType; // Invalid value
     dto.generationNumber = 1;
     dto.password = 'G$K9Vss9-wNX6jOvY';
 
@@ -67,7 +67,7 @@ describe('UserRegistrationRequestDto', () => {
 
     // then
     expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].property).toBe('userType');
+    expect(errors[0].property).toBe('type');
   });
 
   it('기수 번호는 양수여야 한다.', () => {
@@ -75,7 +75,7 @@ describe('UserRegistrationRequestDto', () => {
     const dto = new UserRegistrationRequestDto();
     dto.name = '테스트';
     dto.email = 'test@example.com';
-    dto.userType = UserType.STUDENT;
+    dto.type = UserType.STUDENT;
     dto.generationNumber = -1; // Invalid value
     dto.password = 'G$K9Vss9-wNX6jOvY';
 
@@ -92,7 +92,7 @@ describe('UserRegistrationRequestDto', () => {
     const dto = new UserRegistrationRequestDto();
     dto.name = '테스트';
     dto.email = 'test@example.com';
-    dto.userType = UserType.STUDENT;
+    dto.type = UserType.STUDENT;
     dto.password = 'G$K9Vss9-wNX6jOvY';
     dto.generationNumber = undefined;
 
@@ -108,7 +108,7 @@ describe('UserRegistrationRequestDto', () => {
     const dto = new UserRegistrationRequestDto();
     dto.name = '테스트';
     dto.email = 'test@example.com';
-    dto.userType = UserType.STUDENT;
+    dto.type = UserType.STUDENT;
     dto.generationNumber = 1;
     dto.password = '';
 

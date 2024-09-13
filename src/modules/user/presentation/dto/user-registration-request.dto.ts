@@ -20,7 +20,7 @@ export class UserRegistrationRequestDto {
   @IsEnum(UserType, {
     message: `사용자 유형은 다음 값 중 하나여야 합니다: ${Object.values(UserType)}`,
   })
-  userType: UserType;
+  type: UserType;
 
   @IsPositive({ message: '기수 번호는 양수여야 합니다.' })
   @IsOptional()
@@ -30,7 +30,7 @@ export class UserRegistrationRequestDto {
   password: string;
 
   toEntity(role: Role, generation?: Generation): User {
-    return this.userType === UserType.STUDENT
+    return this.type === UserType.STUDENT
       ? User.createStudent(
           this.name,
           this.email,

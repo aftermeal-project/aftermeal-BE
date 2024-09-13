@@ -46,7 +46,7 @@ export class UserService {
     const role: Role = await this.roleService.getRoleByRoleName('USER');
     let generation: Generation | undefined;
 
-    if (dto.userType === UserType.STUDENT) {
+    if (dto.type === UserType.STUDENT) {
       generation = await this.generationService.getGenerationByGenerationNumber(
         dto.generationNumber,
       );

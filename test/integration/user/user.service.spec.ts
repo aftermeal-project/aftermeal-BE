@@ -62,7 +62,7 @@ describe('UserService', () => {
       const dto = new UserRegistrationRequestDto();
       dto.name = '테스트';
       dto.email = 'test@example.com';
-      dto.userType = UserType.TEACHER;
+      dto.type = UserType.TEACHER;
       dto.password = 'G$K9Vss9-wNX6jOvY';
 
       // when
@@ -90,7 +90,7 @@ describe('UserService', () => {
       const dto = {
         name: '테스트',
         email: email,
-        userType: UserType.TEACHER,
+        type: UserType.TEACHER,
         password: 'G$K9Vss9-wNX6jOvY',
       } as UserRegistrationRequestDto;
 
