@@ -1,4 +1,6 @@
 services:
+  reverse-proxy:
+    restart: unless-stopped
   app:
     image: ${DOCKER_REGISTRY}/app
     build:
