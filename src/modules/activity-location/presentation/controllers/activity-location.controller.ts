@@ -8,17 +8,17 @@ import {
   Post,
 } from '@nestjs/common';
 import { ResponseEntity } from '@common/models/response.entity';
-import { ActivityLocationAdminService } from '../../application/services/activity-location-admin.service';
+import { ActivityLocationService } from '../../application/services/activity-location.service';
 import { ActivityLocationResponseDto } from '../dto/activity-location-response.dto';
 import { ActivityLocationUpdateRequestDto } from '../dto/activity-location-update-request.dto';
 import { ActivityLocationCreationRequestDto } from '../dto/activity-location-creation-request.dto';
 import { Roles } from '@common/decorators/roles.decorator';
 
 @Roles('ADMIN')
-@Controller('admin/activity-locations')
-export class ActivityLocationAdminController {
+@Controller('activity-locations')
+export class ActivityLocationController {
   constructor(
-    private readonly activityLocationService: ActivityLocationAdminService,
+    private readonly activityLocationService: ActivityLocationService,
   ) {}
 
   @Post()

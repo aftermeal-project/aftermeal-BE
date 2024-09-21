@@ -7,8 +7,6 @@ import { ParticipationTypeormRepository } from './domain/repositories/participat
 import { ActivityModule } from '../activity/activity.module';
 import { UserModule } from '../user/user.module';
 import { ParticipationController } from './presentation/controllers/participation.controller';
-import { ParticipationAdminController } from './presentation/controllers/participation-admin.controller';
-import { ParticipationAdminService } from './application/services/participation-admin.service';
 
 @Module({
   imports: [
@@ -16,10 +14,9 @@ import { ParticipationAdminService } from './application/services/participation-
     ActivityModule,
     UserModule,
   ],
-  controllers: [ParticipationController, ParticipationAdminController],
+  controllers: [ParticipationController],
   providers: [
     ParticipationService,
-    ParticipationAdminService,
     {
       provide: PARTICIPATION_REPOSITORY,
       useClass: ParticipationTypeormRepository,

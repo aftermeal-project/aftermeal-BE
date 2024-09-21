@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsPositive,
+  IsString,
 } from 'class-validator';
 import { UserType } from '../../domain/types/user-type';
 import { User } from '../../domain/entities/user.entity';
@@ -11,7 +12,8 @@ import { Role } from '../../../role/domain/entities/role.entity';
 import { Generation } from '../../../generation/domain/entities/generation.entity';
 
 export class UserRegistrationRequestDto {
-  @IsNotEmpty({ message: '이름은 필수값입니다.' })
+  @IsNotEmpty({ message: '이름은 빈 값일 수 없습니다.' })
+  @IsString({ message: '이름은 문자열이어야 합니다.' })
   name: string;
 
   @IsEmail({}, { message: '이메일은 이메일 형식이어야 합니다.' })
@@ -27,6 +29,7 @@ export class UserRegistrationRequestDto {
   generationNumber?: number;
 
   @IsNotEmpty({ message: '비밀번호는 필수값입니다.' })
+  @IsString({ message: '이름은 문자열이어야 합니다.' })
   password: string;
 
   toEntity(role: Role, generation?: Generation): User {

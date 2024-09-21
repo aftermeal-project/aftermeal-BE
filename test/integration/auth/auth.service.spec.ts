@@ -16,15 +16,19 @@ import redisConfig from '@config/redis.config';
 import { LoginResponseDto } from '../../../src/modules/auth/presentation/dto/login-response.dto';
 import { TokenRefreshResponseDto } from '../../../src/modules/auth/presentation/dto/token-refresh-response.dto';
 import { generateRandomString } from '@common/utils/src/generate-random-string';
-import { REFRESH_TOKEN_REPOSITORY } from '@common/constants/dependency-token';
+import {
+  REFRESH_TOKEN_REPOSITORY,
+  ROLE_REPOSITORY,
+} from '@common/constants/dependency-token';
 import { RefreshTokenRepository } from '../../../src/modules/auth/domain/repositories/refresh-token.repository';
 import { UserRepository } from '../../../src/modules/user/domain/repositories/user.repository';
 import { USER_REPOSITORY } from '@common/constants/dependency-token';
+import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
 
 describe('AuthService', () => {
   let authService: AuthService;
   let userRepository: UserRepository;
-  let roleRepository: Repository<Role>;
+  let roleRepository: RoleRepository;
   let refreshTokenRepository: RefreshTokenRepository;
   let dataSource: DataSource;
   let moduleRef: TestingModule;
@@ -46,13 +50,13 @@ describe('AuthService', () => {
 
     authService = moduleRef.get<AuthService>(AuthService);
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
-    roleRepository = moduleRef.get<Repository<Role>>(getRepositoryToken(Role));
+    roleRepository = moduleRef.get<RoleRepository>(ROLE_REPOSITORY);
     refreshTokenRepository = moduleRef.get(REFRESH_TOKEN_REPOSITORY);
     dataSource = moduleRef.get(DataSource);
   });
 
   afterEach(async () => {
-    await roleRepository.delete({});
+    await roleRepository.deleteAll();
     await userRepository.deleteAll();
     await refreshTokenRepository.deleteAll();
   });
@@ -71,12 +75,7 @@ describe('AuthService', () => {
       const email: string = 'test@example.com';
       const password: string = 'G$K9Vss9-wNX6jOvY';
 
-      const user: User = User.createTeacher(
-        '송유현',
-        email,
-        Role.create('USER'),
-        password,
-      );
+      const user: User = User.createTeacher('송유현', email, role, password);
       await user.hashPassword();
       await userRepository.save(user);
 
@@ -100,12 +99,7 @@ describe('AuthService', () => {
       const email: string = 'test@example.com';
       const password: string = 'G$K9Vss9-wNX6jOvY';
 
-      const user: User = User.createTeacher(
-        '송유현',
-        email,
-        Role.create('USER'),
-        password,
-      );
+      const user: User = User.createTeacher('송유현', email, role, password);
       await user.hashPassword();
       await userRepository.save(user);
 

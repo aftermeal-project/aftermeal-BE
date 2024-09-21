@@ -1,4 +1,4 @@
-export class ActivityListDto {
+export class ActivitySummaryDto {
   private readonly _id: number;
   private readonly _name: string;
   private readonly _maxParticipants: number;

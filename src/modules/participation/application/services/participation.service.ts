@@ -36,26 +36,28 @@ export class ParticipationService {
       await this.participationRepository.findOneById(participationId);
 
     if (!participation) {
-      throw new NotFoundException('존재하지 않는 참가 정보입니다.');
+      throw new NotFoundException('존재하지 않는 참가입니다.');
     }
 
     return participation;
   }
 
-  async cancelParticipation(
+  async deleteParticipation(
     participationId: number,
-    userId: number,
+    currentUser: User,
   ): Promise<void> {
     const participation: Participation =
       await this.getParticipationById(participationId);
 
-    if (participation.user.id !== userId) {
-      throw new IllegalArgumentException(
-        '본인의 참가 정보만 삭제할 수 있습니다.',
-      );
+    const isAdmin: boolean = currentUser.roles.some(
+      (role) => role.role.name === 'ADMIN',
+    );
+
+    if (!isAdmin && participation.user.id !== currentUser.id) {
+      throw new IllegalArgumentException('본인의 참가만 삭제할 수 있습니다.');
     }
 
-    const activity = await participation.activity;
+    const activity: Activity = await participation.activity;
 
     if (activity.isStarted()) {
       throw new IllegalStateException(

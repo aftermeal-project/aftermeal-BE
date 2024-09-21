@@ -1,8 +1,8 @@
 import { Exclude, Expose } from 'class-transformer';
-import { ActivityListDto } from '../../infrastructure/dto/activity-list.dto';
+import { ActivitySummaryDto } from '../../infrastructure/dto/activity-summary.dto';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
-export class ActivityListResponseDto {
+export class ActivitySummaryResponseDto {
   @Exclude() @ApiHideProperty() private readonly _id: number;
   @Exclude() @ApiHideProperty() private readonly _name: string;
   @Exclude() @ApiHideProperty() private readonly _maxParticipants: number;
@@ -44,8 +44,8 @@ export class ActivityListResponseDto {
     return this._currentParticipants;
   }
 
-  static from(activity: ActivityListDto) {
-    return new ActivityListResponseDto(
+  static from(activity: ActivitySummaryDto) {
+    return new ActivitySummaryResponseDto(
       activity.id,
       activity.name,
       activity.maxParticipants,
