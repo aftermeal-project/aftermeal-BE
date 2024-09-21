@@ -1,8 +1,7 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../../../src/modules/user/domain/entities/user.entity';
 import { Role } from '../../../src/modules/role/domain/entities/role.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { getTestMysqlModule } from '../../utils/get-test-mysql.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '../../../src/modules/auth/auth.module';
@@ -51,7 +50,9 @@ describe('AuthService', () => {
     authService = moduleRef.get<AuthService>(AuthService);
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
     roleRepository = moduleRef.get<RoleRepository>(ROLE_REPOSITORY);
-    refreshTokenRepository = moduleRef.get(REFRESH_TOKEN_REPOSITORY);
+    refreshTokenRepository = moduleRef.get<RefreshTokenRepository>(
+      REFRESH_TOKEN_REPOSITORY,
+    );
     dataSource = moduleRef.get(DataSource);
   });
 

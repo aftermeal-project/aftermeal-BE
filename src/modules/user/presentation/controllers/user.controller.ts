@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { UserRegistrationRequestDto } from '../dto/user-registration-request.dto';
 import { ResponseEntity } from '@common/models/response.entity';
 import { UserService } from '../../application/services/user.service';

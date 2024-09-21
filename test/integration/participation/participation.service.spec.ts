@@ -5,8 +5,9 @@ import { ActivityRepository } from '../../../src/modules/activity/domain/reposit
 import {
   ACTIVITY_LOCATION_REPOSITORY,
   ACTIVITY_REPOSITORY,
-  PARTICIPATION_REPOSITORY, ROLE_REPOSITORY,
-  USER_REPOSITORY
+  PARTICIPATION_REPOSITORY,
+  ROLE_REPOSITORY,
+  USER_REPOSITORY,
 } from '@common/constants/dependency-token';
 import { Activity } from '../../../src/modules/activity/domain/entities/activity.entity';
 import { Participation } from '../../../src/modules/participation/domain/entities/participation.entity';
