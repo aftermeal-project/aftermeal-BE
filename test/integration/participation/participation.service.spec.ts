@@ -6,6 +6,7 @@ import {
   ACTIVITY_LOCATION_REPOSITORY,
   ACTIVITY_REPOSITORY,
   PARTICIPATION_REPOSITORY,
+  ROLE_REPOSITORY,
   USER_REPOSITORY,
 } from '@common/constants/dependency-token';
 import { Activity } from '../../../src/modules/activity/domain/entities/activity.entity';
@@ -25,11 +26,13 @@ import { ActivityLocation } from '../../../src/modules/activity-location/domain/
 import { ParticipationRepository } from '../../../src/modules/participation/domain/entities/participation.repository';
 import { UserRepository } from '../../../src/modules/user/domain/repositories/user.repository';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
+import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
 
 describe('ParticipationService', () => {
   let participationService: ParticipationService;
   let participationRepository: ParticipationRepository;
   let userRepository: UserRepository;
+  let roleRepository: RoleRepository;
   let activityRepository: ActivityRepository;
   let activityLocationRepository: ActivityLocationRepository;
   let dataSource: DataSource;
@@ -50,6 +53,7 @@ describe('ParticipationService', () => {
       ACTIVITY_LOCATION_REPOSITORY,
     );
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
+    roleRepository = moduleRef.get<RoleRepository>(ROLE_REPOSITORY);
     dataSource = moduleRef.get<DataSource>(DataSource);
   });
 
@@ -57,6 +61,7 @@ describe('ParticipationService', () => {
     await participationRepository.deleteAll();
     await activityRepository.deleteAll();
     await activityLocationRepository.deleteAll();
+    await roleRepository.deleteAll();
     await userRepository.deleteAll();
   });
 
@@ -79,10 +84,13 @@ describe('ParticipationService', () => {
       );
       await activityRepository.save(activity);
 
+      const role = Role.create('USER');
+      await roleRepository.save(role);
+
       const user: User = User.createTeacher(
         '송유현',
         'test@example.com',
-        Role.create('USER'),
+        role,
         'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);
@@ -99,7 +107,7 @@ describe('ParticipationService', () => {
   });
 
   describe('cancelActivityJoin', () => {
-    it('활동 참여를 취소한다.', async () => {
+    it('활동 참가를 취소한다.', async () => {
       // given
       const activityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
@@ -113,10 +121,13 @@ describe('ParticipationService', () => {
       );
       await activityRepository.save(activity);
 
+      const role = Role.create('USER');
+      await roleRepository.save(role);
+
       const user: User = User.createTeacher(
         '송유현',
         'test@example.com',
-        Role.create('USER'),
+        role,
         'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);
@@ -125,7 +136,7 @@ describe('ParticipationService', () => {
       await participationRepository.save(participation);
 
       // when
-      await participationService.cancelParticipation(participation.id, user.id);
+      await participationService.deleteParticipation(participation.id, user);
 
       // then
       const participations: Participation[] =
@@ -134,7 +145,7 @@ describe('ParticipationService', () => {
       expect(participations.length).toEqual(0);
     });
 
-    it('참여하지 않은 활동 참여를 취소하려고 할 경우 예외를 반환한다.', async () => {
+    it('일반 사용자가 자신이 참여하지 않은 활동 참여를 취소하려고 할 경우 예외를 반환한다.', async () => {
       // given
       const activityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
@@ -148,20 +159,29 @@ describe('ParticipationService', () => {
       );
       await activityRepository.save(activity);
 
+      const role: Role = Role.create('USER');
+      await roleRepository.save(role);
+
       const user: User = User.createTeacher(
         '송유현',
         'test@example.com',
-        Role.create('USER'),
+        role,
         'G$K9Vss9-wNX6jOvY',
       );
-      await userRepository.save(user);
+      const anotherUser: User = User.createTeacher(
+        '송유현',
+        'test2@exmaple.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
+      await userRepository.saveAll([user, anotherUser]);
 
       const participation: Participation = Participation.create(user, activity);
       await participationRepository.save(participation);
 
       // when & then
       await expect(
-        participationService.cancelParticipation(participation.id, 9999999999),
+        participationService.deleteParticipation(participation.id, anotherUser),
       ).rejects.toThrow(IllegalArgumentException);
     });
   });

@@ -11,6 +11,8 @@ import { Generation } from '../../../generation/domain/entities/generation.entit
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { USER_REPOSITORY } from '@common/constants/dependency-token';
 import { UserRepository } from '../../domain/repositories/user.repository';
+import { UserResponseDto } from '../../presentation/dto/user-response.dto';
+import { UserUpdateRequestDto } from '../../presentation/dto/user-update-request.dto';
 
 @Injectable()
 export class UserService {
@@ -20,6 +22,11 @@ export class UserService {
     private readonly roleService: RoleService,
     private readonly generationService: GenerationService,
   ) {}
+
+  async getAllUsers(): Promise<UserResponseDto[]> {
+    const users: User[] = await this.userRepository.find();
+    return users.map((user) => UserResponseDto.from(user));
+  }
 
   async getUserById(userId: number): Promise<User> {
     const user: User | undefined =
@@ -55,6 +62,20 @@ export class UserService {
     const user: User = dto.toEntity(role, generation);
     await user.hashPassword();
     await this.userRepository.save(user);
+  }
+
+  async updateUserById(
+    userId: number,
+    dto: UserUpdateRequestDto,
+  ): Promise<void> {
+    const user: User = await this.getUserById(userId);
+    user.update(dto.name, dto.type, dto.status);
+    await this.userRepository.save(user);
+  }
+
+  async deleteUserById(userId: number): Promise<void> {
+    const user: User = await this.getUserById(userId);
+    await this.userRepository.delete(user);
   }
 
   private async validateEmailDuplication(email: string): Promise<void> {

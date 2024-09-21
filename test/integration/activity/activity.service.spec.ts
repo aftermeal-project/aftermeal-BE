@@ -7,6 +7,7 @@ import {
   ACTIVITY_LOCATION_REPOSITORY,
   ACTIVITY_REPOSITORY,
   PARTICIPATION_REPOSITORY,
+  ROLE_REPOSITORY,
   USER_REPOSITORY,
 } from '@common/constants/dependency-token';
 import { Activity } from '../../../src/modules/activity/domain/entities/activity.entity';
@@ -18,7 +19,7 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
-import { ActivityListResponseDto } from '../../../src/modules/activity/presentation/dto/activity-list-response.dto';
+import { ActivitySummaryResponseDto } from '../../../src/modules/activity/presentation/dto/activity-summary-response.dto';
 import { ActivityRepository } from '../../../src/modules/activity/domain/repositories/activity.repository';
 import { EActivityType } from '../../../src/modules/activity/domain/types/activity-type';
 import { LocalDate } from '@js-joda/core';
@@ -29,12 +30,16 @@ import { ParticipationRepository } from '../../../src/modules/participation/doma
 import { UserTypeormRepository } from '../../../src/modules/user/infrastructure/persistence/user-typeorm.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ParticipationTypeormRepository } from '../../../src/modules/participation/domain/repositories/participation-typeorm.repository';
+import { ActivityCreationRequestDto } from '../../../src/modules/activity/presentation/dto/activity-creation-request.dto';
+import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
+import { RoleTypeormRepository } from '../../../src/modules/role/infrastructure/persistence/role-typeorm.repository';
 
 describe('ActivityService', () => {
   let activityService: ActivityService;
   let activityRepository: ActivityRepository;
   let activityLocationRepository: ActivityLocationRepository;
   let userRepository: UserRepository;
+  let roleRepository: RoleRepository;
   let participationRepository: ParticipationRepository;
   let dataSource: DataSource;
 
@@ -44,7 +49,7 @@ describe('ActivityService', () => {
       imports: [
         getTestMysqlModule(),
         ActivityModule,
-        TypeOrmModule.forFeature([User, Participation]),
+        TypeOrmModule.forFeature([User, Role, Participation]),
       ],
       providers: [
         {
@@ -55,6 +60,10 @@ describe('ActivityService', () => {
           provide: PARTICIPATION_REPOSITORY,
           useClass: ParticipationTypeormRepository,
         },
+        {
+          provide: ROLE_REPOSITORY,
+          useClass: RoleTypeormRepository,
+        },
       ],
     }).compile();
 
@@ -64,6 +73,7 @@ describe('ActivityService', () => {
       ACTIVITY_LOCATION_REPOSITORY,
     );
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
+    roleRepository = moduleRef.get<RoleRepository>(ROLE_REPOSITORY);
     participationRepository = moduleRef.get<ParticipationRepository>(
       PARTICIPATION_REPOSITORY,
     );
@@ -75,6 +85,7 @@ describe('ActivityService', () => {
     await activityRepository.deleteAll();
     await activityLocationRepository.deleteAll();
     await userRepository.deleteAll();
+    await roleRepository.deleteAll();
   });
 
   afterAll(async () => {
@@ -119,13 +130,10 @@ describe('ActivityService', () => {
       );
       await activityRepository.save(activity);
 
-      // when
-      const result = async () => {
-        await activityService.getActivityById(999999999999);
-      };
-
-      // then
-      await expect(result).rejects.toThrow(NotFoundException);
+      // when & then
+      await expect(
+        activityService.getActivityById(999999999999),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -158,9 +166,12 @@ describe('ActivityService', () => {
       );
       await activityRepository.saveAll([activity1, activity2, activity3]);
 
-      const user1: User = createUser('test1@example.com');
-      const user2: User = createUser('test2@example.com');
-      const user3: User = createUser('test3@example.com');
+      const role: Role = Role.create('USER');
+      await roleRepository.save(role);
+
+      const user1: User = createUser(role, 'test1@example.com');
+      const user2: User = createUser(role, 'test2@example.com');
+      const user3: User = createUser(role, 'test3@example.com');
       await userRepository.saveAll([user1, user2, user3]);
 
       const participations: Participation[] = [
@@ -172,8 +183,8 @@ describe('ActivityService', () => {
       await participationRepository.saveAll(participations);
 
       // when
-      const result: ActivityListResponseDto[] =
-        await activityService.getActivityList();
+      const result: ActivitySummaryResponseDto[] =
+        await activityService.getActivitySummaries();
 
       // then
       expect(result[0].id).toBeDefined();
@@ -192,13 +203,94 @@ describe('ActivityService', () => {
       expect(result[2].currentParticipants).toBe(0);
     });
   });
+
+  describe('createActivity', () => {
+    it('활동을 생성한다.', async () => {
+      // given
+      const activityLocation = ActivityLocation.create('GYM');
+      await activityLocationRepository.save(activityLocation);
+
+      const dto: ActivityCreationRequestDto = {
+        title: '배구',
+        maxParticipants: 18,
+        locationId: activityLocation.id,
+        type: EActivityType.LUNCH,
+        scheduledDate: LocalDate.now(),
+      };
+
+      // when
+      await activityService.createActivity(dto);
+
+      // then
+      const activities: Activity[] = await activityRepository.find();
+
+      expect(activities.length).toBe(1);
+      expect(activities[0].title).toBe('배구');
+      expect(activities[0].maxParticipants).toBe(18);
+    });
+  });
+
+  describe('updateActivity', () => {
+    it('활동을 수정한다.', async () => {
+      // given
+      const activityLocation = ActivityLocation.create('GYM');
+      await activityLocationRepository.save(activityLocation);
+
+      const activity: Activity = Activity.create(
+        '배구',
+        18,
+        activityLocation,
+        EActivityType.LUNCH,
+        LocalDate.now(),
+      );
+      await activityRepository.save(activity);
+
+      const updateActivity: Activity = Activity.create(
+        '농구',
+        12,
+        activityLocation,
+        EActivityType.LUNCH,
+        LocalDate.now(),
+      );
+
+      // when
+      await activityService.updateActivity(activity.id, updateActivity);
+
+      // then
+      const savedActivity: Activity = await activityRepository.findOneById(
+        activity.id,
+      );
+      expect(savedActivity.id).toEqual(activity.id);
+      expect(savedActivity.title).toBe('농구');
+      expect(savedActivity.maxParticipants).toBe(12);
+    });
+  });
+
+  describe('deleteActivity', () => {
+    it('활동을 삭제한다.', async () => {
+      // given
+      const activityLocation = ActivityLocation.create('GYM');
+      await activityLocationRepository.save(activityLocation);
+
+      const activity: Activity = Activity.create(
+        '배구',
+        18,
+        activityLocation,
+        EActivityType.LUNCH,
+        LocalDate.now(),
+      );
+      await activityRepository.save(activity);
+
+      // when
+      await activityService.deleteActivity(activity.id);
+
+      // then
+      const activities: Activity[] = await activityRepository.find();
+      expect(activities).toEqual([]);
+    });
+  });
 });
 
-function createUser(email: string = 'test@exaple.com'): User {
-  return User.createTeacher(
-    '송유현',
-    email,
-    Role.create('USER'),
-    'G$K9Vss9-wNX6jOvY',
-  );
+function createUser(role: Role, email: string = 'test@exaple.com'): User {
+  return User.createTeacher('송유현', email, role, 'G$K9Vss9-wNX6jOvY');
 }

@@ -9,7 +9,7 @@ import { ActivityLocationUpdateRequestDto } from '../../presentation/dto/activit
 import { ActivityLocationCreationRequestDto } from '../../presentation/dto/activity-location-creation-request.dto';
 
 @Injectable()
-export class ActivityLocationAdminService {
+export class ActivityLocationService {
   constructor(
     @Inject(ACTIVITY_LOCATION_REPOSITORY)
     private readonly activityLocationRepository: ActivityLocationRepository,

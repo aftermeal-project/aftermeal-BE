@@ -9,6 +9,14 @@ export class UserRoleTypeormRepository implements UserRoleRepository {
     private readonly repository: Repository<UserRole>,
   ) {}
 
+  async deleteAll(): Promise<void> {
+    await this.repository.delete({});
+  }
+
+  async find(): Promise<UserRole[]> {
+    return this.repository.find();
+  }
+
   async findByUserId(userId: number): Promise<UserRole[]> {
     return this.repository.findBy({ userId: userId });
   }

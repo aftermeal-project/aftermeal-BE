@@ -1,5 +1,5 @@
 import { ActivityRepository } from '../../domain/repositories/activity.repository';
-import { ActivityListDto } from '../dto/activity-list.dto';
+import { ActivitySummaryDto } from '../dto/activity-summary.dto';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Activity } from '../../domain/entities/activity.entity';
@@ -18,11 +18,11 @@ export class ActivityTypeormRepository implements ActivityRepository {
     return await this.repository.findOne({ where: { id: id } });
   }
 
-  async findActivityDtos(): Promise<ActivityListDto[]> {
+  async findActivitySummary(): Promise<ActivitySummaryDto[]> {
     const raw = await this.buildActivityDtoSelectQuery().getRawMany();
     return raw.map(
       (activity) =>
-        new ActivityListDto(
+        new ActivitySummaryDto(
           activity.id,
           activity.title,
           activity.maxParticipants,

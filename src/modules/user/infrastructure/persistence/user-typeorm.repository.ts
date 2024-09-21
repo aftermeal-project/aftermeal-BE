@@ -9,6 +9,9 @@ export class UserTypeormRepository implements UserRepository {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async find(): Promise<User[]> {
+    return await this.userRepository.find();
+  }
   async findOneById(id: number): Promise<User> {
     return await this.userRepository.findOneBy({ id: id });
   }
@@ -19,6 +22,10 @@ export class UserTypeormRepository implements UserRepository {
 
   async existsByEmail(email: string): Promise<boolean> {
     return await this.userRepository.existsBy({ email: email });
+  }
+
+  async delete(user: User): Promise<void> {
+    await this.userRepository.delete({ id: user.id });
   }
 
   async deleteAll(): Promise<void> {

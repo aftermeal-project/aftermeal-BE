@@ -41,8 +41,11 @@ export class User extends BaseTimeEntity {
   @Column()
   password: string;
 
-  @OneToMany(() => UserRole, (userRole) => userRole.user)
-  userRoles: UserRole[];
+  @OneToMany(() => UserRole, (userRole) => userRole.user, {
+    cascade: true,
+    eager: true,
+  })
+  roles: UserRole[];
 
   @ManyToOne(() => Generation, { nullable: true })
   @JoinColumn({
@@ -65,7 +68,7 @@ export class User extends BaseTimeEntity {
     user.name = name;
     user.email = email;
     user.type = UserType.TEACHER;
-    user.userRoles = [UserRole.create(role, user)];
+    user.roles = [UserRole.create(role, user)];
     user.status = UserStatus.ACTIVATE;
     user.password = password;
     return user;
@@ -88,11 +91,17 @@ export class User extends BaseTimeEntity {
     user.name = name;
     user.email = schoolEmail;
     user.type = UserType.STUDENT;
-    user.userRoles = [UserRole.create(role, user)];
+    user.roles = [UserRole.create(role, user)];
     user.status = UserStatus.ACTIVATE;
     user.password = password;
     user.generation = generation;
     return user;
+  }
+
+  update(name: string, type: UserType, status: UserStatus): void {
+    this.name = name;
+    this.type = type;
+    this.status = status;
   }
 
   async hashPassword(): Promise<void> {
@@ -140,5 +149,9 @@ export class User extends BaseTimeEntity {
     if (generation.isGraduated) {
       throw new IllegalArgumentException('재학 중인 학생이어야 합니다.');
     }
+  }
+
+  isAdmin() {
+    return this.roles.some((role) => role.role.isAdmin());
   }
 }

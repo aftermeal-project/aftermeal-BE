@@ -7,7 +7,7 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import { getTestMysqlModule } from '../../utils/get-test-mysql.module';
 import { ACTIVITY_LOCATION_REPOSITORY } from '@common/constants/dependency-token';
-import { ActivityLocationAdminService } from '../../../src/modules/activity-location/application/services/activity-location-admin.service';
+import { ActivityLocationService } from '../../../src/modules/activity-location/application/services/activity-location.service';
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
 import { ActivityLocationUpdateRequestDto } from '../../../src/modules/activity-location/presentation/dto/activity-location-update-request.dto';
 import { ActivityLocationCreationRequestDto } from '../../../src/modules/activity-location/presentation/dto/activity-location-creation-request.dto';
@@ -15,7 +15,7 @@ import { ActivityLocationModule } from '../../../src/modules/activity-location/a
 import { ActivityLocationResponseDto } from '../../../src/modules/activity-location/presentation/dto/activity-location-response.dto';
 
 describe('ActivityLocationService', () => {
-  let activityLocationService: ActivityLocationAdminService;
+  let activityLocationService: ActivityLocationService;
   let activityLocationRepository: ActivityLocationRepository;
   let dataSource: DataSource;
 
@@ -25,8 +25,8 @@ describe('ActivityLocationService', () => {
       imports: [getTestMysqlModule(), ActivityLocationModule],
     }).compile();
 
-    activityLocationService = moduleRef.get<ActivityLocationAdminService>(
-      ActivityLocationAdminService,
+    activityLocationService = moduleRef.get<ActivityLocationService>(
+      ActivityLocationService,
     );
     activityLocationRepository = moduleRef.get<ActivityLocationRepository>(
       ACTIVITY_LOCATION_REPOSITORY,

@@ -16,15 +16,20 @@ import {
   GENERATION_REPOSITORY,
   ROLE_REPOSITORY,
   USER_REPOSITORY,
+  USER_ROLE_REPOSITORY,
 } from '@common/constants/dependency-token';
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
 import { GenerationRepository } from '../../../src/modules/generation/domain/repositories/generation.repository';
+import { UserRoleRepository } from '../../../src/modules/role/domain/repositories/user-role.repository';
+import { UserRole } from '../../../src/modules/role/domain/entities/user-role.entity';
+import { NotFoundException } from '@common/exceptions/not-found.exception';
 
 describe('UserService', () => {
   let userService: UserService;
   let userRepository: UserRepository;
   let roleRepository: RoleRepository;
+  let userRoleRepository: UserRoleRepository;
   let generationRepository: GenerationRepository;
   let dataSource: DataSource;
 
@@ -37,6 +42,8 @@ describe('UserService', () => {
     userService = moduleRef.get<UserService>(UserService);
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
     roleRepository = moduleRef.get<RoleRepository>(ROLE_REPOSITORY);
+    userRoleRepository =
+      moduleRef.get<UserRoleRepository>(USER_ROLE_REPOSITORY);
     generationRepository = moduleRef.get<GenerationRepository>(
       GENERATION_REPOSITORY,
     );
@@ -44,6 +51,7 @@ describe('UserService', () => {
   });
 
   afterEach(async () => {
+    await userRoleRepository.deleteAll();
     await userRepository.deleteAll();
     await roleRepository.deleteAll();
     await generationRepository.deleteAll();
@@ -69,8 +77,11 @@ describe('UserService', () => {
       await userService.register(dto);
 
       // then
-      const user: User = await userService.getUserByEmail('test@example.com');
-      expect(user).toBeDefined();
+      const users: User[] = await userRepository.find();
+      expect(users.length).toBe(1);
+
+      const userRoles: UserRole[] = await userRoleRepository.find();
+      expect(userRoles.length).toBe(1);
     });
 
     it('이미 등록된 이메일으로는 등록할 수 없다.', async () => {
@@ -87,20 +98,80 @@ describe('UserService', () => {
       );
       await userRepository.save(user);
 
-      const dto = {
-        name: '테스트',
-        email: email,
-        type: UserType.TEACHER,
-        password: 'G$K9Vss9-wNX6jOvY',
-      } as UserRegistrationRequestDto;
+      const dto = new UserRegistrationRequestDto();
+      dto.name = '테스트';
+      dto.email = 'test@example.com';
+      dto.type = UserType.TEACHER;
+      dto.password = 'G$K9Vss9-wNX6jOvY';
 
-      // when
+      // when & then
       const result = async () => {
         await userService.register(dto);
       };
 
       // then
       await expect(result).rejects.toThrow(AlreadyExistException);
+    });
+  });
+
+  describe('getAllUsers', () => {
+    it('모든 사용자를 반환한다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+      await roleRepository.save(role);
+
+      const user1: User = User.createTeacher(
+        'test',
+        'test1@example.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
+      const user2: User = User.createTeacher(
+        'test',
+        'test2@example.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
+      await userRepository.saveAll([user1, user2]);
+
+      // when
+      const result = await userService.getAllUsers();
+
+      // then
+      expect(result).toHaveLength(2);
+      expect(result[0].email).toBe('test1@example.com');
+      expect(result[1].email).toBe('test2@example.com');
+    });
+  });
+
+  describe('getUserById', () => {
+    it('ID를 통해 사용자를 반환한다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+      await roleRepository.save(role);
+
+      const user: User = User.createTeacher(
+        'test',
+        'test@example.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
+      await userRepository.save(user);
+
+      // when
+      const result = await userService.getUserById(user.id);
+
+      // then
+      expect(result.id).toBe(user.id);
+      expect(result.name).toBe('test');
+      expect(result.email).toBe('test@example.com');
+    });
+
+    it('ID에 해당하는 사용자가 없을 경우 예외를 반환한다.', async () => {
+      // when & then
+      await expect(userService.getUserById(999999)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });
