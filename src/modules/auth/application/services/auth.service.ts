@@ -37,6 +37,7 @@ export class AuthService {
       this.tokenService.getTokenType(),
       this.tokenService.getAccessTokenExpirationTime(),
       refreshToken,
+      user,
     );
   }
 

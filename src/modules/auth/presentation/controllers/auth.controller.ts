@@ -16,9 +16,11 @@ export class AuthController {
   async login(
     @Body() dto: LoginRequestDto,
   ): Promise<ResponseEntity<LoginResponseDto>> {
-    return ResponseEntity.SUCCESS_WITH_DATA(
-      await this.authService.login(dto.email, dto.password),
+    const loginResponseDto: LoginResponseDto = await this.authService.login(
+      dto.email,
+      dto.password,
     );
+    return ResponseEntity.SUCCESS_WITH_DATA(loginResponseDto);
   }
 
   @Public()
@@ -26,8 +28,8 @@ export class AuthController {
   async refresh(
     @Body() dto: TokenRefreshRequestDto,
   ): Promise<ResponseEntity<TokenRefreshResponseDto>> {
-    return ResponseEntity.SUCCESS_WITH_DATA(
-      await this.authService.refresh(dto.refreshToken),
-    );
+    const tokenRefreshResponseDto: TokenRefreshResponseDto =
+      await this.authService.refresh(dto.refreshToken);
+    return ResponseEntity.SUCCESS_WITH_DATA(tokenRefreshResponseDto);
   }
 }
