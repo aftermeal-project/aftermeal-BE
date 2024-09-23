@@ -186,19 +186,19 @@ describe('ActivityService', () => {
       const result: ActivitySummaryResponseDto[] =
         await activityService.getActivitySummaries();
 
-      // then
+      // thenÎ
       expect(result[0].id).toBeDefined();
-      expect(result[0].name).toBe('배구');
+      expect(result[0].title).toBe('배구');
       expect(result[0].maxParticipants).toBe(18);
       expect(result[0].currentParticipants).toBe(1);
 
       expect(result[1].id).toBeDefined();
-      expect(result[1].name).toBe('배드민턴');
+      expect(result[1].title).toBe('배드민턴');
       expect(result[1].maxParticipants).toBe(12);
       expect(result[1].currentParticipants).toBe(3);
 
       expect(result[2].id).toBeDefined();
-      expect(result[2].name).toBe('농구');
+      expect(result[2].title).toBe('농구');
       expect(result[2].maxParticipants).toBe(8);
       expect(result[2].currentParticipants).toBe(0);
     });

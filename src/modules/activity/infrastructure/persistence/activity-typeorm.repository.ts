@@ -57,10 +57,18 @@ export class ActivityTypeormRepository implements ActivityRepository {
     return this.repository
       .createQueryBuilder('activity')
       .leftJoin('activity.participations', 'participation')
+      .leftJoin('activity.location', 'location')
       .select('activity.id', 'id')
       .addSelect('activity.title', 'title')
+      .addSelect('location.name', 'location')
       .addSelect('activity.maxParticipants', 'maxParticipants')
       .addSelect('COUNT(DISTINCT participation.id)', 'currentParticipants')
+      .addSelect('activity.status', 'status')
+      .addSelect('activity.type', 'type')
+      .addSelect(
+        "DATE_FORMAT(activity.scheduledDate, '%Y-%m-%d')",
+        'scheduledDate',
+      )
       .groupBy('activity.id');
   }
 }

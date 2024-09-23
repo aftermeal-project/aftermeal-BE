@@ -54,7 +54,7 @@ describe('ActivityCreationRequestDto', () => {
     expect(errors[0].property).toBe('maxParticipants');
   });
 
-  it('위치 ID는 양수여야 한다.', () => {
+  it('활동 위치 ID는 양수여야 한다.', () => {
     // given
     const dto = new ActivityCreationRequestDto();
     dto.title = '테스트 활동';
@@ -68,7 +68,7 @@ describe('ActivityCreationRequestDto', () => {
 
     // then
     expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].property).toBe('locationId');
+    expect(errors[0].property).toBe('activityLocationId');
   });
 
   it('활동 유형은 유효한 enum 값이어야 한다.', () => {

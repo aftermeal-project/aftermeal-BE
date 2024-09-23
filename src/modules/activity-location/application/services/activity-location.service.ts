@@ -51,14 +51,14 @@ export class ActivityLocationService {
   async updateActivityLocation(
     activityLocationId: number,
     dto: ActivityLocationUpdateRequestDto,
-  ) {
+  ): Promise<void> {
     const activityLocation: ActivityLocation =
       await this.getActivityLocationById(activityLocationId);
     activityLocation.updateName(dto.name);
     await this.activityLocationRepository.save(activityLocation);
   }
 
-  async deleteActivityLocation(activityLocationId: number) {
+  async deleteActivityLocation(activityLocationId: number): Promise<void> {
     const activityLocation: ActivityLocation =
       await this.getActivityLocationById(activityLocationId);
     await this.activityLocationRepository.delete(activityLocation);
