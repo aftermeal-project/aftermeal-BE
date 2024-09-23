@@ -19,18 +19,17 @@ export class ParticipationController {
   async participate(
     @Body('activityId') activityId: number,
     @CurrentUser('sub') userId: number,
-  ) {
+  ): Promise<ResponseEntity<null>> {
     await this.participationService.participate(activityId, userId);
-    return ResponseEntity.OK('참가가 완료되었습니다.');
+    return ResponseEntity.SUCCESS();
   }
 
-  @HttpCode(204)
   @Delete('participations/:participationId')
+  @HttpCode(204)
   async cancelParticipation(
     @Param('participationId') participationId: number,
     @CurrentUser() user: User,
-  ) {
+  ): Promise<void> {
     await this.participationService.deleteParticipation(participationId, user);
-    return ResponseEntity.OK('참가 신청이 취소되었습니다.');
   }
 }

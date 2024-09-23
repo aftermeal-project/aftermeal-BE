@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -24,9 +25,9 @@ export class ActivityController {
   @Post()
   async createActivity(
     @Body() dto: ActivityCreationRequestDto,
-  ): Promise<ResponseEntity<void>> {
+  ): Promise<ResponseEntity<null>> {
     await this.activityService.createActivity(dto);
-    return ResponseEntity.OK('활동 생성에 성공하였습니다.');
+    return ResponseEntity.SUCCESS();
   }
 
   @Public()
@@ -34,10 +35,7 @@ export class ActivityController {
   async getActivities(): Promise<ResponseEntity<ActivitySummaryResponseDto[]>> {
     const activitySummaryResponseDtos: ActivitySummaryResponseDto[] =
       await this.activityService.getActivitySummaries();
-    return ResponseEntity.OK_WITH_DATA(
-      '활동 목록 조회에 성공하였습니다.',
-      activitySummaryResponseDtos,
-    );
+    return ResponseEntity.SUCCESS_WITH_DATA(activitySummaryResponseDtos);
   }
 
   @Public()
@@ -47,28 +45,23 @@ export class ActivityController {
   ): Promise<ResponseEntity<ActivityDetailResponseDto>> {
     const activityDetailResponseDto: ActivityDetailResponseDto =
       await this.activityService.getActivityDetailById(activityId);
-    return ResponseEntity.OK_WITH_DATA(
-      '활동 상세 조회에 성공하였습니다.',
-      activityDetailResponseDto,
-    );
+    return ResponseEntity.SUCCESS_WITH_DATA(activityDetailResponseDto);
   }
 
   @Roles('ADMIN')
   @Patch(':activityId')
+  @HttpCode(204)
   async updateActivity(
     @Body() dto: ActivityUpdateRequestDto,
     @Param('activityId') activityId: number,
-  ): Promise<ResponseEntity<void>> {
+  ): Promise<void> {
     await this.activityService.updateActivity(activityId, dto);
-    return ResponseEntity.OK('활동 수정에 성공하였습니다.');
   }
 
   @Roles('ADMIN')
   @Delete(':activityId')
-  async deleteActivity(
-    @Param('activityId') activityId: number,
-  ): Promise<ResponseEntity<void>> {
+  @HttpCode(204)
+  async deleteActivity(@Param('activityId') activityId: number): Promise<void> {
     await this.activityService.deleteActivity(activityId);
-    return ResponseEntity.OK('활동 삭제에 성공하였습니다.');
   }
 }

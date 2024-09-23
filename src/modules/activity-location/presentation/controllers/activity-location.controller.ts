@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -14,50 +15,52 @@ import { ActivityLocationUpdateRequestDto } from '../dto/activity-location-updat
 import { ActivityLocationCreationRequestDto } from '../dto/activity-location-creation-request.dto';
 import { Roles } from '@common/decorators/roles.decorator';
 
-@Roles('ADMIN')
 @Controller('activity-locations')
 export class ActivityLocationController {
   constructor(
     private readonly activityLocationService: ActivityLocationService,
   ) {}
 
+  @Roles('ADMIN')
   @Post()
   async createActivityLocation(
     @Body() dto: ActivityLocationCreationRequestDto,
-  ): Promise<ResponseEntity<void>> {
+  ): Promise<ResponseEntity<null>> {
     await this.activityLocationService.createActivityLocation(dto);
-    return ResponseEntity.OK('활동 장소 생성에 성공하였습니다.');
+    return ResponseEntity.SUCCESS();
   }
 
+  @Roles('ADMIN')
   @Get()
   async getActivityLocations(): Promise<
     ResponseEntity<ActivityLocationResponseDto[]>
   > {
-    return ResponseEntity.OK_WITH_DATA(
-      '활동 장소 목록 조회에 성공하였습니다.',
+    return ResponseEntity.SUCCESS_WITH_DATA(
       await this.activityLocationService.getActivityLocations(),
     );
   }
 
+  @Roles('ADMIN')
   @Patch(':activityLocationId')
+  @HttpCode(204)
   async updateActivityLocation(
     @Param('activityLocationId') activityLocationId: number,
     @Body() dto: ActivityLocationUpdateRequestDto,
-  ): Promise<ResponseEntity<void>> {
+  ): Promise<void> {
     await this.activityLocationService.updateActivityLocation(
       activityLocationId,
       dto,
     );
-    return ResponseEntity.OK('활동 장소 수정에 성공하였습니다.');
   }
 
+  @Roles('ADMIN')
   @Delete(':activityLocationId')
+  @HttpCode(204)
   async deleteActivityLocation(
     @Param('activityLocationId') activityLocationId: number,
-  ): Promise<ResponseEntity<void>> {
+  ): Promise<void> {
     await this.activityLocationService.deleteActivityLocation(
       activityLocationId,
     );
-    return ResponseEntity.OK('활동 장소 삭제에 성공하였습니다.');
   }
 }
