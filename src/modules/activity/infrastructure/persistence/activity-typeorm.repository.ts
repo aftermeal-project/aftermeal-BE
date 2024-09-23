@@ -25,8 +25,12 @@ export class ActivityTypeormRepository implements ActivityRepository {
         new ActivitySummaryDto(
           activity.id,
           activity.title,
+          activity.location,
           activity.maxParticipants,
           Number(activity.currentParticipants),
+          activity.status,
+          activity.type,
+          activity.scheduledDate,
         ),
     );
   }
