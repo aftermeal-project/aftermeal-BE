@@ -2,25 +2,19 @@ import { Exclude, Expose } from 'class-transformer';
 
 export class ResponseEntity<T> {
   @Exclude() private readonly _success: boolean;
-  @Exclude() private readonly _message: string;
   @Exclude() private readonly _data: T;
 
-  private constructor(success: boolean, message: string, data?: T) {
+  private constructor(success: boolean, data: T | null = null) {
     this._success = success;
-    this._message = message;
     this._data = data;
   }
 
-  static OK(message: string): ResponseEntity<void> {
-    return new ResponseEntity<void>(true, message);
+  static SUCCESS(): ResponseEntity<null> {
+    return new ResponseEntity(true);
   }
 
-  static OK_WITH_DATA<T>(message: string, data: T): ResponseEntity<T> {
-    return new ResponseEntity<T>(true, message, data);
-  }
-
-  static ERROR_WITH_DATA<T>(message: string, data: T): ResponseEntity<T> {
-    return new ResponseEntity<T>(false, message, data);
+  static SUCCESS_WITH_DATA<T>(data: T): ResponseEntity<T> {
+    return new ResponseEntity(true, data);
   }
 
   @Expose()
@@ -29,12 +23,7 @@ export class ResponseEntity<T> {
   }
 
   @Expose()
-  get message(): string {
-    return this._message;
-  }
-
-  @Expose()
-  get data(): T {
+  get data(): T | null {
     return this._data;
   }
 }

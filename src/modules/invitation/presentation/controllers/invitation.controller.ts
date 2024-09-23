@@ -16,9 +16,9 @@ export class InvitationController {
   async invite(
     @Body() dto: InviteRequestDto,
     @CurrentUser('userId') userId: number,
-  ): Promise<ResponseEntity<void>> {
+  ): Promise<ResponseEntity<null>> {
     await this.invitationService.invite(dto.toEntity(), userId);
-    return ResponseEntity.OK('초대장 전송에 성공하였습니다.');
+    return ResponseEntity.SUCCESS();
   }
 
   @Get('verify')
