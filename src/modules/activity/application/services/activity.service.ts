@@ -23,7 +23,7 @@ export class ActivityService {
   async createActivity(dto: ActivityCreationRequestDto): Promise<void> {
     const activityLocation: ActivityLocation =
       await this.activityLocationService.getActivityLocationById(
-        dto.locationId,
+        dto.activityLocationId,
       );
 
     const activity: Activity = Activity.create(
@@ -72,7 +72,7 @@ export class ActivityService {
 
     const activityLocation: ActivityLocation =
       await this.activityLocationService.getActivityLocationById(
-        dto.locationId,
+        dto.activityLocationId,
       );
 
     activity.update(

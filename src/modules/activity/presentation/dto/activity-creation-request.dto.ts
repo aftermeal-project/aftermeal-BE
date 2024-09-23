@@ -19,7 +19,7 @@ export class ActivityCreationRequestDto {
   maxParticipants: number;
 
   @IsPositive()
-  locationId: number;
+  activityLocationId: number;
 
   @IsEnum(EActivityType)
   @Transform(({ value }) => {

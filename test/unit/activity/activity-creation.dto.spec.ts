@@ -9,7 +9,7 @@ describe('ActivityCreationRequestDto', () => {
     const dto = new ActivityCreationRequestDto();
     dto.title = '테스트 활동';
     dto.maxParticipants = 10;
-    dto.locationId = 1;
+    dto.activityLocationId = 1;
     dto.type = EActivityType.LUNCH;
     dto.scheduledDate = LocalDate.now();
 
@@ -25,7 +25,7 @@ describe('ActivityCreationRequestDto', () => {
     const dto = new ActivityCreationRequestDto();
     dto.title = ''; // Invalid value
     dto.maxParticipants = 10;
-    dto.locationId = 1;
+    dto.activityLocationId = 1;
     dto.type = EActivityType.LUNCH;
     dto.scheduledDate = LocalDate.now();
 
@@ -42,7 +42,7 @@ describe('ActivityCreationRequestDto', () => {
     const dto = new ActivityCreationRequestDto();
     dto.title = '테스트 활동';
     dto.maxParticipants = 0; // Invalid value
-    dto.locationId = 1;
+    dto.activityLocationId = 1;
     dto.type = EActivityType.LUNCH;
     dto.scheduledDate = LocalDate.now();
 
@@ -59,7 +59,7 @@ describe('ActivityCreationRequestDto', () => {
     const dto = new ActivityCreationRequestDto();
     dto.title = '테스트 활동';
     dto.maxParticipants = 10;
-    dto.locationId = -1; // Invalid value
+    dto.activityLocationId = -1; // Invalid value
     dto.type = EActivityType.LUNCH;
     dto.scheduledDate = LocalDate.now();
 
@@ -76,7 +76,7 @@ describe('ActivityCreationRequestDto', () => {
     const dto = new ActivityCreationRequestDto();
     dto.title = '테스트 활동';
     dto.maxParticipants = 10;
-    dto.locationId = 1;
+    dto.activityLocationId = 1;
     dto.type = 'INVALID_TYPE' as unknown as EActivityType; // Invalid value
     dto.scheduledDate = LocalDate.now();
 
@@ -93,7 +93,7 @@ describe('ActivityCreationRequestDto', () => {
     const dto = new ActivityCreationRequestDto();
     dto.title = '테스트 활동';
     dto.maxParticipants = 10;
-    dto.locationId = 1;
+    dto.activityLocationId = 1;
     dto.type = EActivityType.LUNCH;
     dto.scheduledDate = null; // Invalid value
 

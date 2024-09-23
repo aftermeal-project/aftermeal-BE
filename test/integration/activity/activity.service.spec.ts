@@ -213,7 +213,7 @@ describe('ActivityService', () => {
       const dto: ActivityCreationRequestDto = {
         title: '배구',
         maxParticipants: 18,
-        locationId: activityLocation.id,
+        activityLocationId: activityLocation.id,
         type: EActivityType.LUNCH,
         scheduledDate: LocalDate.now(),
       };
