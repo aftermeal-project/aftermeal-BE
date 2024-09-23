@@ -124,10 +124,8 @@ describe('ActivityLocationService', () => {
       );
 
       // then
-      const updatedActivityLocation =
-        await activityLocationService.getActivityLocationById(
-          activityLocation.id,
-        );
+      const updatedActivityLocation: ActivityLocation =
+        await activityLocationRepository.findOneById(activityLocation.id);
 
       expect(updatedActivityLocation.name).toEqual('GROUND');
     });
