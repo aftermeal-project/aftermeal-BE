@@ -208,6 +208,7 @@ describe('ActivityService', () => {
       // then
       expect(result.id).toEqual(activity.id);
       expect(result.participations[0].user.id).toBe(user.id);
+      expect(result.participations[0].user.generationNumber).toBe(null);
     });
 
     it('존재하지 않는 활동은 가져올 수 없다.', async () => {

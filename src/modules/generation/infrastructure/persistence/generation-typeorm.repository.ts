@@ -17,6 +17,10 @@ export class GenerationTypeormRepository implements GenerationRepository {
     });
   }
 
+  async save(generation: Generation): Promise<void> {
+    await this.repository.save(generation);
+  }
+
   async deleteAll(): Promise<void> {
     await this.repository.delete({});
   }

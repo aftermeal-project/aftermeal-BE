@@ -10,7 +10,7 @@ export class UserResponseDto {
   @Exclude() private readonly _email: string;
   @Exclude() private readonly _status: UserStatus;
   @Exclude() private readonly _type: UserType;
-  @Exclude() private readonly _generation: Generation;
+  @Exclude() private readonly _generation: Generation | null;
   @Exclude() private readonly _roles: string[];
 
   constructor(
@@ -19,7 +19,7 @@ export class UserResponseDto {
     email: string,
     status: UserStatus,
     type: UserType,
-    generation: Generation,
+    generation: Generation | null,
     roles: string[],
   ) {
     this._id = id;
@@ -58,6 +58,9 @@ export class UserResponseDto {
 
   @Expose()
   get generationNumber(): number | null {
+    if (!this._generation) {
+      return null;
+    }
     return this._generation.generationNumber;
   }
 

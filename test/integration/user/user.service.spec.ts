@@ -24,6 +24,7 @@ import { GenerationRepository } from '../../../src/modules/generation/domain/rep
 import { UserRoleRepository } from '../../../src/modules/role/domain/repositories/user-role.repository';
 import { UserRole } from '../../../src/modules/role/domain/entities/user-role.entity';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { Generation } from '../../../src/modules/generation/domain/entities/generation.entity';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -120,27 +121,33 @@ describe('UserService', () => {
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
-      const user1: User = User.createTeacher(
+      const generation: Generation = Generation.create(8, 2024, false);
+      await generationRepository.save(generation);
+
+      const student: User = User.createStudent(
         'test',
-        'test1@example.com',
+        's20041@gsm.hs.kr',
         role,
+        generation,
         'G$K9Vss9-wNX6jOvY',
       );
-      const user2: User = User.createTeacher(
+      const teacher: User = User.createTeacher(
         'test',
         'test2@example.com',
         role,
         'G$K9Vss9-wNX6jOvY',
       );
-      await userRepository.saveAll([user1, user2]);
+      await userRepository.saveAll([student, teacher]);
 
       // when
       const result = await userService.getAllUsers();
 
       // then
       expect(result).toHaveLength(2);
-      expect(result[0].email).toBe('test1@example.com');
+      expect(result[0].email).toBe('s20041@gsm.hs.kr');
+      expect(result[0].generationNumber).toBe(8);
       expect(result[1].email).toBe('test2@example.com');
+      expect(result[1].generationNumber).toBeNull();
     });
   });
 

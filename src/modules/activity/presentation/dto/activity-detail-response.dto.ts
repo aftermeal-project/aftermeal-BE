@@ -101,10 +101,9 @@ export class ActivityDetailResponseDto {
           id: participation.user.id,
           name: participation.user.name,
           type: participation.user.type,
-          generationNumber:
-            participation.user.type === UserType.STUDENT
-              ? participation.user.generation.generationNumber
-              : null,
+          generationNumber: participation.user.generation?.generationNumber
+            ? participation.user.generation.generationNumber
+            : null,
         },
       };
     });
