@@ -3,6 +3,7 @@ import { UserStatus } from '../../domain/types/user-status';
 import { User } from '../../domain/entities/user.entity';
 import { Exclude, Expose } from 'class-transformer';
 import { Generation } from '../../../generation/domain/entities/generation.entity';
+import { Role } from '../../../role/domain/entities/role.entity';
 
 export class UserResponseDto {
   @Exclude() private readonly _id: number;
@@ -11,7 +12,7 @@ export class UserResponseDto {
   @Exclude() private readonly _status: UserStatus;
   @Exclude() private readonly _type: UserType;
   @Exclude() private readonly _generation: Generation | null;
-  @Exclude() private readonly _roles: string[];
+  @Exclude() private readonly _roles: Role[];
 
   constructor(
     id: number,
@@ -20,7 +21,7 @@ export class UserResponseDto {
     status: UserStatus,
     type: UserType,
     generation: Generation | null,
-    roles: string[],
+    roles: Role[],
   ) {
     this._id = id;
     this._name = name;
@@ -66,7 +67,7 @@ export class UserResponseDto {
 
   @Expose()
   get roles(): string[] {
-    return this._roles;
+    return this._roles.map((role) => role.name);
   }
 
   static from(user: User): UserResponseDto {
@@ -77,7 +78,7 @@ export class UserResponseDto {
       user.status,
       user.type,
       user.generation,
-      user.roles.map((userRole) => userRole.role.name),
+      user.roles.map((userRole) => userRole.role),
     );
   }
 }

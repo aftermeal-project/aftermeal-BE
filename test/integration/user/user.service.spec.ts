@@ -146,8 +146,10 @@ describe('UserService', () => {
       expect(result).toHaveLength(2);
       expect(result[0].email).toBe('s20041@gsm.hs.kr');
       expect(result[0].generationNumber).toBe(8);
+      expect(result[0].roles).toHaveLength(1);
       expect(result[1].email).toBe('test2@example.com');
       expect(result[1].generationNumber).toBeNull();
+      expect(result[1].roles).toHaveLength(1);
     });
   });
 
