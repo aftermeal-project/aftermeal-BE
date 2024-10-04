@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ActivityRepository } from '../../domain/repositories/activity.repository';
-import { ACTIVITY_REPOSITORY } from '@common/constants/dependency-token';
+import { ACTIVITY_REPOSITORY, TIME } from '@common/constants/dependency-token';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { ActivitySummaryDto } from '../../infrastructure/dto/activity-summary.dto';
 import { Activity } from '../../domain/entities/activity.entity';
@@ -11,6 +11,8 @@ import { ActivityCreationRequestDto } from '../../presentation/dto/activity-crea
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
 import { ActivityUpdateRequestDto } from '../../presentation/dto/activity-update-request.dto';
 import { ActivityLocationService } from '../../../activity-location/application/services/activity-location.service';
+import { ZonedDateTime } from '@js-joda/core';
+import { Time } from '@common/time/time';
 
 @Injectable()
 export class ActivityService {
@@ -18,9 +20,13 @@ export class ActivityService {
     @Inject(ACTIVITY_REPOSITORY)
     private readonly activityRepository: ActivityRepository,
     private readonly activityLocationService: ActivityLocationService,
+    @Inject(TIME)
+    private readonly time: Time,
   ) {}
 
   async createActivity(dto: ActivityCreationRequestDto): Promise<void> {
+    const now: ZonedDateTime = this.time.now();
+
     const activityLocation: ActivityLocation =
       await this.activityLocationService.getActivityLocationById(
         dto.activityLocationId,
@@ -32,16 +38,15 @@ export class ActivityService {
       activityLocation,
       dto.type,
       dto.scheduledDate,
+      now,
     );
     await this.activityRepository.save(activity);
   }
 
   async getActivitySummaries(): Promise<ActivitySummaryResponseDto[]> {
-    const activitySummaryDtos: ActivitySummaryDto[] =
+    const summaryDtos: ActivitySummaryDto[] =
       await this.activityRepository.findActivitySummary();
-    return activitySummaryDtos.map((dto) =>
-      ActivitySummaryResponseDto.from(dto),
-    );
+    return summaryDtos.map((dto) => ActivitySummaryResponseDto.from(dto));
   }
 
   async getActivityById(activityId: number): Promise<Activity> {
@@ -59,9 +64,7 @@ export class ActivityService {
     activityId: number,
   ): Promise<ActivityDetailResponseDto> {
     const activity: Activity = await this.getActivityById(activityId);
-    const participations: Participation[] = await activity.participations;
-
-    return ActivityDetailResponseDto.from(activity, participations);
+    return ActivityDetailResponseDto.from(activity);
   }
 
   async updateActivity(

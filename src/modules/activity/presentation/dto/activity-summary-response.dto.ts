@@ -1,36 +1,40 @@
 import { Exclude, Expose } from 'class-transformer';
+import { LocalDate, ZonedDateTime } from '@js-joda/core';
+import { EActivityType } from '../../domain/types/activity-type';
+import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
 import { ActivitySummaryDto } from '../../infrastructure/dto/activity-summary.dto';
-import { ActivityStatus } from '../../domain/types/activity-status';
-import { LocalDate } from '@js-joda/core';
 
 export class ActivitySummaryResponseDto {
   @Exclude() private readonly _id: number;
   @Exclude() private readonly _title: string;
-  @Exclude() private readonly _location: string;
+  @Exclude() private readonly _location: ActivityLocation;
   @Exclude() private readonly _maxParticipants: number;
   @Exclude() private readonly _currentParticipants: number;
-  @Exclude() private readonly _status: ActivityStatus;
-  @Exclude() private readonly _type: string;
+  @Exclude() private readonly _type: EActivityType;
   @Exclude() private readonly _scheduledDate: LocalDate;
+  @Exclude() private readonly _applicationStartAt: ZonedDateTime;
+  @Exclude() private readonly _applicationEndAt: ZonedDateTime;
 
   constructor(
     id: number,
     title: string,
-    location: string,
+    location: ActivityLocation,
     maxParticipants: number,
     currentParticipants: number,
-    status: ActivityStatus,
-    type: string,
+    type: EActivityType,
     scheduledDate: LocalDate,
+    applicationStartAt: ZonedDateTime,
+    applicationEndAt: ZonedDateTime,
   ) {
     this._id = id;
     this._title = title;
     this._location = location;
     this._maxParticipants = maxParticipants;
     this._currentParticipants = currentParticipants;
-    this._status = status;
     this._type = type;
     this._scheduledDate = scheduledDate;
+    this._applicationStartAt = applicationStartAt;
+    this._applicationEndAt = applicationEndAt;
   }
 
   @Expose()
@@ -45,7 +49,7 @@ export class ActivitySummaryResponseDto {
 
   @Expose()
   get location(): string {
-    return this._location;
+    return this._location.name;
   }
 
   @Expose()
@@ -59,18 +63,23 @@ export class ActivitySummaryResponseDto {
   }
 
   @Expose()
-  get status(): string {
-    return this._status;
-  }
-
-  @Expose()
   get type(): string {
-    return this._type;
+    return this._type.name;
   }
 
   @Expose()
   get scheduledDate(): string {
     return this._scheduledDate.toString();
+  }
+
+  @Expose()
+  get applicationStartAt(): ZonedDateTime {
+    return this._applicationStartAt;
+  }
+
+  @Expose()
+  get applicationEndAt(): ZonedDateTime {
+    return this._applicationEndAt;
   }
 
   static from(activity: ActivitySummaryDto) {
@@ -80,9 +89,10 @@ export class ActivitySummaryResponseDto {
       activity.location,
       activity.maxParticipants,
       activity.currentParticipants,
-      activity.status,
       activity.type,
       activity.scheduledDate,
+      activity.applicationStartAt,
+      activity.applicationEndAt,
     );
   }
 }

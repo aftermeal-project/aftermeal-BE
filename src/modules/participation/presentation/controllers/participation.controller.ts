@@ -5,11 +5,14 @@ import {
   HttpCode,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ParticipationService } from '../../application/services/participation.service';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { ResponseEntity } from '@common/models/response.entity';
 import { User } from '../../../user/domain/entities/user.entity';
+import { ZonedDateTime, ZoneOffset } from '@js-joda/core';
+import { ParticipationOwnerGuard } from '../../infrastructure/guards/participation-owner.guard';
 
 @Controller()
 export class ParticipationController {
@@ -18,18 +21,18 @@ export class ParticipationController {
   @Post('participations')
   async participate(
     @Body('activityId') activityId: number,
-    @CurrentUser('sub') userId: number,
+    @CurrentUser() user: User,
   ): Promise<ResponseEntity<null>> {
-    await this.participationService.participate(activityId, userId);
-    return ResponseEntity.SUCCESS();
+    await this.participationService.participate(activityId, user);
+    return ResponseEntity.CREATED();
   }
 
+  @UseGuards(ParticipationOwnerGuard)
   @Delete('participations/:participationId')
   @HttpCode(204)
-  async cancelParticipation(
+  async deleteParticipation(
     @Param('participationId') participationId: number,
-    @CurrentUser() user: User,
   ): Promise<void> {
-    await this.participationService.deleteParticipation(participationId, user);
+    await this.participationService.deleteParticipation(participationId);
   }
 }

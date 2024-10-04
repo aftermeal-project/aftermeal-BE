@@ -26,13 +26,13 @@ export class UserController {
     @Body() dto: UserRegistrationRequestDto,
   ): Promise<ResponseEntity<null>> {
     await this.userService.register(dto);
-    return ResponseEntity.SUCCESS();
+    return ResponseEntity.CREATED();
   }
 
   @Public()
   @Get()
   async getAllUsers(): Promise<ResponseEntity<UserResponseDto[]>> {
-    return ResponseEntity.SUCCESS_WITH_DATA(
+    return ResponseEntity.OK(
       await this.userService.getAllUsers(),
     );
   }

@@ -27,7 +27,7 @@ export class ActivityController {
     @Body() dto: ActivityCreationRequestDto,
   ): Promise<ResponseEntity<null>> {
     await this.activityService.createActivity(dto);
-    return ResponseEntity.SUCCESS();
+    return ResponseEntity.CREATED();
   }
 
   @Public()
@@ -35,7 +35,7 @@ export class ActivityController {
   async getActivities(): Promise<ResponseEntity<ActivitySummaryResponseDto[]>> {
     const activitySummaryResponseDtos: ActivitySummaryResponseDto[] =
       await this.activityService.getActivitySummaries();
-    return ResponseEntity.SUCCESS_WITH_DATA(activitySummaryResponseDtos);
+    return ResponseEntity.OK(activitySummaryResponseDtos);
   }
 
   @Public()
@@ -45,7 +45,7 @@ export class ActivityController {
   ): Promise<ResponseEntity<ActivityDetailResponseDto>> {
     const activityDetailResponseDto: ActivityDetailResponseDto =
       await this.activityService.getActivityDetailById(activityId);
-    return ResponseEntity.SUCCESS_WITH_DATA(activityDetailResponseDto);
+    return ResponseEntity.OK(activityDetailResponseDto);
   }
 
   @Roles('ADMIN')

@@ -9,11 +9,11 @@ export class ResponseEntity<T> {
     this._data = data;
   }
 
-  static SUCCESS(): ResponseEntity<null> {
-    return new ResponseEntity(true);
+  static CREATED<T>(data?: T): ResponseEntity<T> {
+    return new ResponseEntity(true, data);
   }
 
-  static SUCCESS_WITH_DATA<T>(data: T): ResponseEntity<T> {
+  static OK<T>(data: T): ResponseEntity<T> {
     return new ResponseEntity(true, data);
   }
 

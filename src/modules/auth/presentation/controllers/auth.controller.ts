@@ -20,7 +20,7 @@ export class AuthController {
       dto.email,
       dto.password,
     );
-    return ResponseEntity.SUCCESS_WITH_DATA(loginResponseDto);
+    return ResponseEntity.OK(loginResponseDto);
   }
 
   @Public()
@@ -30,6 +30,6 @@ export class AuthController {
   ): Promise<ResponseEntity<TokenRefreshResponseDto>> {
     const tokenRefreshResponseDto: TokenRefreshResponseDto =
       await this.authService.refresh(dto.refreshToken);
-    return ResponseEntity.SUCCESS_WITH_DATA(tokenRefreshResponseDto);
+    return ResponseEntity.OK(tokenRefreshResponseDto);
   }
 }

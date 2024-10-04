@@ -1,6 +1,6 @@
-import { ParticipationRepository } from '../entities/participation.repository';
+import { ParticipationRepository } from '../../domain/repositories/participation.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Participation } from '../entities/participation.entity';
+import { Participation } from '../../domain/entities/participation.entity';
 import { Repository } from 'typeorm';
 
 export class ParticipationTypeormRepository implements ParticipationRepository {

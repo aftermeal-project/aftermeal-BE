@@ -3,7 +3,10 @@ import { ActivitySummaryDto } from '../dto/activity-summary.dto';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Activity } from '../../domain/entities/activity.entity';
+import { plainToInstance } from 'class-transformer';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class ActivityTypeormRepository implements ActivityRepository {
   constructor(
     @InjectRepository(Activity)
@@ -19,19 +22,11 @@ export class ActivityTypeormRepository implements ActivityRepository {
   }
 
   async findActivitySummary(): Promise<ActivitySummaryDto[]> {
-    const raw = await this.buildActivityDtoSelectQuery().getRawMany();
-    return raw.map(
-      (activity) =>
-        new ActivitySummaryDto(
-          activity.id,
-          activity.title,
-          activity.location,
-          activity.maxParticipants,
-          Number(activity.currentParticipants),
-          activity.status,
-          activity.type,
-          activity.scheduledDate,
-        ),
+    const raw = await this.buildActivitySummarySelectQuery().getRawMany();
+    return raw.map((raw) =>
+      plainToInstance(ActivitySummaryDto, raw, {
+        excludeExtraneousValues: true,
+      }),
     );
   }
 
@@ -53,22 +48,23 @@ export class ActivityTypeormRepository implements ActivityRepository {
     await this.repository.delete({});
   }
 
-  private buildActivityDtoSelectQuery(): SelectQueryBuilder<Activity> {
+  private buildActivitySummarySelectQuery(): SelectQueryBuilder<Activity> {
     return this.repository
       .createQueryBuilder('activity')
       .leftJoin('activity.participations', 'participation')
-      .leftJoin('activity.location', 'location')
-      .select('activity.id', 'id')
-      .addSelect('activity.title', 'title')
-      .addSelect('location.name', 'location')
-      .addSelect('activity.maxParticipants', 'maxParticipants')
-      .addSelect('COUNT(DISTINCT participation.id)', 'currentParticipants')
-      .addSelect('activity.status', 'status')
-      .addSelect('activity.type', 'type')
-      .addSelect(
-        "DATE_FORMAT(activity.scheduledDate, '%Y-%m-%d')",
-        'scheduledDate',
-      )
-      .groupBy('activity.id');
+      .leftJoinAndSelect('activity.location', 'location')
+      .select([
+        'activity.id',
+        'activity.title',
+        'activity.maxParticipants',
+        'activity.type',
+        'activity.scheduledDate',
+        'activity.applicationStartAt',
+        'activity.applicationEndAt',
+        'location',
+      ])
+      .addSelect('COUNT(participation.id)', 'activity_current_participants')
+      .groupBy('activity.id')
+      .addGroupBy('location.id');
   }
 }

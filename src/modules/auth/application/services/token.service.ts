@@ -4,7 +4,7 @@ import { ConfigType } from '@nestjs/config';
 import { REFRESH_TOKEN_REPOSITORY } from '@common/constants/dependency-token';
 import jwtConfiguration from '@config/jwt.config';
 import { RefreshTokenRepository } from '../../domain/repositories/refresh-token.repository';
-import { generateRandomString } from '@common/utils/src/generate-random-string';
+import { generateRandomString } from '@common/utils/generate-random-string';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { AccessTokenPayload } from '../../domain/types/jwt-payload';
 

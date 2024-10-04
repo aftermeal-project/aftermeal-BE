@@ -1,26 +1,31 @@
 import { Activity } from '../../domain/entities/activity.entity';
 import { Exclude, Expose } from 'class-transformer';
 import { Participation } from '../../../participation/domain/entities/participation.entity';
-import { LocalDate } from '@js-joda/core';
+import { LocalDate, ZonedDateTime } from '@js-joda/core';
 import { UserType } from '../../../user/domain/types/user-type';
 import { EActivityType } from '../../domain/types/activity-type';
+import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
 
 export class ActivityDetailResponseDto {
   @Exclude() private readonly _id: number;
   @Exclude() private readonly _title: string;
   @Exclude() private readonly _maxParticipants: number;
-  @Exclude() private readonly _location: string;
+  @Exclude() private readonly _location: ActivityLocation;
   @Exclude() private readonly _type: EActivityType;
   @Exclude() private readonly _scheduledDate: LocalDate;
+  @Exclude() private readonly _applicationStartAt: ZonedDateTime;
+  @Exclude() private readonly _applicationEndAt: ZonedDateTime;
   @Exclude() private readonly _participations: Participation[];
 
   constructor(
     id: number,
     title: string,
     maxParticipants: number,
-    location: string,
+    location: ActivityLocation,
     type: EActivityType,
     scheduledDate: LocalDate,
+    applicationStartAt: ZonedDateTime,
+    applicationEndAt: ZonedDateTime,
     participations: Participation[],
   ) {
     this._id = id;
@@ -29,6 +34,8 @@ export class ActivityDetailResponseDto {
     this._location = location;
     this._type = type;
     this._scheduledDate = scheduledDate;
+    this._applicationStartAt = applicationStartAt;
+    this._applicationEndAt = applicationEndAt;
     this._participations = participations;
   }
 
@@ -48,8 +55,13 @@ export class ActivityDetailResponseDto {
   }
 
   @Expose()
+  get currentParticipants(): number {
+    return this._participations.length;
+  }
+
+  @Expose()
   get location(): string {
-    return this._location;
+    return this._location.name;
   }
 
   @Expose()
@@ -63,6 +75,16 @@ export class ActivityDetailResponseDto {
   }
 
   @Expose()
+  get applicationStartAt(): string {
+    return this._applicationStartAt.toString();
+  }
+
+  @Expose()
+  get applicationEndAt(): string {
+    return this._applicationEndAt.toString();
+  }
+
+  @Expose()
   get participations(): {
     id: number;
     user: {
@@ -72,31 +94,33 @@ export class ActivityDetailResponseDto {
       generationNumber: number | null;
     };
   }[] {
-    return this._participations.map((participant) => {
+    return this._participations.map((participation) => {
       return {
-        id: participant.id,
+        id: participation.id,
         user: {
-          id: participant.user.id,
-          name: participant.user.name,
-          type: participant.user.type,
-          generationNumber: participant.user.generation.generationNumber,
+          id: participation.user.id,
+          name: participation.user.name,
+          type: participation.user.type,
+          generationNumber:
+            participation.user.type === UserType.STUDENT
+              ? participation.user.generation.generationNumber
+              : null,
         },
       };
     });
   }
 
-  static from(
-    activity: Activity,
-    participations: Participation[],
-  ): ActivityDetailResponseDto {
+  static from(activity: Activity): ActivityDetailResponseDto {
     return new ActivityDetailResponseDto(
       activity.id,
       activity.title,
       activity.maxParticipants,
-      activity.location.name,
+      activity.location,
       activity.type,
       activity.scheduledDate,
-      participations,
+      activity.applicationStartAt,
+      activity.applicationEndAt,
+      activity.participations,
     );
   }
 }

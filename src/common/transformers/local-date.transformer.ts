@@ -1,15 +1,33 @@
 import { ValueTransformer } from 'typeorm';
-import { convert, LocalDate, nativeJs } from '@js-joda/core';
+import { convert, LocalDate } from '@js-joda/core';
+import { Logger } from '@nestjs/common';
 
 export class LocalDateTransformer implements ValueTransformer {
-  to(entityValue: LocalDate): Date {
-    return convert(entityValue).toDate();
+  private readonly logger = new Logger(LocalDateTransformer.name);
+
+  to(entityValue: LocalDate | null): Date | null {
+    if (!entityValue) {
+      return null;
+    }
+
+    try {
+      return convert(entityValue).toDate();
+    } catch (error) {
+      this.logger.error('LocalDate 변환 오류:', error);
+      return null;
+    }
   }
 
-  from(databaseValue: Date | string): LocalDate {
-    if (typeof databaseValue === 'string') {
-      return LocalDate.parse(databaseValue);
+  from(databaseValue: string | null): LocalDate | null {
+    if (!databaseValue) {
+      return null;
     }
-    return nativeJs(databaseValue).toLocalDate();
+
+    try {
+      return LocalDate.parse(databaseValue);
+    } catch (error) {
+      this.logger.error('LocalDate 파싱 오류:', error);
+      return null;
+    }
   }
 }

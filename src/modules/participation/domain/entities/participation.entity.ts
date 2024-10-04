@@ -16,18 +16,15 @@ export class Participation extends BaseTimeEntity {
   user: User;
 
   @ManyToOne(() => Activity, (activity) => activity.participations, {
-    lazy: true,
+    eager: false,
   })
   @JoinColumn({
     name: 'activity_id',
     foreignKeyConstraintName: 'fk_participation_activity',
   })
-  activity: Promise<Activity>;
+  activity: Activity;
 
-  static create(user: User, activity: Activity): Participation {
-    const participation = new Participation();
-    participation.user = user;
-    participation.activity = Promise.resolve(activity);
-    return participation;
+  isOwnedBy(user: User): boolean {
+    return this.user.id === user.id;
   }
 }

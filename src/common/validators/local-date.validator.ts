@@ -11,6 +11,6 @@ export class LocalDateValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'must be a valid LocalDate';
+    return '날짜 형식이어야 합니다.';
   }
 }
