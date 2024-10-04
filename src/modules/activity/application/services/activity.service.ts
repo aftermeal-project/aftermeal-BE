@@ -12,6 +12,7 @@ import { ActivityUpdateRequestDto } from '../../presentation/dto/activity-update
 import { ActivityLocationService } from '../../../activity-location/application/services/activity-location.service';
 import { ZonedDateTime } from '@js-joda/core';
 import { Time } from '@common/time/time';
+import { Participation } from '../../../participation/domain/entities/participation.entity';
 
 @Injectable()
 export class ActivityService {
@@ -43,9 +44,8 @@ export class ActivityService {
   }
 
   async getActivitySummaries(): Promise<ActivitySummaryResponseDto[]> {
-    const summaryDtos: ActivitySummaryDto[] =
-      await this.activityRepository.findActivitySummary();
-    return summaryDtos.map((dto) => ActivitySummaryResponseDto.from(dto));
+    const activities: Activity[] = await this.activityRepository.find();
+    return activities.map((activity) => ActivitySummaryResponseDto.from(activity));
   }
 
   async getActivityById(activityId: number): Promise<Activity> {

@@ -256,6 +256,7 @@ describe('ActivityService', () => {
       expect(result[0].location).toBe('GYM');
       expect(result[0].maxParticipants).toBe(18);
       expect(result[0].currentParticipants).toBe(1);
+      expect(result[0].type).toBe('LUNCH');
     });
   });
 
