@@ -22,14 +22,14 @@ export class ActivitySummaryDto {
   readonly currentParticipants: number;
 
   @Expose({ name: 'activity_type' })
-  readonly type: EActivityType;
+  readonly type: string;
 
   @Expose({ name: 'activity_scheduled_date' })
-  readonly scheduledDate: LocalDate;
+  readonly scheduledDate: string;
 
   @Expose({ name: 'activity_application_start_at' })
-  readonly applicationStartAt: ZonedDateTime;
+  readonly applicationStartAt: string;
 
   @Expose({ name: 'activity_application_end_at' })
-  readonly applicationEndAt: ZonedDateTime;
+  readonly applicationEndAt: string;
 }

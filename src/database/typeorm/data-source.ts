@@ -21,4 +21,5 @@ export const AppDataSource = new DataSource({
   logging: dbConfig.logging === 'true',
   namingStrategy: new SnakeNamingStrategy(),
   bigNumberStrings: false,
+  timezone: 'Z',
 });

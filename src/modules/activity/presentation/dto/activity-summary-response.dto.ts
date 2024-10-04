@@ -2,7 +2,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { LocalDate, ZonedDateTime } from '@js-joda/core';
 import { EActivityType } from '../../domain/types/activity-type';
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
-import { ActivitySummaryDto } from '../../infrastructure/dto/activity-summary.dto';
+import { Activity } from '../../domain/entities/activity.entity';
 
 export class ActivitySummaryResponseDto {
   @Exclude() private readonly _id: number;
@@ -64,7 +64,7 @@ export class ActivitySummaryResponseDto {
 
   @Expose()
   get type(): string {
-    return this._type.name;
+    return this._type.code;
   }
 
   @Expose()
@@ -82,17 +82,13 @@ export class ActivitySummaryResponseDto {
     return this._applicationEndAt;
   }
 
-  static from(activity: ActivitySummaryDto) {
-    const location = new ActivityLocation();
-    location.id = activity.locationId;
-    location.name = activity.locationName;
-
+  static from(activity: Activity) {
     return new ActivitySummaryResponseDto(
       activity.id,
       activity.title,
-      location,
+      activity.location,
       activity.maxParticipants,
-      activity.currentParticipants,
+      activity.participations.length,
       activity.type,
       activity.scheduledDate,
       activity.applicationStartAt,

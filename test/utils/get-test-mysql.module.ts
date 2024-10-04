@@ -30,6 +30,7 @@ export function getTestMysqlModule(): DynamicModule {
         logging: process.env.DB_LOGGING === 'true',
         namingStrategy: new SnakeNamingStrategy(),
         bigNumberStrings: false,
+        timezone: 'Z',
       };
     },
     dataSourceFactory: async (options): Promise<DataSource> => {
