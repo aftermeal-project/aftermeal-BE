@@ -83,10 +83,14 @@ export class ActivitySummaryResponseDto {
   }
 
   static from(activity: ActivitySummaryDto) {
+    const location = new ActivityLocation();
+    location.id = activity.locationId;
+    location.name = activity.locationName;
+
     return new ActivitySummaryResponseDto(
       activity.id,
       activity.title,
-      activity.location,
+      location,
       activity.maxParticipants,
       activity.currentParticipants,
       activity.type,

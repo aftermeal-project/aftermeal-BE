@@ -253,6 +253,7 @@ describe('ActivityService', () => {
       // then
       expect(result[0].id).toBe(activity.id);
       expect(result[0].title).toBe('배구');
+      expect(result[0].location).toBe('GYM');
       expect(result[0].maxParticipants).toBe(18);
       expect(result[0].currentParticipants).toBe(1);
     });
