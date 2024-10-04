@@ -1,6 +1,5 @@
 import { LocalDate, ZonedDateTime } from '@js-joda/core';
 import { EActivityType } from '../../domain/types/activity-type';
-import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
 import { Expose } from 'class-transformer';
 
 export class ActivitySummaryDto {
@@ -10,8 +9,11 @@ export class ActivitySummaryDto {
   @Expose({ name: 'activity_title' })
   readonly title: string;
 
-  @Expose({ name: 'activity_location' })
-  readonly location: ActivityLocation;
+  @Expose({ name: 'location_id' })
+  readonly locationId: number;
+
+  @Expose({ name: 'location_name' })
+  readonly locationName: string;
 
   @Expose({ name: 'activity_max_participants' })
   readonly maxParticipants: number;
