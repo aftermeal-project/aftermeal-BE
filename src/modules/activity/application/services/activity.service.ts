@@ -4,7 +4,6 @@ import { ACTIVITY_REPOSITORY, TIME } from '@common/constants/dependency-token';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
 import { ActivitySummaryDto } from '../../infrastructure/dto/activity-summary.dto';
 import { Activity } from '../../domain/entities/activity.entity';
-import { Participation } from '../../../participation/domain/entities/participation.entity';
 import { ActivitySummaryResponseDto } from '../../presentation/dto/activity-summary-response.dto';
 import { ActivityDetailResponseDto } from '../../presentation/dto/activity-detail-response.dto';
 import { ActivityCreationRequestDto } from '../../presentation/dto/activity-creation-request.dto';

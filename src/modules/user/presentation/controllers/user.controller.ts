@@ -32,9 +32,7 @@ export class UserController {
   @Public()
   @Get()
   async getAllUsers(): Promise<ResponseEntity<UserResponseDto[]>> {
-    return ResponseEntity.OK(
-      await this.userService.getAllUsers(),
-    );
+    return ResponseEntity.OK(await this.userService.getAllUsers());
   }
 
   @Roles('ADMIN')

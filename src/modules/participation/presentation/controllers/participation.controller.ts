@@ -11,7 +11,6 @@ import { ParticipationService } from '../../application/services/participation.s
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { ResponseEntity } from '@common/models/response.entity';
 import { User } from '../../../user/domain/entities/user.entity';
-import { ZonedDateTime, ZoneOffset } from '@js-joda/core';
 import { ParticipationOwnerGuard } from '../../infrastructure/guards/participation-owner.guard';
 
 @Controller()

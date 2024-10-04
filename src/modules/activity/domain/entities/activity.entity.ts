@@ -16,7 +16,6 @@ import { ActivityLocation } from '../../../activity-location/domain/entities/act
 import { User } from '../../../user/domain/entities/user.entity';
 import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { ZonedDateTimeTransformer } from '@common/transformers/zoned-date.transformer';
 
 @Entity()
