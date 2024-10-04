@@ -45,7 +45,9 @@ export class ActivityService {
 
   async getActivitySummaries(): Promise<ActivitySummaryResponseDto[]> {
     const activities: Activity[] = await this.activityRepository.find();
-    return activities.map((activity) => ActivitySummaryResponseDto.from(activity));
+    return activities.map((activity) =>
+      ActivitySummaryResponseDto.from(activity),
+    );
   }
 
   async getActivityById(activityId: number): Promise<Activity> {

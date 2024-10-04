@@ -73,13 +73,13 @@ export class ActivitySummaryResponseDto {
   }
 
   @Expose()
-  get applicationStartAt(): ZonedDateTime {
-    return this._applicationStartAt;
+  get applicationStartAt(): string {
+    return this._applicationStartAt.toString();
   }
 
   @Expose()
-  get applicationEndAt(): ZonedDateTime {
-    return this._applicationEndAt;
+  get applicationEndAt(): string {
+    return this._applicationEndAt.toString();
   }
 
   static from(activity: Activity) {
