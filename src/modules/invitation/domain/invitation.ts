@@ -1,4 +1,4 @@
-import { generateRandomString } from '@common/utils/src/generate-random-string';
+import { generateRandomString } from '@common/utils/generate-random-string';
 
 /**
  * Target is the user who will be invited.

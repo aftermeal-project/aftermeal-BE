@@ -3,7 +3,7 @@ import { ParticipationService } from './application/services/participation.servi
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Participation } from './domain/entities/participation.entity';
 import { PARTICIPATION_REPOSITORY } from '@common/constants/dependency-token';
-import { ParticipationTypeormRepository } from './domain/repositories/participation-typeorm.repository';
+import { ParticipationTypeormRepository } from './infrastructure/persistence/participation-typeorm.repository';
 import { ActivityModule } from '../activity/activity.module';
 import { UserModule } from '../user/user.module';
 import { ParticipationController } from './presentation/controllers/participation.controller';

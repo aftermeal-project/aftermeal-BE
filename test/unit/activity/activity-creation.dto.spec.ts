@@ -11,7 +11,7 @@ describe('ActivityCreationRequestDto', () => {
     dto.maxParticipants = 10;
     dto.activityLocationId = 1;
     dto.type = EActivityType.LUNCH;
-    dto.scheduledDate = LocalDate.now();
+    dto.scheduledDate = LocalDate.of(2025, 1, 1);
 
     // when
     const errors = validateSync(dto);
@@ -20,7 +20,7 @@ describe('ActivityCreationRequestDto', () => {
     expect(errors.length).toBe(0);
   });
 
-  it('제목은 필수값이어야 한다.', () => {
+  it('제목은 빈칸이여선 안된다.', () => {
     // given
     const dto = new ActivityCreationRequestDto();
     dto.title = ''; // Invalid value

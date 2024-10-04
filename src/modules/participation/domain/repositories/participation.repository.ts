@@ -1,4 +1,4 @@
-import { Participation } from './participation.entity';
+import { Participation } from '../entities/participation.entity';
 
 export interface ParticipationRepository {
   find(): Promise<Participation[]>;

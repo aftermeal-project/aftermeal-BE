@@ -1,65 +1,33 @@
-import { ActivityStatus } from '../../domain/types/activity-status';
-import { LocalDate } from '@js-joda/core';
+import { LocalDate, ZonedDateTime } from '@js-joda/core';
+import { EActivityType } from '../../domain/types/activity-type';
+import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
+import { Expose } from 'class-transformer';
 
 export class ActivitySummaryDto {
-  private readonly _id: number;
-  private readonly _title: string;
-  private readonly _location: string;
-  private readonly _maxParticipants: number;
-  private readonly _currentParticipants: number;
-  private readonly _status: ActivityStatus;
-  private readonly _type: string;
-  private readonly _scheduledDate: LocalDate;
+  @Expose({ name: 'activity_id' })
+  readonly id: number;
 
-  constructor(
-    id: number,
-    title: string,
-    location: string,
-    maxParticipants: number,
-    currentParticipants: number,
-    status: ActivityStatus,
-    type: string,
-    scheduledDate: string,
-  ) {
-    this._id = id;
-    this._title = title;
-    this._location = location;
-    this._maxParticipants = maxParticipants;
-    this._currentParticipants = currentParticipants;
-    this._status = status;
-    this._type = type;
-    this._scheduledDate = LocalDate.parse(scheduledDate);
-  }
+  @Expose({ name: 'activity_title' })
+  readonly title: string;
 
-  get id(): number {
-    return this._id;
-  }
+  @Expose({ name: 'activity_location' })
+  readonly location: ActivityLocation;
 
-  get title(): string {
-    return this._title;
-  }
+  @Expose({ name: 'activity_max_participants' })
+  readonly maxParticipants: number;
 
-  get location(): string {
-    return this._location;
-  }
+  @Expose({ name: 'activity_current_participants' })
+  readonly currentParticipants: number;
 
-  get maxParticipants(): number {
-    return this._maxParticipants;
-  }
+  @Expose({ name: 'activity_type' })
+  readonly type: EActivityType;
 
-  get currentParticipants(): number {
-    return this._currentParticipants;
-  }
+  @Expose({ name: 'activity_scheduled_date' })
+  readonly scheduledDate: LocalDate;
 
-  get status(): ActivityStatus {
-    return this._status;
-  }
+  @Expose({ name: 'activity_application_start_at' })
+  readonly applicationStartAt: ZonedDateTime;
 
-  get type(): string {
-    return this._type;
-  }
-
-  get scheduledDate(): LocalDate {
-    return this._scheduledDate;
-  }
+  @Expose({ name: 'activity_application_end_at' })
+  readonly applicationEndAt: ZonedDateTime;
 }

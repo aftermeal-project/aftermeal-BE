@@ -29,6 +29,10 @@ export class ActivityLocationTypeormRepository
     await this.repository.save(activityLocation);
   }
 
+  async saveAll(activityLocations: ActivityLocation[]): Promise<void> {
+    await this.repository.save(activityLocations);
+  }
+
   async delete(activityLocation: ActivityLocation): Promise<void> {
     await this.repository.remove(activityLocation);
   }

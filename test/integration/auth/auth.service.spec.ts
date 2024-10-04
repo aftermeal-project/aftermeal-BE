@@ -14,7 +14,7 @@ import jwtConfig from '@config/jwt.config';
 import redisConfig from '@config/redis.config';
 import { LoginResponseDto } from '../../../src/modules/auth/presentation/dto/login-response.dto';
 import { TokenRefreshResponseDto } from '../../../src/modules/auth/presentation/dto/token-refresh-response.dto';
-import { generateRandomString } from '@common/utils/src/generate-random-string';
+import { generateRandomString } from '@common/utils/generate-random-string';
 import {
   REFRESH_TOKEN_REPOSITORY,
   ROLE_REPOSITORY,

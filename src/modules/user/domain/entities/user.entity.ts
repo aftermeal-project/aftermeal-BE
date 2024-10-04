@@ -47,7 +47,7 @@ export class User extends BaseTimeEntity {
   })
   roles: UserRole[];
 
-  @ManyToOne(() => Generation, { nullable: true })
+  @ManyToOne(() => Generation, { nullable: true, eager: true })
   @JoinColumn({
     name: 'generation_number',
     foreignKeyConstraintName: 'fk_user_generation',

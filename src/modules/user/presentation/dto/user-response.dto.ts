@@ -2,6 +2,8 @@ import { UserType } from '../../domain/types/user-type';
 import { UserStatus } from '../../domain/types/user-status';
 import { User } from '../../domain/entities/user.entity';
 import { Exclude, Expose } from 'class-transformer';
+import { Generation } from '../../../generation/domain/entities/generation.entity';
+import { Role } from '../../../role/domain/entities/role.entity';
 
 export class UserResponseDto {
   @Exclude() private readonly _id: number;
@@ -9,8 +11,8 @@ export class UserResponseDto {
   @Exclude() private readonly _email: string;
   @Exclude() private readonly _status: UserStatus;
   @Exclude() private readonly _type: UserType;
-  @Exclude() private readonly _generationNumber: number;
-  @Exclude() private readonly _roles: string[];
+  @Exclude() private readonly _generation: Generation | null;
+  @Exclude() private readonly _roles: Role[];
 
   constructor(
     id: number,
@@ -18,15 +20,15 @@ export class UserResponseDto {
     email: string,
     status: UserStatus,
     type: UserType,
-    generationNumber: number,
-    roles: string[],
+    generation: Generation | null,
+    roles: Role[],
   ) {
     this._id = id;
     this._name = name;
     this._email = email;
     this._status = status;
     this._type = type;
-    this._generationNumber = generationNumber;
+    this._generation = generation;
     this._roles = roles;
   }
 
@@ -56,13 +58,16 @@ export class UserResponseDto {
   }
 
   @Expose()
-  get generationNumber(): number {
-    return this._generationNumber;
+  get generationNumber(): number | null {
+    if (!this._generation) {
+      return null;
+    }
+    return this._generation.generationNumber;
   }
 
   @Expose()
   get roles(): string[] {
-    return this._roles;
+    return this._roles.map((role) => role.name);
   }
 
   static from(user: User): UserResponseDto {
@@ -72,8 +77,8 @@ export class UserResponseDto {
       user.email,
       user.status,
       user.type,
-      user?.generation?.generationNumber,
-      user.roles.map((userRole) => userRole.role.name),
+      user.generation,
+      user.roles.map((userRole) => userRole.role),
     );
   }
 }
