@@ -15,7 +15,6 @@ import {
   GENERATION_REPOSITORY,
   ROLE_REPOSITORY,
   USER_REPOSITORY,
-  USER_ROLE_REPOSITORY,
 } from '@common/constants/dependency-token';
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
