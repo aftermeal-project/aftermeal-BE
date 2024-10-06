@@ -11,8 +11,9 @@ import { ActivityLocationService } from '../../../src/modules/activity-location/
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
 import { ActivityLocationUpdateRequestDto } from '../../../src/modules/activity-location/presentation/dto/activity-location-update-request.dto';
 import { ActivityLocationCreationRequestDto } from '../../../src/modules/activity-location/presentation/dto/activity-location-creation-request.dto';
-import { ActivityLocationModule } from '../../../src/modules/activity-location/activity-location.module';
 import { ActivityLocationResponseDto } from '../../../src/modules/activity-location/presentation/dto/activity-location-response.dto';
+import { ActivityLocationTypeormRepository } from '../../../src/modules/activity-location/infrastructure/persistence/activity-location-typeorm.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 describe('ActivityLocationService', () => {
   let activityLocationService: ActivityLocationService;
@@ -22,7 +23,17 @@ describe('ActivityLocationService', () => {
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [getTestMysqlModule(), ActivityLocationModule],
+      imports: [
+        getTestMysqlModule(),
+        TypeOrmModule.forFeature([ActivityLocation]),
+      ],
+      providers: [
+        ActivityLocationService,
+        {
+          provide: ACTIVITY_LOCATION_REPOSITORY,
+          useClass: ActivityLocationTypeormRepository,
+        },
+      ],
     }).compile();
 
     activityLocationService = moduleRef.get<ActivityLocationService>(
