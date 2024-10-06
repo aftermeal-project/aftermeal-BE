@@ -1,7 +1,9 @@
 name: Deploy to Production
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -23,7 +25,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile.prod
+          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/app:latest,${{ secrets.DOCKERHUB_USERNAME }}/app:${{ github.sha }}
@@ -89,14 +91,14 @@ jobs:
 
       - name: Deploy application
         run: |
-          docker compose -f compose.yml -f compose.prod.yml pull app
+          docker compose pull app
 
           if docker ps -q -f name=app | grep -q .; then
             docker stop app
             docker rm app
           fi
 
-          docker compose -f compose.yml -f compose.prod.yml up -d --no-deps app
+          docker compose up -d --no-deps app
 
       - name: Clean up
         run: |

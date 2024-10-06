@@ -5,6 +5,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    restart: unless-stopped
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - /var/www/html:/var/www/html
@@ -14,9 +15,16 @@ services:
 
   app:
     container_name: app
+    image: ${DOCKER_REGISTRY}/app
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - ${APP_PORT}:${APP_PORT}
+    restart: unless-stopped
     environment:
+      - NODE_ENV=production
+      - DB_LOGGING=false
       - APP_PORT=${APP_PORT}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
