@@ -1,15 +1,12 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Role } from './role.entity';
-import { User } from '../../../user/domain/entities/user.entity';
+import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from '../../../role/domain/entities/role.entity';
+import { User } from './user.entity';
 import { BaseTimeEntity } from '@common/models/base-time.entity';
 
 @Entity()
 export class UserRole extends BaseTimeEntity {
-  @PrimaryColumn()
-  roleId: number;
-
-  @PrimaryColumn()
-  userId: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @ManyToOne(() => Role, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({

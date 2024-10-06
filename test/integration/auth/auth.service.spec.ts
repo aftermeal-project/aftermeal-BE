@@ -1,10 +1,9 @@
 import { DataSource } from 'typeorm';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { User } from '../../../src/modules/user/domain/entities/user.entity';
 import { Role } from '../../../src/modules/role/domain/entities/role.entity';
 import { getTestMysqlModule } from '../../utils/get-test-mysql.module';
-import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from '../../../src/modules/auth/auth.module';
+import { ConfigModule, ConfigType } from '@nestjs/config';
 import { AuthService } from '../../../src/modules/auth/application/services/auth.service';
 import {
   initializeTransactionalContext,
@@ -12,17 +11,25 @@ import {
 } from 'typeorm-transactional';
 import jwtConfig from '@config/jwt.config';
 import redisConfig from '@config/redis.config';
+import redisConfiguration from '@config/redis.config';
 import { LoginResponseDto } from '../../../src/modules/auth/presentation/dto/login-response.dto';
 import { TokenRefreshResponseDto } from '../../../src/modules/auth/presentation/dto/token-refresh-response.dto';
 import { generateRandomString } from '@common/utils/generate-random-string';
 import {
+  REDIS_CLIENT,
   REFRESH_TOKEN_REPOSITORY,
   ROLE_REPOSITORY,
+  USER_REPOSITORY,
 } from '@common/constants/dependency-token';
 import { RefreshTokenRepository } from '../../../src/modules/auth/domain/repositories/refresh-token.repository';
 import { UserRepository } from '../../../src/modules/user/domain/repositories/user.repository';
-import { USER_REPOSITORY } from '@common/constants/dependency-token';
 import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
+import { RefreshTokenRedisRepository } from '../../../src/modules/auth/infrastructure/persistence/refresh-token-redis.repository';
+import { createClient, RedisClientType } from 'redis';
+import { TokenService } from '../../../src/modules/auth/application/services/token.service';
+import { UserModule } from '../../../src/modules/user/user.module';
+import { RoleModule } from '../../../src/modules/role/role.module';
+import { JwtModule } from '@nestjs/jwt';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -30,22 +37,46 @@ describe('AuthService', () => {
   let roleRepository: RoleRepository;
   let refreshTokenRepository: RefreshTokenRepository;
   let dataSource: DataSource;
-  let moduleRef: TestingModule;
+  let redisClient: RedisClientType;
 
   beforeAll(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
 
-    moduleRef = await Test.createTestingModule({
+    const moduleRef = await Test.createTestingModule({
       imports: [
         getTestMysqlModule(),
         ConfigModule.forRoot({
           load: [jwtConfig, redisConfig],
           isGlobal: true,
         }),
-        AuthModule,
+        JwtModule.register({ global: true }),
+        UserModule,
+        RoleModule,
+      ],
+      providers: [
+        AuthService,
+        TokenService,
+        {
+          provide: REFRESH_TOKEN_REPOSITORY,
+          useClass: RefreshTokenRedisRepository,
+        },
+        {
+          provide: REDIS_CLIENT,
+          useFactory: async (
+            redisConfig: ConfigType<typeof redisConfiguration>,
+          ) => {
+            return await createClient({
+              url: `redis://:${redisConfig.password}@${redisConfig.host}:${redisConfig.port}`,
+            })
+              .on('error', () => {
+                console.error('Redis connection failed');
+              })
+              .connect();
+          },
+          inject: [redisConfiguration.KEY],
+        },
       ],
     }).compile();
-    await moduleRef.init();
 
     authService = moduleRef.get<AuthService>(AuthService);
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
@@ -53,7 +84,8 @@ describe('AuthService', () => {
     refreshTokenRepository = moduleRef.get<RefreshTokenRepository>(
       REFRESH_TOKEN_REPOSITORY,
     );
-    dataSource = moduleRef.get(DataSource);
+    redisClient = moduleRef.get<RedisClientType>(REDIS_CLIENT);
+    dataSource = moduleRef.get<DataSource>(DataSource);
   });
 
   afterEach(async () => {
@@ -64,7 +96,7 @@ describe('AuthService', () => {
 
   afterAll(async () => {
     await dataSource.destroy();
-    await moduleRef.close();
+    await redisClient.disconnect();
   });
 
   describe('login', () => {
@@ -73,15 +105,20 @@ describe('AuthService', () => {
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
-      const email: string = 'test@example.com';
-      const password: string = 'G$K9Vss9-wNX6jOvY';
-
-      const user: User = User.createTeacher('송유현', email, role, password);
+      const user: User = User.createTeacher(
+        '송유현',
+        'test@example.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
       await user.hashPassword();
       await userRepository.save(user);
 
       // when
-      const result: LoginResponseDto = await authService.login(email, password);
+      const result: LoginResponseDto = await authService.login(
+        'test@example.com',
+        'G$K9Vss9-wNX6jOvY',
+      );
 
       // then
       expect(result.accessToken).toBeDefined();
@@ -97,10 +134,12 @@ describe('AuthService', () => {
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
-      const email: string = 'test@example.com';
-      const password: string = 'G$K9Vss9-wNX6jOvY';
-
-      const user: User = User.createTeacher('송유현', email, role, password);
+      const user: User = User.createTeacher(
+        '송유현',
+        'test@example.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
       await user.hashPassword();
       await userRepository.save(user);
 

@@ -66,14 +66,6 @@ describe('ActivityService', () => {
         ActivityService,
         ActivityLocationService,
         {
-          provide: ACTIVITY_REPOSITORY,
-          useClass: ActivityTypeormRepository,
-        },
-        {
-          provide: ACTIVITY_LOCATION_REPOSITORY,
-          useClass: ActivityLocationTypeormRepository,
-        },
-        {
           provide: TIME,
           useValue: new StubTime(
             ZonedDateTime.of(
@@ -82,6 +74,14 @@ describe('ActivityService', () => {
               ZoneOffset.UTC,
             ),
           ),
+        },
+        {
+          provide: ACTIVITY_REPOSITORY,
+          useClass: ActivityTypeormRepository,
+        },
+        {
+          provide: ACTIVITY_LOCATION_REPOSITORY,
+          useClass: ActivityLocationTypeormRepository,
         },
         {
           provide: USER_REPOSITORY,
@@ -190,7 +190,12 @@ describe('ActivityService', () => {
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
-      const user: User = createUser(role);
+      const user: User = User.createTeacher(
+        '송유현',
+        'test@exaple.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
       await userRepository.save(user);
 
       const activity: Activity = createActivity(activityLocation);
@@ -232,7 +237,12 @@ describe('ActivityService', () => {
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
-      const user: User = createUser(role);
+      const user: User = User.createTeacher(
+        '송유현',
+        'test@example.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
       await userRepository.save(user);
 
       const activity: Activity = createActivity(activityLocation);
@@ -332,10 +342,6 @@ describe('ActivityService', () => {
     });
   });
 });
-
-function createUser(role: Role, email: string = 'test@exaple.com'): User {
-  return User.createTeacher('송유현', email, role, 'G$K9Vss9-wNX6jOvY');
-}
 
 function createActivity(activityLocation: ActivityLocation) {
   const now: ZonedDateTime = ZonedDateTime.of(

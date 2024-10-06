@@ -27,7 +27,7 @@ export function getTestMysqlModule(): DynamicModule {
           ),
         ],
         synchronize: false,
-        logging: process.env.DB_LOGGING === 'true',
+        logging: true,
         namingStrategy: new SnakeNamingStrategy(),
         bigNumberStrings: false,
         timezone: 'Z',

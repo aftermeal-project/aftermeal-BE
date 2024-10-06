@@ -14,8 +14,4 @@ export class Role extends BaseTimeEntity {
     role.name = name;
     return role;
   }
-
-  isAdmin() {
-    return this.name === 'ADMIN';
-  }
 }

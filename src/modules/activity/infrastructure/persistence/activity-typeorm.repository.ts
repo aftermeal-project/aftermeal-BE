@@ -2,9 +2,7 @@ import { ActivityRepository } from '../../domain/repositories/activity.repositor
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Activity } from '../../domain/entities/activity.entity';
-import { Injectable } from '@nestjs/common';
 
-@Injectable()
 export class ActivityTypeormRepository implements ActivityRepository {
   constructor(
     @InjectRepository(Activity)

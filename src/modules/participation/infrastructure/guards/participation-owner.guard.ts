@@ -15,10 +15,14 @@ export class ParticipationOwnerGuard implements CanActivate {
     const user: User = request.user;
     const participation: Participation = request.participation;
 
-    const isAdmin = user.roles.some((role) => role.role.name === 'ADMIN');
+    const isAdmin: boolean = user.roles.some(
+      (role) => role.role.name === 'ADMIN',
+    );
+
     if (isAdmin || participation.isOwnedBy(user)) {
       return true;
     }
+
     throw new ForbiddenException('본인의 참가만 삭제할 수 있습니다.');
   }
 }

@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ActivityRepository } from '../../domain/repositories/activity.repository';
 import { ACTIVITY_REPOSITORY, TIME } from '@common/constants/dependency-token';
 import { NotFoundException } from '@common/exceptions/not-found.exception';
-import { ActivitySummaryDto } from '../../infrastructure/dto/activity-summary.dto';
 import { Activity } from '../../domain/entities/activity.entity';
 import { ActivitySummaryResponseDto } from '../../presentation/dto/activity-summary-response.dto';
 import { ActivityDetailResponseDto } from '../../presentation/dto/activity-detail-response.dto';
@@ -12,7 +11,6 @@ import { ActivityUpdateRequestDto } from '../../presentation/dto/activity-update
 import { ActivityLocationService } from '../../../activity-location/application/services/activity-location.service';
 import { ZonedDateTime } from '@js-joda/core';
 import { Time } from '@common/time/time';
-import { Participation } from '../../../participation/domain/entities/participation.entity';
 
 @Injectable()
 export class ActivityService {

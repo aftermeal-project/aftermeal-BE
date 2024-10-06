@@ -26,13 +26,12 @@ import { ActivityLocation } from '../../../src/modules/activity-location/domain/
 import { ParticipationRepository } from '../../../src/modules/participation/domain/repositories/participation.repository';
 import { UserRepository } from '../../../src/modules/user/domain/repositories/user.repository';
 import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
-import { ActivityTypeormRepository } from '../../../src/modules/activity/infrastructure/persistence/activity-typeorm.repository';
+import { RoleTypeormRepository } from '../../../src/modules/role/infrastructure/persistence/role-typeorm.repository';
 import { ParticipationTypeormRepository } from '../../../src/modules/participation/infrastructure/persistence/participation-typeorm.repository';
 import { UserTypeormRepository } from '../../../src/modules/user/infrastructure/persistence/user-typeorm.repository';
-import { RoleTypeormRepository } from '../../../src/modules/role/infrastructure/persistence/role-typeorm.repository';
-import { ActivityLocationTypeormRepository } from '../../../src/modules/activity-location/infrastructure/persistence/activity-location-typeorm.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StubTime } from '../../utils/stub-time';
+import { ActivityModule } from '../../../src/modules/activity/activity.module';
 
 describe('ParticipationService', () => {
   let participationService: ParticipationService;
@@ -48,27 +47,14 @@ describe('ParticipationService', () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [
         getTestMysqlModule(),
-        TypeOrmModule.forFeature([
-          Participation,
-          Activity,
-          ActivityLocation,
-          User,
-          Role,
-        ]),
+        TypeOrmModule.forFeature([Participation, User, Role]),
+        ActivityModule,
       ],
       providers: [
         ParticipationService,
         {
           provide: PARTICIPATION_REPOSITORY,
           useClass: ParticipationTypeormRepository,
-        },
-        {
-          provide: ACTIVITY_REPOSITORY,
-          useClass: ActivityTypeormRepository,
-        },
-        {
-          provide: ACTIVITY_LOCATION_REPOSITORY,
-          useClass: ActivityLocationTypeormRepository,
         },
         {
           provide: USER_REPOSITORY,
@@ -123,14 +109,19 @@ describe('ParticipationService', () => {
       const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
 
+      const activity: Activity = createActivity(activityLocation);
+      await activityRepository.save(activity);
+
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
-      const user: User = createUser(role);
+      const user: User = User.createTeacher(
+        '송유현',
+        'test@exaple.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
       await userRepository.save(user);
-
-      const activity: Activity = createActivity(activityLocation);
-      await activityRepository.save(activity);
 
       // when
       await participationService.participate(activity.id, user);
@@ -149,18 +140,32 @@ describe('ParticipationService', () => {
       const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
 
-      const role: Role = Role.create('USER');
-      await roleRepository.save(role);
-
-      const user: User = createUser(role);
-      await userRepository.save(user);
-
       const activity: Activity = createActivity(activityLocation);
       await activityRepository.save(activity);
 
-      const participation: Participation = new Participation();
-      participation.user = user;
-      participation.activity = activity;
+      const role: Role = Role.create('USER');
+      await roleRepository.save(role);
+
+      const user: User = User.createTeacher(
+        '송유현',
+        'test@exaple.com',
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
+      await userRepository.save(user);
+
+      const ableDateTime: ZonedDateTime = ZonedDateTime.of(
+        LocalDate.of(2024, 1, 3),
+        LocalTime.of(11, 30),
+        ZoneOffset.UTC,
+      );
+
+      activity.participations = []; // initializers
+      const participation: Participation = Participation.create(
+        activity,
+        user,
+        ableDateTime,
+      );
       await participationRepository.save(participation);
 
       // when
@@ -174,10 +179,6 @@ describe('ParticipationService', () => {
     });
   });
 });
-
-function createUser(role: Role, email: string = 'test@exaple.com'): User {
-  return User.createTeacher('송유현', email, role, 'G$K9Vss9-wNX6jOvY');
-}
 
 function createActivity(activityLocation: ActivityLocation) {
   const now: ZonedDateTime = ZonedDateTime.of(

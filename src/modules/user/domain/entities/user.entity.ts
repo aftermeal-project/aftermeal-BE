@@ -10,7 +10,7 @@ import { BaseTimeEntity } from '@common/models/base-time.entity';
 import { Generation } from '../../../generation/domain/entities/generation.entity';
 import { UserType } from '../types/user-type';
 import { UserStatus } from '../types/user-status';
-import { UserRole } from '../../../role/domain/entities/user-role.entity';
+import { UserRole } from './user-role.entity';
 import { compare, genSalt, hash } from 'bcrypt';
 import { Role } from '../../../role/domain/entities/role.entity';
 import { ESchool } from '../types/school';
@@ -149,9 +149,5 @@ export class User extends BaseTimeEntity {
     if (generation.isGraduated) {
       throw new IllegalArgumentException('재학 중인 학생이어야 합니다.');
     }
-  }
-
-  isAdmin() {
-    return this.roles.some((role) => role.role.isAdmin());
   }
 }
