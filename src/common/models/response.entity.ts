@@ -17,6 +17,10 @@ export class ResponseEntity<T> {
     return new ResponseEntity(true, data);
   }
 
+  static ERROR<T>(data: T): ResponseEntity<T> {
+    return new ResponseEntity(false, data);
+  }
+
   @Expose()
   get success(): boolean {
     return this._success;

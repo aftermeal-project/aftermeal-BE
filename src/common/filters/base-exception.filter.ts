@@ -38,16 +38,17 @@ export class BaseExceptionFilter implements ExceptionFilter {
         break;
       default:
         status = HttpStatus.INTERNAL_SERVER_ERROR;
+        this.logger.error(
+          `Request: ${request.method} ${request.url}`,
+          exception.stack,
+        );
         break;
     }
 
-    const errorResponse = {
-      statusCode: status,
-      path: request.url,
-      timestamp: new Date().toISOString(),
+    const errorResponse = ResponseEntity.ERROR({
       code: exception.code,
       message: exception.message,
-    };
+    });
 
     response.status(status).json(errorResponse);
   }
