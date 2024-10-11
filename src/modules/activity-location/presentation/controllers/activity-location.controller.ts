@@ -27,7 +27,7 @@ export class ActivityLocationController {
     @Body() dto: ActivityLocationCreationRequestDto,
   ): Promise<ResponseEntity<null>> {
     await this.activityLocationService.createActivityLocation(dto);
-    return ResponseEntity.CREATED();
+    return ResponseEntity.SUCCESS();
   }
 
   @Roles('ADMIN')
@@ -35,7 +35,7 @@ export class ActivityLocationController {
   async getActivityLocations(): Promise<
     ResponseEntity<ActivityLocationResponseDto[]>
   > {
-    return ResponseEntity.OK(
+    return ResponseEntity.SUCCESS(
       await this.activityLocationService.getActivityLocations(),
     );
   }

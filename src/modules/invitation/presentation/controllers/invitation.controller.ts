@@ -18,7 +18,7 @@ export class InvitationController {
     @CurrentUser('userId') userId: number,
   ): Promise<ResponseEntity<null>> {
     await this.invitationService.invite(dto.toEntity(), userId);
-    return ResponseEntity.CREATED();
+    return ResponseEntity.SUCCESS();
   }
 
   @Get('verify')

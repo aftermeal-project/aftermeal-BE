@@ -4,7 +4,7 @@ import {
   PARTICIPATION_REPOSITORY,
   TIME,
 } from '@common/constants/dependency-token';
-import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { User } from '../../../user/domain/entities/user.entity';
 import { ZonedDateTime } from '@js-joda/core';
 import { ParticipationRepository } from '../../domain/repositories/participation.repository';
@@ -27,7 +27,7 @@ export class ParticipationService {
       await this.participationRepository.findOneById(participationId);
 
     if (!participation) {
-      throw new NotFoundException('존재하지 않는 참가입니다.');
+      throw new ResourceNotFoundException('존재하지 않는 참가입니다.');
     }
 
     return participation;

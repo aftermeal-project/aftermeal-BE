@@ -19,7 +19,7 @@ import {
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
 import { GenerationRepository } from '../../../src/modules/generation/domain/repositories/generation.repository';
-import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { Generation } from '../../../src/modules/generation/domain/entities/generation.entity';
 import { UserUpdateRequestDto } from '../../../src/modules/user/presentation/dto/user-update-request.dto';
 import { UserStatus } from '../../../src/modules/user/domain/types/user-status';
@@ -192,7 +192,7 @@ describe('UserService', () => {
     it('ID에 해당하는 사용자가 없을 경우 예외를 반환한다.', async () => {
       // when & then
       await expect(userService.getUserById(999999)).rejects.toThrow(
-        NotFoundException,
+        ResourceNotFoundException,
       );
     });
   });

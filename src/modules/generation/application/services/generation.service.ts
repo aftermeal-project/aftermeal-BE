@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Generation } from '../../domain/entities/generation.entity';
-import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { GenerationRepository } from '../../domain/repositories/generation.repository';
 import { GENERATION_REPOSITORY } from '@common/constants/dependency-token';
 
@@ -19,7 +19,7 @@ export class GenerationService {
         generationNumber,
       );
     if (!generation) {
-      throw new NotFoundException('존재하지 않는 기수입니다.');
+      throw new ResourceNotFoundException('존재하지 않는 기수입니다.');
     }
     return generation;
   }

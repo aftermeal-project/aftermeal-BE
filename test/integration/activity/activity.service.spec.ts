@@ -18,7 +18,7 @@ import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
-import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { ActivitySummaryResponseDto } from '../../../src/modules/activity/presentation/dto/activity-summary-response.dto';
 import { ActivityRepository } from '../../../src/modules/activity/domain/repositories/activity.repository';
 import { EActivityType } from '../../../src/modules/activity/domain/types/activity-type';
@@ -177,7 +177,7 @@ describe('ActivityService', () => {
       const result = activityService.getActivityById(nonExistentId);
 
       // then
-      await expect(result).rejects.toThrow(NotFoundException);
+      await expect(result).rejects.toThrow(ResourceNotFoundException);
     });
   });
 
@@ -224,7 +224,7 @@ describe('ActivityService', () => {
       const result = activityService.getActivityDetailById(nonExistentId);
 
       // then
-      await expect(result).rejects.toThrow(NotFoundException);
+      await expect(result).rejects.toThrow(ResourceNotFoundException);
     });
   });
 

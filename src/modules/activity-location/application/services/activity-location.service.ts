@@ -3,7 +3,7 @@ import { ACTIVITY_LOCATION_REPOSITORY } from '@common/constants/dependency-token
 import { ActivityLocationRepository } from '../../domain/repositories/activity-location.repository';
 import { ActivityLocation } from '../../domain/entities/activity-location.entity';
 import { ActivityLocationResponseDto } from '../../presentation/dto/activity-location-response.dto';
-import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { ActivityLocationUpdateRequestDto } from '../../presentation/dto/activity-location-update-request.dto';
 import { ActivityLocationCreationRequestDto } from '../../presentation/dto/activity-location-creation-request.dto';
@@ -35,7 +35,7 @@ export class ActivityLocationService {
     const activityLocation: ActivityLocation =
       await this.activityLocationRepository.findOneById(id);
     if (!activityLocation) {
-      throw new NotFoundException('존재하지 않는 활동 장소입니다.');
+      throw new ResourceNotFoundException('존재하지 않는 활동 장소입니다.');
     }
     return activityLocation;
   }
