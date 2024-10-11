@@ -5,7 +5,7 @@ import { UserType } from '../../domain/types/user-type';
 import { GenerationService } from '../../../generation/application/services/generation.service';
 import { RoleService } from '../../../role/application/services/role.service';
 import { Transactional } from 'typeorm-transactional';
-import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { UserRegistrationRequestDto } from '../../presentation/dto/user-registration-request.dto';
 import { Generation } from '../../../generation/domain/entities/generation.entity';
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
@@ -32,7 +32,7 @@ export class UserService {
     const user: User | undefined =
       await this.userRepository.findOneById(userId);
     if (!user) {
-      throw new NotFoundException('존재하지 않는 사용자입니다.');
+      throw new ResourceNotFoundException('존재하지 않는 사용자입니다.');
     }
     return user;
   }
@@ -41,7 +41,7 @@ export class UserService {
     const user: User | undefined =
       await this.userRepository.findOneByEmail(email);
     if (!user) {
-      throw new NotFoundException('존재하지 않는 사용자입니다.');
+      throw new ResourceNotFoundException('존재하지 않는 사용자입니다.');
     }
     return user;
   }

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ActivityRepository } from '../../domain/repositories/activity.repository';
 import { ACTIVITY_REPOSITORY, TIME } from '@common/constants/dependency-token';
-import { NotFoundException } from '@common/exceptions/not-found.exception';
+import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { Activity } from '../../domain/entities/activity.entity';
 import { ActivitySummaryResponseDto } from '../../presentation/dto/activity-summary-response.dto';
 import { ActivityDetailResponseDto } from '../../presentation/dto/activity-detail-response.dto';
@@ -53,7 +53,7 @@ export class ActivityService {
       await this.activityRepository.findOneById(activityId);
 
     if (!activity) {
-      throw new NotFoundException('존재하지 않는 활동 항목입니다.');
+      throw new ResourceNotFoundException('존재하지 않는 활동 항목입니다.');
     }
 
     return activity;

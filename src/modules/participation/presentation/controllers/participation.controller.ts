@@ -23,7 +23,7 @@ export class ParticipationController {
     @CurrentUser() user: User,
   ): Promise<ResponseEntity<null>> {
     await this.participationService.participate(activityId, user);
-    return ResponseEntity.CREATED();
+    return ResponseEntity.SUCCESS();
   }
 
   @UseGuards(ParticipationOwnerGuard)

@@ -5,7 +5,7 @@ import {
   VersioningType,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { BaseExceptionFilter } from '@common/filters/base-exception.filter';
+import { GlobalExceptionFilter } from '@common/filters/global-exception.filter';
 
 /**
  * E2E (End To End) 테스트에서도 실 서비스와 동일한 설정을 위해 글로벌 미들웨어 구성을 모아두는 함수입니다.
@@ -21,7 +21,7 @@ export function setNestApp<T extends INestApplication>(app: T): void {
       transform: true,
     }),
   );
-  app.useGlobalFilters(new BaseExceptionFilter());
+  app.useGlobalFilters(new GlobalExceptionFilter());
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   app.enableCors();
   app.enableShutdownHooks();
