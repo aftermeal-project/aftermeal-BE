@@ -57,6 +57,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       code = ExceptionCode.INTERNAL_SERVER_ERROR;
       message = 'Internal server error';
+
       this.logger.error(
         `Unhandled exception: ${exception.message}`,
         exception.stack,

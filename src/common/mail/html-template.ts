@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import * as mustache from 'mustache';
-import { join } from 'path';
-import { readFile } from 'fs/promises';
+import * as path from 'path';
+import * as fs from 'fs/promises';
 
 @Injectable()
 export class HtmlTemplate {
   async templateFromFile(fileName: string, data: any): Promise<string> {
-    const html: Buffer = await readFile(
-      join(__dirname, `../public/${fileName}.hbs`),
+    const html: Buffer = await fs.readFile(
+      path.join(__dirname, `./templates/${fileName}.hbs`),
     );
     return this.template(html.toString(), data);
   }
 
-  template(html: string, data: any): string {
+  private template(html: string, data: any): string {
     return mustache.render(html, data);
   }
 }

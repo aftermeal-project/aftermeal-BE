@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
-import jwtConfiguration from '@config/jwt.config';
+import tokenConfiguration from '@config/token.config';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '@common/decorators/public.decorator';
 
@@ -15,8 +15,8 @@ import { IS_PUBLIC_KEY } from '@common/decorators/public.decorator';
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    @Inject(jwtConfiguration.KEY)
-    private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
+    @Inject(tokenConfiguration.KEY)
+    private readonly jwtConfig: ConfigType<typeof tokenConfiguration>,
     private readonly reflector: Reflector,
   ) {}
 

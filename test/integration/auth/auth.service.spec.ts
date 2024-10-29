@@ -9,7 +9,7 @@ import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
-import jwtConfig from '@config/jwt.config';
+import jwtConfig from '@config/token.config';
 import redisConfig from '@config/redis.config';
 import redisConfiguration from '@config/redis.config';
 import { LoginResponseDto } from '../../../src/modules/auth/presentation/dto/login-response.dto';
@@ -17,16 +17,16 @@ import { TokenRefreshResponseDto } from '../../../src/modules/auth/presentation/
 import { generateRandomString } from '@common/utils/generate-random-string';
 import {
   REDIS_CLIENT,
-  REFRESH_TOKEN_REPOSITORY,
   ROLE_REPOSITORY,
+  TOKEN_REPOSITORY,
   USER_REPOSITORY,
 } from '@common/constants/dependency-token';
-import { RefreshTokenRepository } from '../../../src/modules/auth/domain/repositories/refresh-token.repository';
+import { TokenRepository } from '../../../src/modules/auth/domain/repositories/token.repository';
 import { UserRepository } from '../../../src/modules/user/domain/repositories/user.repository';
 import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
-import { RefreshTokenRedisRepository } from '../../../src/modules/auth/infrastructure/persistence/refresh-token-redis.repository';
+import { TokenRedisRepository } from '../../../src/modules/auth/infrastructure/persistence/token-redis.repository';
 import { createClient, RedisClientType } from 'redis';
-import { TokenService } from '../../../src/modules/auth/application/services/token.service';
+import { TokenService } from '../../../src/modules/token/application/services/token.service';
 import { UserModule } from '../../../src/modules/user/user.module';
 import { RoleModule } from '../../../src/modules/role/role.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -35,7 +35,7 @@ describe('AuthService', () => {
   let authService: AuthService;
   let userRepository: UserRepository;
   let roleRepository: RoleRepository;
-  let refreshTokenRepository: RefreshTokenRepository;
+  let refreshTokenRepository: TokenRepository;
   let dataSource: DataSource;
   let redisClient: RedisClientType;
 
@@ -57,8 +57,8 @@ describe('AuthService', () => {
         AuthService,
         TokenService,
         {
-          provide: REFRESH_TOKEN_REPOSITORY,
-          useClass: RefreshTokenRedisRepository,
+          provide: TOKEN_REPOSITORY,
+          useClass: TokenRedisRepository,
         },
         {
           provide: REDIS_CLIENT,
@@ -81,9 +81,7 @@ describe('AuthService', () => {
     authService = moduleRef.get<AuthService>(AuthService);
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
     roleRepository = moduleRef.get<RoleRepository>(ROLE_REPOSITORY);
-    refreshTokenRepository = moduleRef.get<RefreshTokenRepository>(
-      REFRESH_TOKEN_REPOSITORY,
-    );
+    refreshTokenRepository = moduleRef.get<TokenRepository>(TOKEN_REPOSITORY);
     redisClient = moduleRef.get<RedisClientType>(REDIS_CLIENT);
     dataSource = moduleRef.get<DataSource>(DataSource);
   });

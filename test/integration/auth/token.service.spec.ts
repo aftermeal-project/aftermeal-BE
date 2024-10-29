@@ -6,21 +6,21 @@ import {
 } from 'typeorm-transactional';
 import { getTestMysqlModule } from '../../utils/get-test-mysql.module';
 import { ConfigModule, ConfigType } from '@nestjs/config';
-import jwtConfiguration from '@config/jwt.config';
+import tokenConfiguration from '@config/token.config';
 import redisConfiguration from '@config/redis.config';
-import { TokenService } from '../../../src/modules/auth/application/services/token.service';
+import { TokenService } from '../../../src/modules/token/application/services/token.service';
 import { AccessTokenPayload } from '../../../src/modules/auth/domain/types/jwt-payload';
 import { JwtService } from '@nestjs/jwt';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
-import { REFRESH_TOKEN_REPOSITORY } from '@common/constants/dependency-token';
-import { RefreshTokenRepository } from '../../../src/modules/auth/domain/repositories/refresh-token.repository';
+import { TOKEN_REPOSITORY } from '@common/constants/dependency-token';
+import { TokenRepository } from '../../../src/modules/auth/domain/repositories/token.repository';
 import { AuthModule } from '../../../src/modules/auth/auth.module';
 
 describe('TokenService', () => {
   let tokenService: TokenService;
   let jwtService: JwtService;
-  let jwtConfig: ConfigType<typeof jwtConfiguration>;
-  let tokenRepository: RefreshTokenRepository;
+  let jwtConfig: ConfigType<typeof tokenConfiguration>;
+  let tokenRepository: TokenRepository;
   let moduleRef: TestingModule;
   let dataSource: DataSource;
 
@@ -32,7 +32,7 @@ describe('TokenService', () => {
         getTestMysqlModule(),
         ConfigModule.forRoot({
           isGlobal: true,
-          load: [jwtConfiguration, redisConfiguration],
+          load: [tokenConfiguration, redisConfiguration],
         }),
         AuthModule,
       ],
@@ -41,8 +41,8 @@ describe('TokenService', () => {
 
     tokenService = moduleRef.get(TokenService);
     jwtService = moduleRef.get(JwtService);
-    tokenRepository = moduleRef.get(REFRESH_TOKEN_REPOSITORY);
-    jwtConfig = moduleRef.get(jwtConfiguration.KEY);
+    tokenRepository = moduleRef.get(TOKEN_REPOSITORY);
+    jwtConfig = moduleRef.get(tokenConfiguration.KEY);
     dataSource = moduleRef.get(DataSource);
   });
 
@@ -108,7 +108,7 @@ describe('TokenService', () => {
 
       // then
       const storedUserId =
-        await tokenRepository.findByRefreshToken(refreshToken);
+        await tokenRepository.findUserIdByRefreshToken(refreshToken);
       expect(storedUserId).toBe(1);
     });
   });

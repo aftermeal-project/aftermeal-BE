@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { AuthService } from '../../application/services/auth.service';
 import { ResponseEntity } from '@common/models/response.entity';
 import { LoginRequestDto } from '../dto/login-request.dto';
@@ -6,6 +6,8 @@ import { LoginResponseDto } from '../dto/login-response.dto';
 import { Public } from '@common/decorators/public.decorator';
 import { TokenRefreshResponseDto } from '../dto/token-refresh-response.dto';
 import { TokenRefreshRequestDto } from '../dto/token-refresh-request.dto';
+import { LogoutRequestDto } from '../dto/logout-request.dto';
+import { EmailVerificationQueryDto } from '../dto/email-verification-query.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -23,6 +25,12 @@ export class AuthController {
     return ResponseEntity.SUCCESS(loginResponseDto);
   }
 
+  @Post('logout')
+  async logout(@Body() dto: LogoutRequestDto): Promise<ResponseEntity<void>> {
+    await this.authService.logout(dto.refreshToken);
+    return ResponseEntity.SUCCESS();
+  }
+
   @Public()
   @Post('refresh')
   async refresh(
@@ -31,5 +39,14 @@ export class AuthController {
     const tokenRefreshResponseDto: TokenRefreshResponseDto =
       await this.authService.refresh(dto.refreshToken);
     return ResponseEntity.SUCCESS(tokenRefreshResponseDto);
+  }
+
+  @Public()
+  @Get('email-verify')
+  async verifyEmail(
+    @Query() dto: EmailVerificationQueryDto,
+  ): Promise<ResponseEntity<void>> {
+    await this.authService.verifyEmailVerificationToken(dto.token);
+    return ResponseEntity.SUCCESS();
   }
 }

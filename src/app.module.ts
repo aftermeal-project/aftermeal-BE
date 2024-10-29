@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import appConfiguration from '@config/app.config';
 import databaseConfiguration from '@config/database.config';
 import emailConfiguration from '@config/email.config';
-import jwtConfiguration from '@config/jwt.config';
+import tokenConfiguration from '@config/token.config';
 import redisConfiguration from '@config/redis.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { ParticipationModule } from './modules/participation/participation.module';
@@ -14,6 +14,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { DatabaseModule } from './database/database.module';
 import { RolesGuard } from '@common/guards/roles.guard';
+import { TokenModule } from './modules/token/token.module';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { RolesGuard } from '@common/guards/roles.guard';
       load: [
         appConfiguration,
         databaseConfiguration,
-        jwtConfiguration,
+        tokenConfiguration,
         emailConfiguration,
         redisConfiguration,
       ],
@@ -32,6 +33,7 @@ import { RolesGuard } from '@common/guards/roles.guard';
     DatabaseModule,
     UserModule,
     AuthModule,
+    TokenModule,
     ActivityModule,
     ParticipationModule,
   ],

@@ -13,6 +13,8 @@ import { USER_REPOSITORY } from '@common/constants/dependency-token';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { UserResponseDto } from '../../presentation/dto/user-response.dto';
 import { UserUpdateRequestDto } from '../../presentation/dto/user-update-request.dto';
+import { MailService } from '@common/mail/mail.service';
+import { TokenService } from '../../../token/application/services/token.service';
 
 @Injectable()
 export class UserService {
@@ -21,6 +23,8 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly roleService: RoleService,
     private readonly generationService: GenerationService,
+    private readonly tokenService: TokenService,
+    private readonly mailService: MailService,
   ) {}
 
   async getAllUsers(): Promise<UserResponseDto[]> {
@@ -48,9 +52,15 @@ export class UserService {
 
   @Transactional()
   async register(dto: UserRegistrationRequestDto): Promise<void> {
+    const existUser: User = await this.userRepository.findOneByEmail(dto.email);
+
+    if (existUser && existUser.isCandidate()) {
+      await this.sendEmailVerification(existUser.email);
+      return;
+    }
+
     await this.validateEmailDuplication(dto.email);
 
-    const role: Role = await this.roleService.getRoleByRoleName('USER');
     let generation: Generation | undefined;
 
     if (dto.type === UserType.STUDENT) {
@@ -59,9 +69,13 @@ export class UserService {
       );
     }
 
+    const role: Role = await this.roleService.getRoleByRoleName('USER');
+
     const user: User = dto.toEntity(role, generation);
     await user.hashPassword();
     await this.userRepository.save(user);
+
+    await this.sendEmailVerification(user.email);
   }
 
   async updateUserById(
@@ -78,11 +92,24 @@ export class UserService {
     await this.userRepository.delete(user);
   }
 
+  async activateUser(email: string): Promise<void> {
+    const user: User = await this.getUserByEmail(email);
+    user.activate();
+    await this.userRepository.save(user);
+  }
+
   private async validateEmailDuplication(email: string): Promise<void> {
     const isMemberExists: boolean =
       await this.userRepository.existsByEmail(email);
     if (isMemberExists) {
       throw new AlreadyExistException('이미 등록된 이메일입니다.');
     }
+  }
+
+  private async sendEmailVerification(to: string): Promise<void> {
+    const token: string = this.tokenService.generateEmailVerificationToken();
+    await this.tokenService.saveEmailVerificationToken(to, token);
+
+    await this.mailService.sendEmailVerification(to, token);
   }
 }

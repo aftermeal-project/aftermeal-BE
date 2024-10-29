@@ -10,7 +10,7 @@ import { ActivityLocation } from '../../../activity-location/domain/entities/act
 import { ActivityUpdateRequestDto } from '../../presentation/dto/activity-update-request.dto';
 import { ActivityLocationService } from '../../../activity-location/application/services/activity-location.service';
 import { ZonedDateTime } from '@js-joda/core';
-import { Time } from '@common/time/time';
+import { TimeServices } from '@common/servicies/time.services';
 
 @Injectable()
 export class ActivityService {
@@ -19,7 +19,7 @@ export class ActivityService {
     private readonly activityRepository: ActivityRepository,
     private readonly activityLocationService: ActivityLocationService,
     @Inject(TIME)
-    private readonly time: Time,
+    private readonly time: TimeServices,
   ) {}
 
   async createActivity(dto: ActivityCreationRequestDto): Promise<void> {
