@@ -32,7 +32,7 @@ export class User extends BaseTimeEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ default: UserStatus.CANDIDATE })
   status: UserStatus;
 
   @Column({ type: 'varchar' })
@@ -69,7 +69,6 @@ export class User extends BaseTimeEntity {
     user.email = email;
     user.type = UserType.TEACHER;
     user.roles = [UserRole.create(role, user)];
-    user.status = UserStatus.ACTIVATE;
     user.password = password;
     return user;
   }
@@ -92,7 +91,6 @@ export class User extends BaseTimeEntity {
     user.email = schoolEmail;
     user.type = UserType.STUDENT;
     user.roles = [UserRole.create(role, user)];
-    user.status = UserStatus.ACTIVATE;
     user.password = password;
     user.generation = generation;
     return user;
@@ -115,6 +113,14 @@ export class User extends BaseTimeEntity {
       throw new IllegalArgumentException('비밀번호가 올바르지 않습니다.');
     }
     return isPasswordCorrect;
+  }
+
+  activate(): void {
+    this.status = UserStatus.ACTIVATED;
+  }
+
+  isCandidate(): boolean {
+    return this.status === UserStatus.CANDIDATE;
   }
 
   private static validateName(name: string): void {

@@ -214,7 +214,7 @@ describe('UserService', () => {
       const dto: UserUpdateRequestDto = {
         name: 'updated',
         type: UserType.TEACHER,
-        status: 'DEACTIVATE' as UserStatus,
+        status: 'DEACTIVATED' as UserStatus,
         generationNumber: 8,
       };
 

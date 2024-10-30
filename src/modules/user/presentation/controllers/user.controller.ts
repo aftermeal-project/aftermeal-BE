@@ -1,12 +1,9 @@
 import {
-  BadRequestException,
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
   HttpCode,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -18,10 +15,6 @@ import { Public } from '@common/decorators/public.decorator';
 import { UserResponseDto } from '../dto/user-response.dto';
 import { UserUpdateRequestDto } from '../dto/user-update-request.dto';
 import { Roles } from '@common/decorators/roles.decorator';
-import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
-import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
-import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 
 @Controller('users')
 export class UserController {
@@ -32,23 +25,8 @@ export class UserController {
   async register(
     @Body() dto: UserRegistrationRequestDto,
   ): Promise<ResponseEntity<null>> {
-    try {
-      await this.userService.register(dto);
-      return ResponseEntity.SUCCESS();
-    } catch (error) {
-      if (error instanceof IllegalArgumentException) {
-        throw new BadRequestException(error);
-      } else if (error instanceof IllegalStateException) {
-        throw new BadRequestException(error);
-      }
-      if (error instanceof ResourceNotFoundException) {
-        throw new NotFoundException(error);
-      }
-      if (error instanceof AlreadyExistException) {
-        throw new ConflictException(error);
-      }
-      throw error;
-    }
+    await this.userService.register(dto);
+    return ResponseEntity.SUCCESS();
   }
 
   @Roles('ADMIN')

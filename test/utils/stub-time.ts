@@ -1,7 +1,7 @@
-import { Time } from '@common/time/time';
+import { TimeServices } from '@common/servicies/time.services';
 import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
 
-export class StubTime implements Time {
+export class StubTime implements TimeServices {
   private readonly currentTime: ZonedDateTime;
 
   constructor(currentTime: ZonedDateTime) {

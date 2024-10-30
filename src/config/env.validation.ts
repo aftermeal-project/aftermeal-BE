@@ -2,11 +2,12 @@ import { plainToClass } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
+  IsString,
   validateSync,
   ValidationError,
 } from 'class-validator';
-import { IsNumber, IsString } from 'class-validator';
 import { ENVIRONMENT } from '@common/constants/environment';
 
 class EnvironmentVariables {
@@ -15,40 +16,70 @@ class EnvironmentVariables {
   NODE_ENV: ENVIRONMENT;
 
   @IsNumber()
-  @IsNotEmpty()
   APP_PORT: number;
+
+  @IsString()
+  @IsNotEmpty()
+  BASE_URL: string;
 
   @IsString()
   @IsNotEmpty()
   DB_HOST: string;
 
   @IsNumber()
-  @IsNotEmpty()
   DB_PORT: number;
 
   @IsString()
   @IsNotEmpty()
   DB_USER: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   DB_PASSWORD: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   DB_NAME: string;
 
   @IsString()
   @IsNotEmpty()
   ACCESS_TOKEN_SECRET: string;
 
-  @IsNotEmpty()
   @IsNumber()
   ACCESS_TOKEN_EXPIRATION_TIME: number;
 
-  @IsNotEmpty()
   @IsNumber()
   REFRESH_TOKEN_EXPIRATION_TIME: number;
+
+  @IsNumber()
+  EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME: number;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_SERVICE: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_HOST: string;
+
+  @IsNumber()
+  EMAIL_PORT: number;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_AUTH_USER: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_AUTH_PASSWORD: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_SENDER_NAME: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_SENDER_ADDRESS: string;
 }
 
 export const validate = (

@@ -1,9 +1,9 @@
-import { Time } from '@common/time/time';
+import { TimeServices } from '@common/servicies/time.services';
 import { ZonedDateTime, ZoneOffset } from '@js-joda/core';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class JodaTime implements Time {
+export class JodaTimeService implements TimeServices {
   now(): ZonedDateTime {
     return ZonedDateTime.now(ZoneOffset.UTC);
   }

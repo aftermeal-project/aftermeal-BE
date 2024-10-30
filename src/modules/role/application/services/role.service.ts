@@ -14,11 +14,13 @@ export class RoleService {
 
   async getRoleByRoleName(roleName: RoleNameType): Promise<Role> {
     const role: Role | null = await this.roleRepository.findOneByName(roleName);
+
     if (!role) {
       throw new ResourceNotFoundException(
-        `Role with name ${roleName} not found`,
+        `Role with name '${roleName}' not found`,
       );
     }
+
     return role;
   }
 }
