@@ -54,6 +54,13 @@ class EnvironmentVariables {
   @IsNumber()
   EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME: number;
 
+  @IsNumber()
+  REDIS_PORT: number;
+
+  @IsString()
+  @IsNotEmpty()
+  REDIS_PASSWORD: string;
+
   @IsString()
   @IsNotEmpty()
   EMAIL_SERVICE: string;
@@ -72,14 +79,6 @@ class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   EMAIL_AUTH_PASSWORD: string;
-
-  @IsString()
-  @IsNotEmpty()
-  EMAIL_SENDER_NAME: string;
-
-  @IsString()
-  @IsNotEmpty()
-  EMAIL_SENDER_ADDRESS: string;
 }
 
 export const validate = (
@@ -99,5 +98,6 @@ export const validate = (
   if (errors.length > 0) {
     throw new Error(errors.toString());
   }
+
   return validateConfig;
 };

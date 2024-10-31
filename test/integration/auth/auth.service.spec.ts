@@ -142,7 +142,7 @@ describe('AuthService', () => {
       await userRepository.save(user);
 
       const refreshToken: string = generateRandomString(30);
-      await refreshTokenRepository.save(refreshToken, user.id, 30);
+      await refreshTokenRepository.saveRefreshToken(refreshToken, user.id, 30);
 
       // when
       const result: TokenRefreshResponseDto =
