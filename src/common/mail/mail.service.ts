@@ -8,12 +8,13 @@ import appConfiguration from '@config/app.config';
 @Injectable()
 export class MailService {
   private readonly transporter: Transporter;
+  private readonly baseUrl: string;
 
   constructor(
     @Inject(emailConfiguration.KEY)
     readonly emailConfig: ConfigType<typeof emailConfiguration>,
     @Inject(appConfiguration.KEY)
-    private readonly appConfig: ConfigType<typeof appConfiguration>,
+    readonly appConfig: ConfigType<typeof appConfiguration>,
     private readonly htmlTemplate: HtmlTemplate,
   ) {
     this.transporter = createTransport({
@@ -25,14 +26,14 @@ export class MailService {
         pass: emailConfig.auth.pass,
       },
     });
+    this.baseUrl = appConfig.baseUrl;
   }
 
   async sendEmailVerification(
     to: string,
     emailVerificationToken: string,
   ): Promise<void> {
-    const baseUrl: string = this.appConfig.baseUrl;
-    const verificationLink: string = `${baseUrl}/v1/auth/email-verify?token=${emailVerificationToken}`;
+    const verificationLink: string = `${this.baseUrl}/v1/auth/email-verify?token=${emailVerificationToken}`;
 
     const subject: string = '이메일 인증 요청';
     const html: string = await this.htmlTemplate.templateFromFile(
@@ -48,7 +49,7 @@ export class MailService {
     subject: string,
     html: string,
   ): Promise<void> {
-    const from: string = `${this.emailConfig.sender.name} <${this.emailConfig.sender.address}>`;
+    const from: string = '에프터밀 <aftermealonline@gmail.com>';
     await this.transporter.sendMail({ from, to, subject, html });
   }
 }

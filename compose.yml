@@ -15,7 +15,7 @@ services:
 
   app:
     container_name: app
-    image: ${DOCKER_REGISTRY}/app
+    image: fire337/app
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,20 +23,27 @@ services:
       - ${APP_PORT}:${APP_PORT}
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
-      - DB_LOGGING=false
+      - NODE_ENV=${NODE_ENV}
       - APP_PORT=${APP_PORT}
+      - BASE_URL=${BASE_URL}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
+      - DB_LOGGING=${DB_LOGGING}
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
       - ACCESS_TOKEN_EXPIRATION_TIME=${ACCESS_TOKEN_EXPIRATION_TIME}
       - REFRESH_TOKEN_EXPIRATION_TIME=${REFRESH_TOKEN_EXPIRATION_TIME}
+      - EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME=${EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - EMAIL_SERVICE=${EMAIL_SERVICE}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_AUTH_USER=${EMAIL_USER}
+      - EMAIL_AUTH_PASSWORD=${EMAIL_AUTH_PASSWORD}
 
 volumes:
   nginx-conf:
