@@ -40,52 +40,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Create .env file
-        env:
-          DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
-          APP_PORT: ${{ secrets.APP_PORT }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          ACCESS_TOKEN_EXPIRATION_TIME: ${{ secrets.ACCESS_TOKEN_EXPIRATION_TIME }}
-          REFRESH_TOKEN_EXPIRATION_TIME: ${{ secrets.REFRESH_TOKEN_EXPIRATION_TIME }}
-          EMAIL_VERIFICATION_EXPIRATION_TIME: ${{ secrets.EMAIL_VERIFICATION_EXPIRATION_TIME }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          EMAIL_SERVICE: ${{ secrets.EMAIL_SERVICE }}
-          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
-          EMAIL_AUTH_USER: ${{ secrets.EMAIL_AUTH_USER }}
-          EMAIL_AUTH_PASSWORD: ${{ secrets.EMAIL_AUTH_PASSWORD }}
-          EMAIL_SENDER_NAME: ${{ secrets.EMAIL_SENDER_NAME }}
-          EMAIL_SENDER_ADDRESS: ${{ secrets.EMAIL_SENDER_ADDRESS }}
-        run: |
-          echo DOCKER_REGISTRY=$DOCKER_REGISTRY >> .env
-          echo APP_PORT=$APP_PORT >> .env
-          echo DB_HOST=$DB_HOST >> .env
-          echo DB_PORT=$DB_PORT >> .env
-          echo DB_USER=$DB_USER >> .env
-          echo DB_PASSWORD=$DB_PASSWORD >> .env
-          echo DB_NAME=$DB_NAME >> .env
-          echo ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET >> .env
-          echo ACCESS_TOKEN_EXPIRATION_TIME=$ACCESS_TOKEN_EXPIRATION_TIME >> .env
-          echo REFRESH_TOKEN_EXPIRATION_TIME=$REFRESH_TOKEN_EXPIRATION_TIME >> .env
-          echo EMAIL_VERIFICATION_EXPIRATION_TIME=$EMAIL_VERIFICATION_EXPIRATION_TIME >> .env
-          echo REDIS_HOST=$REDIS_HOST >> .env
-          echo REDIS_PORT=$REDIS_PORT >> .env
-          echo REDIS_PASSWORD=$REDIS_PASSWORD >> .env
-          echo EMAIL_SERVICE=$EMAIL_SERVICE >> .env
-          echo EMAIL_HOST=$EMAIL_HOST >> .env
-          echo EMAIL_PORT=$EMAIL_PORT >> .env
-          echo EMAIL_AUTH_USER=$EMAIL_AUTH_USER >> .env
-          echo EMAIL_AUTH_PASSWORD=$EMAIL_AUTH_PASSWORD >> .env
-          echo EMAIL_SENDER_NAME=$EMAIL_SENDER_NAME >> .env
-          echo EMAIL_SENDER_ADDRESS=$EMAIL_SENDER_ADDRESS >> .env
-
       - name: Set up SSH key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -106,6 +60,28 @@ jobs:
           docker context use aftermeal
 
       - name: Deploy application
+        env:
+            NODE_ENV: ${{ secrets.NODE_ENV }}
+            APP_PORT: ${{ secrets.APP_PORT }}
+            BASE_URL: ${{ secrets.BASE_URL }}
+            DB_HOST: ${{ secrets.DB_HOST }}
+            DB_PORT: ${{ secrets.DB_PORT }}
+            DB_USER: ${{ secrets.DB_USER }}
+            DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+            DB_NAME: ${{ secrets.DB_NAME }}
+            DB_LOGGING: ${{ secrets.DB_LOGGING }}
+            ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+            ACCESS_TOKEN_EXPIRATION_TIME: ${{ secrets.ACCESS_TOKEN_EXPIRATION_TIME }}
+            REFRESH_TOKEN_EXPIRATION_TIME: ${{ secrets.REFRESH_TOKEN_EXPIRATION_TIME }}
+            EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME: ${{ secrets.EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME }}
+            REDIS_HOST: ${{ secrets.REDIS_HOST }}
+            REDIS_PORT: ${{ secrets.REDIS_PORT }}
+            REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+            EMAIL_SERVICE: ${{ secrets.EMAIL_SERVICE }}
+            EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+            EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+            EMAIL_AUTH_USER: ${{ secrets.EMAIL_AUTH_USER }}
+            EMAIL_AUTH_PASSWORD: ${{ secrets.EMAIL_AUTH_PASSWORD }}
         run: |
           docker compose pull app
 
