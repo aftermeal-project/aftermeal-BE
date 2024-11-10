@@ -10,7 +10,7 @@ import { ActivityLocation } from '../../../activity-location/domain/entities/act
 import { ActivityUpdateRequestDto } from '../../presentation/dto/activity-update-request.dto';
 import { ActivityLocationService } from '../../../activity-location/application/services/activity-location.service';
 import { ZonedDateTime } from '@js-joda/core';
-import { TimeServices } from '@common/servicies/time.services';
+import { TimeServices } from '@common/time/time.services';
 
 @Injectable()
 export class ActivityService {
@@ -53,7 +53,7 @@ export class ActivityService {
       await this.activityRepository.findOneById(activityId);
 
     if (!activity) {
-      throw new ResourceNotFoundException('존재하지 않는 활동 항목입니다.');
+      throw new ResourceNotFoundException('존재하지 않는 활동입니다.');
     }
 
     return activity;

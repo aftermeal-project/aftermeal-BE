@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import emailConfiguration from '@config/email.config';
 import { ConfigType } from '@nestjs/config';
 import { createTransport, Transporter } from 'nodemailer';
-import { HtmlTemplate } from '@common/mail/html-template';
+import { HtmlTemplate } from './html-template';
 import appConfiguration from '@config/app.config';
 
 @Injectable()

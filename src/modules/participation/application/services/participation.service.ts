@@ -8,7 +8,7 @@ import { ResourceNotFoundException } from '@common/exceptions/resource-not-found
 import { User } from '../../../user/domain/entities/user.entity';
 import { ZonedDateTime } from '@js-joda/core';
 import { ParticipationRepository } from '../../domain/repositories/participation.repository';
-import { TimeServices } from '@common/servicies/time.services';
+import { TimeServices } from '@common/time/time.services';
 import { ActivityService } from '../../../activity/application/services/activity.service';
 import { Activity } from '../../../activity/domain/entities/activity.entity';
 

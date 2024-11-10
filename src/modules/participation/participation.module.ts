@@ -8,7 +8,7 @@ import {
 } from '@common/constants/dependency-token';
 import { ParticipationTypeormRepository } from './infrastructure/persistence/participation-typeorm.repository';
 import { ParticipationController } from './presentation/controllers/participation.controller';
-import { JodaTimeService } from '@common/servicies/joda-time.service';
+import { JodaTimeService } from '@common/time/joda-time.service';
 import { ActivityModule } from '../activity/activity.module';
 
 @Module({

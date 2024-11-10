@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { MailService } from '@common/mail/mail.service';
-import { HtmlTemplate } from '@common/mail/html-template';
+import { MailService } from './mail.service';
+import { HtmlTemplate } from './html-template';
 
 @Module({
   providers: [MailService, HtmlTemplate],
