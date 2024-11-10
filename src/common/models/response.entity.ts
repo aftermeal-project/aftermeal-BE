@@ -1,8 +1,9 @@
 import { Exclude, Expose } from 'class-transformer';
+import { ExceptionCode } from '@common/exceptions/exception-code';
 
 // 에러 세부 정보 인터페이스
 type ErrorDetails = {
-  code: string;
+  code: ExceptionCode;
   message: string;
 };
 
@@ -21,15 +22,11 @@ export class ResponseEntity<T> {
   }
 
   static SUCCESS<T>(data?: T): ResponseEntity<T> {
-    return new ResponseEntity(true, data, undefined);
+    return new ResponseEntity(true, data, null);
   }
 
-  static ERROR<T>(code: string, message: string): ResponseEntity<T> {
-    const error: ErrorDetails = {
-      code: code,
-      message: message,
-    };
-    return new ResponseEntity(false, undefined, error);
+  static ERROR<T>(code: ExceptionCode, message: string): ResponseEntity<T> {
+    return new ResponseEntity(false, null, { code, message });
   }
 
   @Expose()

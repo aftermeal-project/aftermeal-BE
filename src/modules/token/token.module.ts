@@ -47,23 +47,12 @@ export class TokenModule implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   async onModuleInit() {
-    try {
-      this.logger.log('Connecting to Token Storage');
-      await this.client.connect();
-      this.logger.log('Success connected to Token Storage');
-    } catch (error) {
-      this.logger.error('Failed to connect to Token Storage', error.stack);
-      throw error;
-    }
+    await this.client.connect();
+    this.logger.log('Success connected to Token Storage');
   }
 
   async onModuleDestroy() {
-    try {
-      this.logger.log('Disconnecting from Token Storage');
-      await this.client.disconnect();
-      this.logger.log('Success disconnected from Token Storage');
-    } catch (error) {
-      this.logger.error('Failed to disconnect from Token Storage', error.stack);
-    }
+    await this.client.disconnect();
+    this.logger.log('Success disconnected from Token Storage');
   }
 }

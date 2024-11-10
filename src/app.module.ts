@@ -15,6 +15,7 @@ import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { DatabaseModule } from './database/database.module';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { TokenModule } from './modules/token/token.module';
+import { LoggerModule } from '@common/logger/logger.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TokenModule } from './modules/token/token.module';
       validate: validate,
     }),
     DatabaseModule,
+    LoggerModule,
     UserModule,
     AuthModule,
     TokenModule,

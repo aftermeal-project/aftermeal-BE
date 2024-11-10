@@ -2,78 +2,68 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
+  HttpException,
   HttpStatus,
   Logger,
-  NotFoundException,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ResponseEntity } from '@common/models/response.entity';
-import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
+import { instanceToPlain } from 'class-transformer';
+import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
-import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
-import { instanceToPlain } from 'class-transformer';
+import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
+import { BaseException } from '@common/exceptions/base-exception';
 import { ExceptionCode } from '@common/exceptions/exception-code';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  private readonly logger: Logger = new Logger(GlobalExceptionFilter.name);
+  constructor(private readonly logger: Logger) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    let status: number;
-    let code: string;
-    let message: string;
+    let status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    let code: ExceptionCode = ExceptionCode.INTERNAL_SERVER_ERROR;
+    let message: string = 'Internal server error';
 
-    if (exception instanceof NotFoundException) {
-      status = HttpStatus.NOT_FOUND;
-      code = ExceptionCode.NOT_FOUND;
-      message = `Cannot ${request.method} ${request.url}`;
-      this.logger.warn(`Resource not found: ${message}`);
-    } else if (exception instanceof ResourceNotFoundException) {
-      status = HttpStatus.NOT_FOUND;
+    if (exception instanceof BaseException) {
+      switch (exception.constructor) {
+        case ResourceNotFoundException:
+          status = HttpStatus.NOT_FOUND;
+          break;
+        case IllegalArgumentException && IllegalStateException:
+          status = HttpStatus.BAD_REQUEST;
+          break;
+        case AlreadyExistException:
+          status = HttpStatus.CONFLICT;
+          break;
+      }
       code = exception.code;
       message = exception.message;
-      this.logger.warn(`Resource not found: ${message}`);
-    } else if (exception instanceof IllegalArgumentException) {
-      status = HttpStatus.BAD_REQUEST;
-      code = exception.code;
+      this.logger.warn(
+        `Request ${request.method} ${request.url} - ${message}`,
+        GlobalExceptionFilter.name,
+      );
+    } else if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      code = ExceptionCode[HttpStatus[status]];
       message = exception.message;
-      this.logger.warn(`Illegal argument: ${message}`);
-    } else if (exception instanceof IllegalStateException) {
-      status = HttpStatus.BAD_REQUEST;
-      code = exception.code;
-      message = exception.message;
-      this.logger.warn(`Illegal state: ${message}`);
-    } else if (exception instanceof AlreadyExistException) {
-      status = HttpStatus.CONFLICT;
-      code = exception.code;
-      message = exception.message;
-      this.logger.warn(`Already exist: ${message}`);
-    } else if (exception instanceof Error) {
-      status = HttpStatus.INTERNAL_SERVER_ERROR;
-      code = ExceptionCode.INTERNAL_SERVER_ERROR;
-      message = 'Internal server error';
-
-      this.logger.error(
-        `Unhandled exception: ${exception.message}`,
-        exception.stack,
+      this.logger.warn(
+        `Request ${request.method} ${request.url} - ${message}`,
+        GlobalExceptionFilter.name,
       );
     } else {
-      status = HttpStatus.INTERNAL_SERVER_ERROR;
-      code = ExceptionCode.INTERNAL_SERVER_ERROR;
-      message = 'Internal server error';
-      this.logger.error(`Unknown exception: ${exception}`);
+      this.logger.error(
+        `Request ${request.method} ${request.url} - ${exception}`,
+        GlobalExceptionFilter.name,
+      );
     }
 
-    const errorResponse: ResponseEntity<null> = ResponseEntity.ERROR(
-      code,
-      message,
-    );
-
-    response.status(status).json(instanceToPlain(errorResponse));
+    response
+      .status(status)
+      .json(instanceToPlain(ResponseEntity.ERROR(code, message)));
   }
 }
