@@ -7,15 +7,18 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ActivityService } from '../../application/services/activity.service';
 import { ResponseEntity } from '@common/models/response.entity';
 import { Public } from '@common/decorators/public.decorator';
-import { ActivitySummaryResponseDto } from '../dto/activity-summary-response.dto';
-import { ActivityDetailResponseDto } from '../dto/activity-detail-response.dto';
+import { ActivityListResponseDto } from '../dto/activity-list-response.dto';
+import { ActivityResponseDto } from '../dto/activity-response.dto';
 import { ActivityCreationRequestDto } from '../dto/activity-creation-request.dto';
 import { ActivityUpdateRequestDto } from '../dto/activity-update-request.dto';
 import { Roles } from '@common/decorators/roles.decorator';
+import { LocalDate } from '@js-joda/core';
+import { ActivityQueryDto } from '../dto/activity-query.dto';
 
 @Controller('activities')
 export class ActivityController {
@@ -32,20 +35,26 @@ export class ActivityController {
 
   @Public()
   @Get()
-  async getActivities(): Promise<ResponseEntity<ActivitySummaryResponseDto[]>> {
-    const activitySummaryResponseDtos: ActivitySummaryResponseDto[] =
-      await this.activityService.getActivitySummaries();
-    return ResponseEntity.SUCCESS(activitySummaryResponseDtos);
+  async getActivities(
+    @Query() query: ActivityQueryDto,
+  ): Promise<ResponseEntity<ActivityListResponseDto[]>> {
+    if (!query.date) {
+      query.date = LocalDate.now();
+    }
+
+    const responseDtos: ActivityListResponseDto[] =
+      await this.activityService.getActivityListResponseByDate(query);
+    return ResponseEntity.SUCCESS(responseDtos);
   }
 
   @Public()
   @Get(':activityId')
-  async getActivityDetailById(
+  async getActivityById(
     @Param('activityId') activityId: number,
-  ): Promise<ResponseEntity<ActivityDetailResponseDto>> {
-    const activityDetailResponseDto: ActivityDetailResponseDto =
-      await this.activityService.getActivityDetailById(activityId);
-    return ResponseEntity.SUCCESS(activityDetailResponseDto);
+  ): Promise<ResponseEntity<ActivityResponseDto>> {
+    const responseDto: ActivityResponseDto =
+      await this.activityService.getActivityResponseById(activityId);
+    return ResponseEntity.SUCCESS(responseDto);
   }
 
   @Roles('ADMIN')

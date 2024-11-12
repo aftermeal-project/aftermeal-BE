@@ -3,14 +3,15 @@ import { ActivityRepository } from '../../domain/repositories/activity.repositor
 import { ACTIVITY_REPOSITORY, TIME } from '@common/constants/dependency-token';
 import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { Activity } from '../../domain/entities/activity.entity';
-import { ActivitySummaryResponseDto } from '../../presentation/dto/activity-summary-response.dto';
-import { ActivityDetailResponseDto } from '../../presentation/dto/activity-detail-response.dto';
+import { ActivityListResponseDto } from '../../presentation/dto/activity-list-response.dto';
+import { ActivityResponseDto } from '../../presentation/dto/activity-response.dto';
 import { ActivityCreationRequestDto } from '../../presentation/dto/activity-creation-request.dto';
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
 import { ActivityUpdateRequestDto } from '../../presentation/dto/activity-update-request.dto';
 import { ActivityLocationService } from '../../../activity-location/application/services/activity-location.service';
 import { ZonedDateTime } from '@js-joda/core';
 import { TimeServices } from '@common/time/time.services';
+import { ActivityQueryDto } from '../../presentation/dto/activity-query.dto';
 
 @Injectable()
 export class ActivityService {
@@ -41,29 +42,20 @@ export class ActivityService {
     await this.activityRepository.save(activity);
   }
 
-  async getActivitySummaries(): Promise<ActivitySummaryResponseDto[]> {
-    const activities: Activity[] = await this.activityRepository.find();
-    return activities.map((activity) =>
-      ActivitySummaryResponseDto.from(activity),
+  async getActivityListResponseByDate(
+    query: ActivityQueryDto,
+  ): Promise<ActivityListResponseDto[]> {
+    const activities: Activity[] = await this.activityRepository.findByDate(
+      query.date,
     );
+    return activities.map((activity) => ActivityListResponseDto.from(activity));
   }
 
-  async getActivityById(activityId: number): Promise<Activity> {
-    const activity: Activity =
-      await this.activityRepository.findOneById(activityId);
-
-    if (!activity) {
-      throw new ResourceNotFoundException('존재하지 않는 활동입니다.');
-    }
-
-    return activity;
-  }
-
-  async getActivityDetailById(
+  async getActivityResponseById(
     activityId: number,
-  ): Promise<ActivityDetailResponseDto> {
+  ): Promise<ActivityResponseDto> {
     const activity: Activity = await this.getActivityById(activityId);
-    return ActivityDetailResponseDto.from(activity);
+    return ActivityResponseDto.from(activity);
   }
 
   async updateActivity(
@@ -90,5 +82,16 @@ export class ActivityService {
   async deleteActivity(activityId: number): Promise<void> {
     const activity: Activity = await this.getActivityById(activityId);
     await this.activityRepository.delete(activity);
+  }
+
+  async getActivityById(activityId: number): Promise<Activity> {
+    const activity: Activity =
+      await this.activityRepository.findOneById(activityId);
+
+    if (!activity) {
+      throw new ResourceNotFoundException('존재하지 않는 활동입니다.');
+    }
+
+    return activity;
   }
 }

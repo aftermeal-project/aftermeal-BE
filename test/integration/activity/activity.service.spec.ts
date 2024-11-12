@@ -19,7 +19,7 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
-import { ActivitySummaryResponseDto } from '../../../src/modules/activity/presentation/dto/activity-summary-response.dto';
+import { ActivityListResponseDto } from '../../../src/modules/activity/presentation/dto/activity-list-response.dto';
 import { ActivityRepository } from '../../../src/modules/activity/domain/repositories/activity.repository';
 import { EActivityType } from '../../../src/modules/activity/domain/types/activity-type';
 import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
@@ -38,10 +38,13 @@ import { ActivityTypeormRepository } from '../../../src/modules/activity/infrast
 import { ActivityLocationTypeormRepository } from '../../../src/modules/activity-location/infrastructure/persistence/activity-location-typeorm.repository';
 import { StubTime } from '../../utils/stub-time';
 import { ActivityLocationService } from '../../../src/modules/activity-location/application/services/activity-location.service';
-import { ActivityDetailResponseDto } from '../../../src/modules/activity/presentation/dto/activity-detail-response.dto';
+import { ActivityResponseDto } from '../../../src/modules/activity/presentation/dto/activity-response.dto';
+import { TimeServices } from '@common/time/time.services';
+import { ActivityQueryDto } from '../../../src/modules/activity/presentation/dto/activity-query.dto';
 
 describe('ActivityService', () => {
   let activityService: ActivityService;
+  let timeService: TimeServices;
   let activityRepository: ActivityRepository;
   let activityLocationRepository: ActivityLocationRepository;
   let userRepository: UserRepository;
@@ -99,6 +102,7 @@ describe('ActivityService', () => {
     }).compile();
 
     activityService = moduleRef.get<ActivityService>(ActivityService);
+    timeService = moduleRef.get<TimeServices>(TIME);
     activityRepository = moduleRef.get<ActivityRepository>(ACTIVITY_REPOSITORY);
     activityLocationRepository = moduleRef.get<ActivityLocationRepository>(
       ACTIVITY_LOCATION_REPOSITORY,
@@ -126,17 +130,15 @@ describe('ActivityService', () => {
   describe('createActivity', () => {
     it('활동을 생성한다.', async () => {
       // given
-      const activityLocation = ActivityLocation.create('GYM');
+      const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
-
-      const scheduledDate: LocalDate = LocalDate.of(2024, 1, 3);
 
       const dto: ActivityCreationRequestDto = {
         title: '배구',
         maxParticipants: 18,
         activityLocationId: activityLocation.id,
         type: EActivityType.LUNCH,
-        scheduledDate: scheduledDate,
+        scheduledDate: LocalDate.of(2024, 1, 3),
       };
 
       // when
@@ -151,38 +153,8 @@ describe('ActivityService', () => {
     });
   });
 
-  describe('getActivityById', () => {
-    it('활동 ID를 통해 활동을 가져온다.', async () => {
-      // given
-      const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
-      await activityLocationRepository.save(activityLocation);
-
-      const activity: Activity = createActivity(activityLocation);
-      await activityRepository.save(activity);
-
-      // when
-      const result: Activity = await activityService.getActivityById(
-        activity.id,
-      );
-
-      // then
-      expect(result.id).toEqual(activity.id);
-    });
-
-    it('존재하지 않는 활동은 가져올 수 없다.', async () => {
-      // given
-      const nonExistentId: number = 0;
-
-      // when
-      const result = activityService.getActivityById(nonExistentId);
-
-      // then
-      await expect(result).rejects.toThrow(ResourceNotFoundException);
-    });
-  });
-
-  describe('getActivityDetailById', () => {
-    it('활동 ID를 통해 활동 상세 정보를 가져온다.', async () => {
+  describe('getActivityResponseById', () => {
+    it('활동 ID를 통해 활동 응답을 가져온다.', async () => {
       // given
       const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
@@ -198,17 +170,24 @@ describe('ActivityService', () => {
       );
       await userRepository.save(user);
 
-      const activity: Activity = createActivity(activityLocation);
+      const activity: Activity = Activity.create(
+        '배구',
+        18,
+        activityLocation,
+        EActivityType.LUNCH,
+        LocalDate.of(2024, 1, 3),
+        timeService.now(),
+      );
       await activityRepository.save(activity);
 
-      const participation = new Participation();
+      const participation: Participation = new Participation();
       participation.user = user;
       participation.activity = activity;
       await participationRepository.save(participation);
 
       // when
-      const result: ActivityDetailResponseDto =
-        await activityService.getActivityDetailById(activity.id);
+      const result: ActivityResponseDto =
+        await activityService.getActivityResponseById(activity.id);
 
       // then
       expect(result.id).toEqual(activity.id);
@@ -221,15 +200,15 @@ describe('ActivityService', () => {
       const nonExistentId: number = 0;
 
       // when
-      const result = activityService.getActivityDetailById(nonExistentId);
+      const result = activityService.getActivityResponseById(nonExistentId);
 
       // then
       await expect(result).rejects.toThrow(ResourceNotFoundException);
     });
   });
 
-  describe('getActivitySummaries', () => {
-    it('활동 요약 정보 목록을 가져온다.', async () => {
+  describe('getActivityListResponseByDate', () => {
+    it('특정 날짜에 해당하는 활동 목록 응답을 가져온다.', async () => {
       // given
       const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
@@ -245,19 +224,33 @@ describe('ActivityService', () => {
       );
       await userRepository.save(user);
 
-      const activity: Activity = createActivity(activityLocation);
+      const scheduledDate: LocalDate = LocalDate.of(2024, 1, 3);
+
+      const activity: Activity = Activity.create(
+        '배구',
+        18,
+        activityLocation,
+        EActivityType.LUNCH,
+        scheduledDate,
+        timeService.now(),
+      );
       await activityRepository.save(activity);
 
-      const participation = new Participation();
+      const participation: Participation = new Participation();
       participation.user = user;
       participation.activity = activity;
       await participationRepository.save(participation);
 
+      const query: ActivityQueryDto = {
+        date: scheduledDate,
+      };
+
       // when
-      const result: ActivitySummaryResponseDto[] =
-        await activityService.getActivitySummaries();
+      const result: ActivityListResponseDto[] =
+        await activityService.getActivityListResponseByDate(query);
 
       // then
+      expect(result).toHaveLength(1);
       expect(result[0].id).toBe(activity.id);
       expect(result[0].title).toBe('배구');
       expect(result[0].location).toBe('GYM');
@@ -275,7 +268,14 @@ describe('ActivityService', () => {
       const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
 
-      const activity: Activity = createActivity(activityLocation);
+      const activity: Activity = Activity.create(
+        '배구',
+        18,
+        activityLocation,
+        EActivityType.LUNCH,
+        LocalDate.of(2024, 1, 3),
+        timeService.now(),
+      );
       await activityRepository.save(activity);
 
       const updateTitle: string = '농구';
@@ -341,22 +341,41 @@ describe('ActivityService', () => {
       expect(activities).toEqual([]);
     });
   });
+
+  describe('getActivityById', () => {
+    it('활동 ID를 통해 활동을 가져온다.', async () => {
+      // given
+      const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
+      await activityLocationRepository.save(activityLocation);
+
+      const activity: Activity = Activity.create(
+        '배구',
+        18,
+        activityLocation,
+        EActivityType.LUNCH,
+        LocalDate.of(2024, 1, 3),
+        timeService.now(),
+      );
+      await activityRepository.save(activity);
+
+      // when
+      const result: Activity = await activityService.getActivityById(
+        activity.id,
+      );
+
+      // then
+      expect(result.id).toEqual(activity.id);
+    });
+
+    it('존재하지 않는 활동은 가져올 수 없다.', async () => {
+      // given
+      const nonExistentId: number = 0;
+
+      // when
+      const result = activityService.getActivityById(nonExistentId);
+
+      // then
+      await expect(result).rejects.toThrow(ResourceNotFoundException);
+    });
+  });
 });
-
-function createActivity(activityLocation: ActivityLocation) {
-  const now: ZonedDateTime = ZonedDateTime.of(
-    LocalDate.of(2024, 1, 1),
-    LocalTime.of(0, 0),
-    ZoneOffset.UTC,
-  );
-  const scheduledDate: LocalDate = LocalDate.of(2024, 1, 3);
-
-  return Activity.create(
-    '배구',
-    18,
-    activityLocation,
-    EActivityType.LUNCH,
-    scheduledDate,
-    now,
-  );
-}

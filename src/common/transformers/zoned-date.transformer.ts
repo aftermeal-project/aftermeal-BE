@@ -1,21 +1,13 @@
 import { ValueTransformer } from 'typeorm';
-import { convert, ZonedDateTime } from '@js-joda/core';
-import { Logger } from '@nestjs/common';
+import { convert, nativeJs, ZonedDateTime, ZoneOffset } from '@js-joda/core';
 
 export class ZonedDateTimeTransformer implements ValueTransformer {
-  private readonly logger = new Logger(ZonedDateTimeTransformer.name);
-
   to(entityValue: ZonedDateTime | null): Date | null {
     if (!entityValue) {
       return null;
     }
 
-    try {
-      return convert(entityValue).toDate();
-    } catch (error) {
-      this.logger.error('ZonedDateTime 변환 오류:', error);
-      return null;
-    }
+    return convert(entityValue).toDate();
   }
 
   from(databaseValue: string | null): ZonedDateTime | null {
@@ -23,12 +15,6 @@ export class ZonedDateTimeTransformer implements ValueTransformer {
       return null;
     }
 
-    try {
-      const isoString: string = new Date(databaseValue).toISOString();
-      return ZonedDateTime.parse(isoString);
-    } catch (error) {
-      this.logger.error('ZonedDateTime 변환 오류:', error);
-      return null;
-    }
+    return nativeJs(new Date(databaseValue), ZoneOffset.UTC);
   }
 }

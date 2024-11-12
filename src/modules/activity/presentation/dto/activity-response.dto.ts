@@ -1,40 +1,42 @@
+import { Activity } from '../../domain/entities/activity.entity';
 import { Exclude, Expose } from 'class-transformer';
+import { Participation } from '../../../participation/domain/entities/participation.entity';
 import { LocalDate, ZonedDateTime } from '@js-joda/core';
+import { UserType } from '../../../user/domain/types/user-type';
 import { EActivityType } from '../../domain/types/activity-type';
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
-import { Activity } from '../../domain/entities/activity.entity';
 
-export class ActivitySummaryResponseDto {
+export class ActivityResponseDto {
   @Exclude() private readonly _id: number;
   @Exclude() private readonly _title: string;
-  @Exclude() private readonly _location: ActivityLocation;
   @Exclude() private readonly _maxParticipants: number;
-  @Exclude() private readonly _currentParticipants: number;
+  @Exclude() private readonly _location: ActivityLocation;
   @Exclude() private readonly _type: EActivityType;
   @Exclude() private readonly _scheduledDate: LocalDate;
   @Exclude() private readonly _applicationStartAt: ZonedDateTime;
   @Exclude() private readonly _applicationEndAt: ZonedDateTime;
+  @Exclude() private readonly _participations: Participation[];
 
   constructor(
     id: number,
     title: string,
-    location: ActivityLocation,
     maxParticipants: number,
-    currentParticipants: number,
+    location: ActivityLocation,
     type: EActivityType,
     scheduledDate: LocalDate,
     applicationStartAt: ZonedDateTime,
     applicationEndAt: ZonedDateTime,
+    participations: Participation[],
   ) {
     this._id = id;
     this._title = title;
-    this._location = location;
     this._maxParticipants = maxParticipants;
-    this._currentParticipants = currentParticipants;
+    this._location = location;
     this._type = type;
     this._scheduledDate = scheduledDate;
     this._applicationStartAt = applicationStartAt;
     this._applicationEndAt = applicationEndAt;
+    this._participations = participations;
   }
 
   @Expose()
@@ -48,23 +50,23 @@ export class ActivitySummaryResponseDto {
   }
 
   @Expose()
-  get location(): string {
-    return this._location.name;
-  }
-
-  @Expose()
   get maxParticipants(): number {
     return this._maxParticipants;
   }
 
   @Expose()
   get currentParticipants(): number {
-    return this._currentParticipants;
+    return this._participations.length;
+  }
+
+  @Expose()
+  get location(): string {
+    return this._location.name;
   }
 
   @Expose()
   get type(): string {
-    return this._type.code;
+    return this._type.enumName;
   }
 
   @Expose()
@@ -82,17 +84,42 @@ export class ActivitySummaryResponseDto {
     return this._applicationEndAt.toString();
   }
 
-  static from(activity: Activity) {
-    return new ActivitySummaryResponseDto(
+  @Expose()
+  get participations(): {
+    id: number;
+    user: {
+      id: number;
+      name: string;
+      type: UserType;
+      generationNumber: number | null;
+    };
+  }[] {
+    return this._participations.map((participation) => {
+      return {
+        id: participation.id,
+        user: {
+          id: participation.user.id,
+          name: participation.user.name,
+          type: participation.user.type,
+          generationNumber: participation.user.generation?.generationNumber
+            ? participation.user.generation.generationNumber
+            : null,
+        },
+      };
+    });
+  }
+
+  static from(activity: Activity): ActivityResponseDto {
+    return new ActivityResponseDto(
       activity.id,
       activity.title,
-      activity.location,
       activity.maxParticipants,
-      activity.participations.length,
+      activity.location,
       activity.type,
       activity.scheduledDate,
       activity.applicationStartAt,
       activity.applicationEndAt,
+      activity.participations,
     );
   }
 }
