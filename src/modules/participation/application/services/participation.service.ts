@@ -8,7 +8,7 @@ import { ResourceNotFoundException } from '@common/exceptions/resource-not-found
 import { User } from '../../../user/domain/entities/user.entity';
 import { ZonedDateTime } from '@js-joda/core';
 import { ParticipationRepository } from '../../domain/repositories/participation.repository';
-import { TimeServices } from '@common/time/time.services';
+import { TimeService } from '@common/time/time.service';
 import { ActivityService } from '../../../activity/application/services/activity.service';
 import { Activity } from '../../../activity/domain/entities/activity.entity';
 
@@ -19,7 +19,7 @@ export class ParticipationService {
     private readonly participationRepository: ParticipationRepository,
     private readonly activityService: ActivityService,
     @Inject(TIME)
-    private readonly time: TimeServices,
+    private readonly time: TimeService,
   ) {}
 
   async getParticipationById(participationId: number): Promise<Participation> {
