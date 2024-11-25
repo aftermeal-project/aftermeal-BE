@@ -3,7 +3,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { Participation } from '../../../participation/domain/entities/participation.entity';
 import { LocalDate, ZonedDateTime } from '@js-joda/core';
 import { UserType } from '../../../user/domain/types/user-type';
-import { EActivityType } from '../../domain/types/activity-type';
+import { EActivityType } from '../../domain/entities/activity-type';
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
 
 export class ActivityResponseDto {

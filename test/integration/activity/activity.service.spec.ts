@@ -21,7 +21,7 @@ import {
 import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { ActivityListResponseDto } from '../../../src/modules/activity/presentation/dto/activity-list-response.dto';
 import { ActivityRepository } from '../../../src/modules/activity/domain/repositories/activity.repository';
-import { EActivityType } from '../../../src/modules/activity/domain/types/activity-type';
+import { EActivityType } from '../../../src/modules/activity/domain/entities/activity-type';
 import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
 import { ActivityLocationRepository } from '../../../src/modules/activity-location/domain/repositories/activity-location.repository';
@@ -39,12 +39,12 @@ import { ActivityLocationTypeormRepository } from '../../../src/modules/activity
 import { StubTime } from '../../utils/stub-time';
 import { ActivityLocationService } from '../../../src/modules/activity-location/application/services/activity-location.service';
 import { ActivityResponseDto } from '../../../src/modules/activity/presentation/dto/activity-response.dto';
-import { TimeServices } from '@common/time/time.services';
+import { TimeService } from '@common/time/time.service';
 import { ActivityQueryDto } from '../../../src/modules/activity/presentation/dto/activity-query.dto';
 
 describe('ActivityService', () => {
   let activityService: ActivityService;
-  let timeService: TimeServices;
+  let timeService: TimeService;
   let activityRepository: ActivityRepository;
   let activityLocationRepository: ActivityLocationRepository;
   let userRepository: UserRepository;
@@ -102,7 +102,7 @@ describe('ActivityService', () => {
     }).compile();
 
     activityService = moduleRef.get<ActivityService>(ActivityService);
-    timeService = moduleRef.get<TimeServices>(TIME);
+    timeService = moduleRef.get<TimeService>(TIME);
     activityRepository = moduleRef.get<ActivityRepository>(ACTIVITY_REPOSITORY);
     activityLocationRepository = moduleRef.get<ActivityLocationRepository>(
       ACTIVITY_LOCATION_REPOSITORY,
@@ -142,7 +142,7 @@ describe('ActivityService', () => {
       };
 
       // when
-      await activityService.createActivity(dto);
+      await activityService.createActivity(dto, timeService.now());
 
       // then
       const activities: Activity[] = await activityRepository.find();

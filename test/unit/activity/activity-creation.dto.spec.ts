@@ -1,7 +1,7 @@
 import { validateSync } from 'class-validator';
 import { LocalDate } from '@js-joda/core';
 import { ActivityCreationRequestDto } from '../../../src/modules/activity/presentation/dto/activity-creation-request.dto';
-import { EActivityType } from '../../../src/modules/activity/domain/types/activity-type';
+import { EActivityType } from '../../../src/modules/activity/domain/entities/activity-type';
 
 describe('ActivityCreationRequestDto', () => {
   it('유효한 데이터로 검증에 성공해야 한다.', () => {

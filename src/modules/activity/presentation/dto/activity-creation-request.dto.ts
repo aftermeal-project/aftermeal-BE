@@ -5,7 +5,7 @@ import {
   IsString,
   Validate,
 } from 'class-validator';
-import { EActivityType } from '../../domain/types/activity-type';
+import { EActivityType } from '../../domain/entities/activity-type';
 import { LocalDate } from '@js-joda/core';
 import { Transform } from 'class-transformer';
 import { LocalDateValidator } from '@common/validators/local-date.validator';
@@ -22,7 +22,7 @@ export class ActivityCreationRequestDto {
   activityLocationId: number;
 
   @IsEnum(EActivityType, {
-    message: `활동 타입은 다음 중 하나여야 합니다: ${EActivityType.values()}`,
+    message: `활동 유형은 다음 중 하나여야 합니다: ${EActivityType.values()}`,
   })
   @Transform(({ value }) => {
     try {

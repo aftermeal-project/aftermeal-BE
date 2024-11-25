@@ -1,14 +1,14 @@
 import { Activity } from '../../../src/modules/activity/domain/entities/activity.entity';
 import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
-import { EActivityType } from '../../../src/modules/activity/domain/types/activity-type';
+import { EActivityType } from '../../../src/modules/activity/domain/entities/activity-type';
 import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
 
 describe('Activity', () => {
   describe('create', () => {
     it('활동을 생성한다.', () => {
       // given
-      const activityLocation = new ActivityLocation();
+      const activityLocation: ActivityLocation = new ActivityLocation();
 
       const now: ZonedDateTime = ZonedDateTime.of(
         LocalDate.of(2024, 1, 1),
@@ -19,7 +19,7 @@ describe('Activity', () => {
       const scheduledDate: LocalDate = LocalDate.of(2024, 1, 1);
 
       // when
-      const activity = Activity.create(
+      const activity: Activity = Activity.create(
         'title',
         10,
         activityLocation,
@@ -34,6 +34,7 @@ describe('Activity', () => {
       expect(activity.location).toEqual(activityLocation);
       expect(activity.type).toEqual(EActivityType.LUNCH);
       expect(activity.scheduledDate).toEqual(scheduledDate);
+      expect(activity.startAt).toEqual('');
     });
 
     it('과거 날짜로 생성할 수 없다.', () => {

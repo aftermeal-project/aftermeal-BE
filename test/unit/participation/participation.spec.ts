@@ -5,7 +5,7 @@ import { Participation } from '../../../src/modules/participation/domain/entitie
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
 import { Role } from '../../../src/modules/role/domain/entities/role.entity';
-import { EActivityType } from '../../../src/modules/activity/domain/types/activity-type';
+import { EActivityType } from '../../../src/modules/activity/domain/entities/activity-type';
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
 
 describe('Participation', () => {
