@@ -7,14 +7,15 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { EActivityType } from '../types/activity-type';
+import { EActivityType } from './activity-type';
 import { Participation } from '../../../participation/domain/entities/participation.entity';
-import { ActivityTypeTransformer } from '../types/activity-type.transformer';
-import { LocalDate, ZonedDateTime, ZoneOffset } from '@js-joda/core';
+import { ActivityTypeTransformer } from '../../infrastructure/transformers/activity-type.transformer';
+import { LocalDate, ZonedDateTime } from '@js-joda/core';
 import { LocalDateTransformer } from '@common/transformers/local-date.transformer';
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
-import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
 import { ZonedDateTimeTransformer } from '@common/transformers/zoned-date.transformer';
+import { ApplicationPeriod } from '../vo/application-period';
+import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 
 @Entity()
 export class Activity extends BaseTimeEntity {
@@ -52,17 +53,8 @@ export class Activity extends BaseTimeEntity {
   })
   endAt: ZonedDateTime;
 
-  @Column({
-    type: 'datetime',
-    transformer: new ZonedDateTimeTransformer(),
-  })
-  applicationStartAt: ZonedDateTime;
-
-  @Column({
-    type: 'datetime',
-    transformer: new ZonedDateTimeTransformer(),
-  })
-  applicationEndAt: ZonedDateTime;
+  @Column(() => ApplicationPeriod)
+  applicationPeriod: ApplicationPeriod;
 
   @ManyToOne(() => ActivityLocation, { nullable: false, eager: true })
   @JoinColumn({
@@ -86,14 +78,20 @@ export class Activity extends BaseTimeEntity {
     scheduledDate: LocalDate,
     currentDateTime: ZonedDateTime,
   ): Activity {
-    const startAt: ZonedDateTime = scheduledDate
-      .atTime(type.startAt)
-      .atZone(ZoneOffset.UTC);
-    const endAt: ZonedDateTime = scheduledDate
-      .atTime(type.endAt)
-      .atZone(ZoneOffset.UTC);
+    const startAt: ZonedDateTime = type.getActivityStartDateTime(scheduledDate);
+    const endAt: ZonedDateTime = type.getActivityEndDateTime(scheduledDate);
 
-    this.validateStartAt(startAt, currentDateTime);
+    const creationDeadline: ZonedDateTime = startAt.minusHours(1);
+    if (currentDateTime.isAfter(creationDeadline)) {
+      throw new IllegalArgumentException(
+        '활동은 시작 시간 최소 1시간 전까지만 생성 가능합니다.',
+      );
+    }
+
+    const applicationPeriod: ApplicationPeriod = new ApplicationPeriod(
+      startAt,
+      currentDateTime,
+    );
 
     const activity: Activity = new Activity();
     activity.title = title;
@@ -103,51 +101,34 @@ export class Activity extends BaseTimeEntity {
     activity.scheduledDate = scheduledDate;
     activity.startAt = startAt;
     activity.endAt = endAt;
-    activity.applicationStartAt = startAt.minusHours(4);
-    activity.applicationEndAt = startAt.minusMinutes(30);
+    activity.applicationPeriod = applicationPeriod;
+    activity.participations = [];
 
     return activity;
   }
 
   update(
     title: string,
-    maxParticipation: number,
+    maxParticipants: number,
     activityLocation: ActivityLocation,
     type: EActivityType,
     scheduledDate: LocalDate,
   ): void {
     this.title = title;
-    this.maxParticipants = maxParticipation;
+    this.maxParticipants = maxParticipants;
     this.location = activityLocation;
     this.type = type;
     this.scheduledDate = scheduledDate;
-  }
-
-  private static validateStartAt(
-    startAt: ZonedDateTime,
-    currentDateTime: ZonedDateTime,
-  ): void {
-    if (startAt.isBefore(currentDateTime)) {
-      throw new IllegalStateException('과거 날짜로 예약할 수 없습니다.');
-    }
-
-    const deadline: ZonedDateTime = startAt.minusHours(4);
-
-    if (currentDateTime.isAfter(deadline)) {
-      throw new IllegalStateException(
-        '당일 활동은 활동 시작 4시간 전까지만 생성할 수 있습니다.',
-      );
-    }
   }
 
   isFull(): boolean {
     return this.participations.length >= this.maxParticipants;
   }
 
-  isWithInPeriod(currentTime: ZonedDateTime): boolean {
+  isWithinApplicationPeriod(currentTime: ZonedDateTime): boolean {
     return (
-      this.applicationStartAt.isBefore(currentTime) &&
-      this.applicationEndAt.isAfter(currentTime)
+      this.applicationPeriod.startAt.isBefore(currentTime) &&
+      this.applicationPeriod.endAt.isAfter(currentTime)
     );
   }
 }
