@@ -88,7 +88,7 @@ export class Activity extends BaseTimeEntity {
       );
     }
 
-    const applicationPeriod: ApplicationPeriod = new ApplicationPeriod(
+    const applicationPeriod: ApplicationPeriod = ApplicationPeriod.create(
       startAt,
       currentDateTime,
     );
@@ -110,13 +110,13 @@ export class Activity extends BaseTimeEntity {
   update(
     title: string,
     maxParticipants: number,
-    activityLocation: ActivityLocation,
+    location: ActivityLocation,
     type: EActivityType,
     scheduledDate: LocalDate,
   ): void {
     this.title = title;
     this.maxParticipants = maxParticipants;
-    this.location = activityLocation;
+    this.location = location;
     this.type = type;
     this.scheduledDate = scheduledDate;
   }

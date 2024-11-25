@@ -91,8 +91,8 @@ export class ActivityListResponseDto {
       activity.participations.length,
       activity.type,
       activity.scheduledDate,
-      activity.applicationStartAt,
-      activity.applicationEndAt,
+      activity.applicationPeriod.startAt,
+      activity.applicationPeriod.endAt,
     );
   }
 }

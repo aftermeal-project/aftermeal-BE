@@ -117,8 +117,8 @@ export class ActivityResponseDto {
       activity.location,
       activity.type,
       activity.scheduledDate,
-      activity.applicationStartAt,
-      activity.applicationEndAt,
+      activity.applicationPeriod.startAt,
+      activity.applicationPeriod.endAt,
       activity.participations,
     );
   }

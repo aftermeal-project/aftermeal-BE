@@ -8,14 +8,14 @@ export class ApplicationPeriod {
     type: 'datetime',
     transformer: new ZonedDateTimeTransformer(),
   })
-  private readonly _startAt: ZonedDateTime;
+  private _startAt: ZonedDateTime;
 
   @Column({
     name: 'application_end_at',
     type: 'datetime',
     transformer: new ZonedDateTimeTransformer(),
   })
-  private readonly _endAt: ZonedDateTime;
+  private _endAt: ZonedDateTime;
 
   get startAt(): ZonedDateTime {
     return this._startAt;
@@ -25,17 +25,21 @@ export class ApplicationPeriod {
     return this._endAt;
   }
 
-  constructor(activityStartAt: ZonedDateTime, currentDateTime: ZonedDateTime) {
-    this._startAt = currentDateTime.isAfter(activityStartAt.minusHours(4))
+  static create(
+    activityStartAt: ZonedDateTime,
+    currentDateTime: ZonedDateTime,
+  ): ApplicationPeriod {
+    const applicationPeriod: ApplicationPeriod = new ApplicationPeriod();
+    applicationPeriod._startAt = currentDateTime.isAfter(
+      activityStartAt.minusHours(4),
+    )
       ? currentDateTime
       : activityStartAt.minusHours(4);
-    this._endAt = activityStartAt.minusMinutes(30);
-    this.validate();
-  }
-
-  private validate(): void {
-    if (this._startAt.isAfter(this._endAt)) {
+    applicationPeriod._endAt = activityStartAt.minusMinutes(30);
+    if (applicationPeriod._startAt.isAfter(applicationPeriod._endAt)) {
       throw new Error('신청 마감 시간은 신청 시작 시간보다 이후여야 합니다.');
     }
+
+    return applicationPeriod;
   }
 }
