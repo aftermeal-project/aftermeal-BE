@@ -7,9 +7,6 @@ import {
   IsString,
 } from 'class-validator';
 import { UserType } from '../../domain/types/user-type';
-import { User } from '../../domain/entities/user.entity';
-import { Role } from '../../../role/domain/entities/role.entity';
-import { Generation } from '../../../generation/domain/entities/generation.entity';
 
 export class UserRegistrationRequestDto {
   @IsNotEmpty({ message: '이름은 빈 값일 수 없습니다.' })
@@ -31,16 +28,4 @@ export class UserRegistrationRequestDto {
   @IsNotEmpty({ message: '비밀번호는 필수값입니다.' })
   @IsString({ message: '이름은 문자열이어야 합니다.' })
   password: string;
-
-  toEntity(role: Role, generation?: Generation): User {
-    return this.type === UserType.STUDENT
-      ? User.createStudent(
-          this.name,
-          this.email,
-          role,
-          generation,
-          this.password,
-        )
-      : User.createTeacher(this.name, this.email, role, this.password);
-  }
 }
