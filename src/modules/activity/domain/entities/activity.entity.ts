@@ -56,7 +56,11 @@ export class Activity extends BaseTimeEntity {
   @Column(() => ApplicationPeriod)
   applicationPeriod: ApplicationPeriod;
 
-  @ManyToOne(() => ActivityLocation, { nullable: false, eager: true })
+  @ManyToOne(() => ActivityLocation, {
+    nullable: false,
+    eager: true,
+    cascade: true,
+  })
   @JoinColumn({
     name: 'activity_location_id',
     foreignKeyConstraintName: 'fk_activity_activity_location',

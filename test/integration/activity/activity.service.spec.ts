@@ -304,9 +304,9 @@ describe('ActivityService', () => {
       expect(savedActivities[0].id).toEqual(activity.id);
       expect(savedActivities[0].title).toBe(updateTitle);
       expect(savedActivities[0].maxParticipants).toBe(updateMaxParticipants);
-      expect(savedActivities[0].location.id).toBe(updateActivityLocation.id);
       expect(savedActivities[0].type).toBe(updateActivityType);
       expect(savedActivities[0].scheduledDate).toEqual(updateScheduledDate);
+      expect(savedActivities[0].location.id).toBe(updateActivityLocation.id);
     });
   });
 

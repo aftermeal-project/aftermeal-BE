@@ -62,10 +62,22 @@ export class ActivityService {
   ): Promise<void> {
     const activity: Activity = await this.getActivityById(activityId);
 
+    let activityLocation: ActivityLocation = activity.location;
+
+    if (
+      dto.activityLocationId &&
+      dto.activityLocationId !== activity.location.id
+    ) {
+      activityLocation =
+        await this.activityLocationService.getActivityLocationById(
+          dto.activityLocationId,
+        );
+    }
+
     activity.update(
       dto.title,
       dto.maxParticipants,
-      activity.location,
+      activityLocation,
       dto.type,
       dto.scheduledDate,
     );
