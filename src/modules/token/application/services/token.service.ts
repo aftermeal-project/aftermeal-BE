@@ -7,7 +7,6 @@ import { TokenRepository } from '../../../auth/domain/repositories/token.reposit
 import { generateRandomString } from '@common/utils/generate-random-string';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { AccessTokenPayload } from '../../../auth/domain/types/jwt-payload';
-import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 
 @Injectable()
 export class TokenService {
@@ -28,7 +27,7 @@ export class TokenService {
       await this.tokenRepository.findUserIdByRefreshToken(refreshToken);
 
     if (!userId) {
-      throw new ResourceNotFoundException('리프레시 토큰을 찾을 수 없습니다.');
+      throw new IllegalArgumentException('유효하지 않은 리프레시 토큰입니다.');
     }
 
     return userId;
@@ -43,14 +42,15 @@ export class TokenService {
       );
 
     if (!email) {
-      throw new ResourceNotFoundException('인증 토큰을 찾을 수 없습니다.');
+      throw new IllegalArgumentException(
+        '유효하지 않은 이메일 인증 토큰입니다.',
+      );
     }
 
     return email;
   }
 
   generateAccessToken(payload: AccessTokenPayload): string {
-    this.validatePayload(payload);
     return this.jwtService.sign(payload, {
       secret: this.tokenConfig.accessToken.secret,
       expiresIn: this.tokenConfig.accessToken.expiresIn,
@@ -102,11 +102,5 @@ export class TokenService {
 
   getTokenType(): string {
     return TokenService.TOKEN_TYPE;
-  }
-
-  private validatePayload(payload: AccessTokenPayload): void {
-    if (!payload.sub || !payload.username || !payload.roles) {
-      throw new IllegalArgumentException('페이로드가 유효하지 않습니다.');
-    }
   }
 }
