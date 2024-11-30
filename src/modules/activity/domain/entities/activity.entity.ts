@@ -15,6 +15,7 @@ import { LocalDateTransformer } from '@common/transformers/local-date.transforme
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
 import { ZonedDateTimeTransformer } from '@common/transformers/zoned-date.transformer';
 import { ApplicationPeriod } from '../vo/application-period';
+import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 
 @Entity()
@@ -82,13 +83,18 @@ export class Activity extends BaseTimeEntity {
     scheduledDate: LocalDate,
     currentDateTime: ZonedDateTime,
   ): Activity {
+    if (scheduledDate.isBefore(currentDateTime.toLocalDate())) {
+      throw new IllegalArgumentException(
+        '활동 예정 날짜는 과거로 설정할 수 없습니다.',
+      );
+    }
+
     const startAt: ZonedDateTime = type.getActivityStartDateTime(scheduledDate);
     const endAt: ZonedDateTime = type.getActivityEndDateTime(scheduledDate);
 
-    const creationDeadline: ZonedDateTime = startAt.minusHours(1);
-    if (currentDateTime.isAfter(creationDeadline)) {
-      throw new IllegalArgumentException(
-        '활동은 시작 시간 최소 1시간 전까지만 생성 가능합니다.',
+    if (currentDateTime.isAfter(startAt)) {
+      throw new IllegalStateException(
+        '활동 시작 시간 이후엔 활동을 생성할 수 없습니다.',
       );
     }
 
