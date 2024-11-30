@@ -1,8 +1,9 @@
 import {
   IsEnum,
+  IsInt,
   IsNotEmpty,
-  IsPositive,
   IsString,
+  Min,
   Validate,
 } from 'class-validator';
 import { EActivityType } from '../../domain/entities/activity-type';
@@ -11,19 +12,22 @@ import { Transform } from 'class-transformer';
 import { LocalDateValidator } from '@common/validators/local-date.validator';
 
 export class ActivityCreationRequestDto {
-  @IsNotEmpty({ message: '활동 제목은 빈 칸일 수 없습니다.' })
-  @IsString({ message: '활동 제목은 문자열이어야 합니다.' })
+  @IsString({ message: '제목은 문자열이어야 합니다.' })
+  @IsNotEmpty({ message: '제목은 필수값입니다.' })
   title: string;
 
-  @IsPositive({ message: '최대 참가자 수는 양수여야 합니다.' })
+  @Min(1, { message: '최대 수용 인원은 최소 1명 이상이어야 합니다.' })
+  @IsNotEmpty({ message: '최대 수용 인원은 필수값입니다.' })
   maxParticipants: number;
 
-  @IsPositive({ message: '활동 위치 ID는 양수여야 합니다.' })
+  @IsInt({ message: '활동 위치 ID는 정수여야 합니다.' })
+  @IsNotEmpty({ message: '활동 위치 ID는 필수값입니다.' })
   activityLocationId: number;
 
   @IsEnum(EActivityType, {
     message: `활동 유형은 다음 중 하나여야 합니다: ${EActivityType.values()}`,
   })
+  @IsNotEmpty({ message: '활동 유형은 필수값입니다.' })
   @Transform(({ value }) => {
     try {
       return EActivityType.valueOf(value);
@@ -34,6 +38,7 @@ export class ActivityCreationRequestDto {
   type: EActivityType;
 
   @Validate(LocalDateValidator)
+  @IsNotEmpty({ message: '예정 날짜는 필수값입니다.' })
   @Transform(({ value }) => {
     try {
       return LocalDate.parse(value);
