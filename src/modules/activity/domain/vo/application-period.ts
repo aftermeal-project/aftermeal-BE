@@ -30,12 +30,8 @@ export class ApplicationPeriod {
     currentDateTime: ZonedDateTime,
   ): ApplicationPeriod {
     const applicationPeriod: ApplicationPeriod = new ApplicationPeriod();
-    applicationPeriod._startAt = currentDateTime.isAfter(
-      activityStartAt.minusHours(4),
-    )
-      ? currentDateTime
-      : activityStartAt.minusHours(4);
-    applicationPeriod._endAt = activityStartAt.minusMinutes(30);
+    applicationPeriod._startAt = currentDateTime;
+    applicationPeriod._endAt = activityStartAt;
     if (applicationPeriod._startAt.isAfter(applicationPeriod._endAt)) {
       throw new Error('신청 마감 시간은 신청 시작 시간보다 이후여야 합니다.');
     }
