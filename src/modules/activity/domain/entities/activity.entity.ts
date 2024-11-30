@@ -17,6 +17,7 @@ import { ZonedDateTimeTransformer } from '@common/transformers/zoned-date.transf
 import { ApplicationPeriod } from '../vo/application-period';
 import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
+import { User } from '../../../user/domain/entities/user.entity';
 
 @Entity()
 export class Activity extends BaseTimeEntity {
@@ -137,5 +138,9 @@ export class Activity extends BaseTimeEntity {
 
   isApplicationOpen(dateTime: ZonedDateTime): boolean {
     return this.applicationPeriod.isWithinApplicationPeriod(dateTime);
+  }
+
+  hasParticipation(user: User): boolean {
+    return this.participations.some((p) => p.isOwnedBy(user));
   }
 }

@@ -32,7 +32,7 @@ export class Participation extends BaseTimeEntity {
     user: User,
     currentDateTime: ZonedDateTime,
   ): Participation {
-    if (activity.participations.some((p) => p.isOwnedBy(user))) {
+    if (activity.hasParticipation(user)) {
       throw new AlreadyExistException('이미 참가한 활동입니다.');
     }
 
