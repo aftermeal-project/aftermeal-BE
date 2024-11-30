@@ -9,12 +9,12 @@ describe('Activity', () => {
   describe('create', () => {
     it('활동 예정 날짜는 과거로 설정할 수 없다.', () => {
       // given
-      const scheduledDate: LocalDate = LocalDate.of(2024, 10, 29);
       const now: ZonedDateTime = ZonedDateTime.of(
         LocalDate.of(2024, 10, 30),
         LocalTime.of(0, 0),
         ZoneOffset.UTC,
       );
+      const scheduledDate: LocalDate = now.minusDays(1).toLocalDate();
 
       // when
       const result = () =>
@@ -33,10 +33,9 @@ describe('Activity', () => {
 
     it('활동 시작 시간 이후엔 활동을 생성할 수 없다.', () => {
       // given
-      const scheduledDate: LocalDate = LocalDate.of(2024, 10, 30);
       const now: ZonedDateTime = ZonedDateTime.of(
         LocalDate.of(2024, 10, 30),
-        LocalTime.of(12, 31),
+        LocalTime.of(12, 30, 1),
         ZoneOffset.UTC,
       );
 
@@ -47,7 +46,7 @@ describe('Activity', () => {
           10,
           new ActivityLocation(),
           EActivityType.LUNCH,
-          scheduledDate,
+          LocalDate.of(2024, 10, 30),
           now,
         );
 
