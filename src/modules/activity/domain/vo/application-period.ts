@@ -26,20 +26,28 @@ export class ApplicationPeriod {
   }
 
   static create(
-    activityStartAt: ZonedDateTime,
-    currentDateTime: ZonedDateTime,
+    startAt: ZonedDateTime,
+    endAt: ZonedDateTime,
   ): ApplicationPeriod {
-    const applicationPeriod: ApplicationPeriod = new ApplicationPeriod();
-    applicationPeriod._startAt = currentDateTime;
-    applicationPeriod._endAt = activityStartAt;
-    if (applicationPeriod._startAt.isAfter(applicationPeriod._endAt)) {
-      throw new Error('신청 마감 시간은 신청 시작 시간보다 이후여야 합니다.');
+    if (startAt.isAfter(endAt)) {
+      throw new Error(
+        `유효하지 않은 신청 기간: 시작 시간(${startAt})은 마감 시간(${endAt})보다 이전이어야 합니다.`,
+      );
     }
+
+    const applicationPeriod: ApplicationPeriod = new ApplicationPeriod();
+    applicationPeriod._startAt = startAt;
+    applicationPeriod._endAt = endAt;
 
     return applicationPeriod;
   }
 
   isWithinApplicationPeriod(dateTime: ZonedDateTime): boolean {
-    return dateTime.isAfter(this.startAt) && dateTime.isBefore(this.endAt);
+    const inclusiveStart: boolean =
+      dateTime.isAfter(this.startAt) || dateTime.isEqual(this.startAt);
+    const inclusiveEnd: boolean =
+      dateTime.isBefore(this.endAt) || dateTime.isEqual(this.endAt);
+
+    return inclusiveStart && inclusiveEnd;
   }
 }
