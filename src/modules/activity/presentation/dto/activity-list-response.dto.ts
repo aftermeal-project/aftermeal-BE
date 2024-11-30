@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import { LocalDate, ZonedDateTime } from '@js-joda/core';
-import { EActivityType } from '../../domain/types/activity-type';
+import { EActivityType } from '../../domain/entities/activity-type';
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
 import { Activity } from '../../domain/entities/activity.entity';
 
@@ -91,8 +91,8 @@ export class ActivityListResponseDto {
       activity.participations.length,
       activity.type,
       activity.scheduledDate,
-      activity.applicationStartAt,
-      activity.applicationEndAt,
+      activity.applicationPeriod.startAt,
+      activity.applicationPeriod.endAt,
     );
   }
 }

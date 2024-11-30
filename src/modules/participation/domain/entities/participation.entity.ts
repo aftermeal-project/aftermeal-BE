@@ -32,7 +32,7 @@ export class Participation extends BaseTimeEntity {
     user: User,
     currentDateTime: ZonedDateTime,
   ): Participation {
-    if (activity.participations.some((p) => p.isOwnedBy(user))) {
+    if (activity.hasParticipation(user)) {
       throw new AlreadyExistException('이미 참가한 활동입니다.');
     }
 
@@ -40,7 +40,7 @@ export class Participation extends BaseTimeEntity {
       throw new IllegalStateException('이미 참가 인원이 꽉 찼습니다.');
     }
 
-    if (!activity.isWithInPeriod(currentDateTime)) {
+    if (!activity.isApplicationOpen(currentDateTime)) {
       throw new IllegalStateException('참가 신청 기간이 아닙니다.');
     }
 

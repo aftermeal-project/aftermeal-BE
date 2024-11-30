@@ -13,15 +13,26 @@ export class TokenRedisRepository implements TokenRepository {
     const userId: string | null = await this.client.get(
       `refresh_token:${refreshToken}`,
     );
-    return parseInt(userId);
+
+    if (!userId) {
+      return null;
+    }
+
+    return parseInt(userId, 10);
   }
 
   async findEmailByEmailVerificationToken(
     emailVerificationToken: string,
   ): Promise<string> {
-    return await this.client.get(
+    const email = await this.client.get(
       `email_verification_token:${emailVerificationToken}`,
     );
+
+    if (!email) {
+      return null;
+    }
+
+    return email;
   }
 
   async saveRefreshToken(

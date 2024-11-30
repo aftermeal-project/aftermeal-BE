@@ -1,5 +1,5 @@
 import { ZonedDateTime } from '@js-joda/core';
 
-export interface TimeServices {
+export interface TimeService {
   now(): ZonedDateTime;
 }

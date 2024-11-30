@@ -1,5 +1,5 @@
 import { ValueTransformer } from 'typeorm';
-import { EActivityType } from './activity-type';
+import { EActivityType } from '../../domain/entities/activity-type';
 
 export class ActivityTypeTransformer implements ValueTransformer {
   to(entityValue: EActivityType): string {

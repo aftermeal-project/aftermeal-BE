@@ -8,13 +8,13 @@ import { Transactional } from 'typeorm-transactional';
 import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { UserRegistrationRequestDto } from '../../presentation/dto/user-registration-request.dto';
 import { Generation } from '../../../generation/domain/entities/generation.entity';
-import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { USER_REPOSITORY } from '@common/constants/dependency-token';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { UserResponseDto } from '../../presentation/dto/user-response.dto';
 import { UserUpdateRequestDto } from '../../presentation/dto/user-update-request.dto';
 import { MailService } from '@common/mail/mail.service';
 import { TokenService } from '../../../token/application/services/token.service';
+import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 
 @Injectable()
 export class UserService {
@@ -54,12 +54,13 @@ export class UserService {
   async register(dto: UserRegistrationRequestDto): Promise<void> {
     const existUser: User = await this.userRepository.findOneByEmail(dto.email);
 
-    if (existUser && existUser.isCandidate()) {
-      await this.sendEmailVerification(existUser.email);
-      return;
+    if (existUser) {
+      if (existUser.isCandidate()) {
+        await this.sendEmailVerification(existUser.email);
+        return;
+      }
+      throw new AlreadyExistException('이미 등록된 이메일입니다.');
     }
-
-    await this.validateEmailDuplication(dto.email);
 
     let generation: Generation | undefined;
 
@@ -71,7 +72,17 @@ export class UserService {
 
     const role: Role = await this.roleService.getRoleByRoleName('USER');
 
-    const user: User = dto.toEntity(role, generation);
+    const user: User =
+      dto.type === UserType.STUDENT
+        ? User.createStudent(
+            dto.name,
+            dto.email,
+            role,
+            generation,
+            dto.password,
+          )
+        : User.createTeacher(dto.name, dto.email, role, dto.password);
+
     await user.hashPassword();
     await this.userRepository.save(user);
 
@@ -96,14 +107,6 @@ export class UserService {
     const user: User = await this.getUserByEmail(email);
     user.activate();
     await this.userRepository.save(user);
-  }
-
-  private async validateEmailDuplication(email: string): Promise<void> {
-    const isMemberExists: boolean =
-      await this.userRepository.existsByEmail(email);
-    if (isMemberExists) {
-      throw new AlreadyExistException('이미 등록된 이메일입니다.');
-    }
   }
 
   private async sendEmailVerification(to: string): Promise<void> {

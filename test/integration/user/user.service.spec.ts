@@ -22,14 +22,20 @@ import { GenerationRepository } from '../../../src/modules/generation/domain/rep
 import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { Generation } from '../../../src/modules/generation/domain/entities/generation.entity';
 import { UserUpdateRequestDto } from '../../../src/modules/user/presentation/dto/user-update-request.dto';
-import { UserStatus } from '../../../src/modules/user/domain/types/user-status';
 import { UserTypeormRepository } from '../../../src/modules/user/infrastructure/persistence/user-typeorm.repository';
 import { RoleModule } from '../../../src/modules/role/role.module';
 import { GenerationModule } from '../../../src/modules/generation/generation.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import tokenConfiguration from '@config/token.config';
+import redisConfiguration from '@config/redis.config';
+import { MailService } from '@common/mail/mail.service';
+import { TokenService } from '../../../src/modules/token/application/services/token.service';
+import { UserStatus } from '../../../src/modules/user/domain/types/user-status';
 
 describe('UserService', () => {
   let userService: UserService;
+  let mailService: MailService;
   let userRepository: UserRepository;
   let roleRepository: RoleRepository;
   let generationRepository: GenerationRepository;
@@ -40,6 +46,10 @@ describe('UserService', () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [
         getTestMysqlModule(),
+        ConfigModule.forRoot({
+          isGlobal: true,
+          load: [tokenConfiguration, redisConfiguration],
+        }),
         TypeOrmModule.forFeature([User]),
         RoleModule,
         GenerationModule,
@@ -50,10 +60,24 @@ describe('UserService', () => {
           provide: USER_REPOSITORY,
           useClass: UserTypeormRepository,
         },
+        {
+          provide: MailService,
+          useValue: {
+            sendEmailVerification: jest.fn(),
+          },
+        },
+        {
+          provide: TokenService,
+          useValue: {
+            generateEmailVerificationToken: jest.fn(),
+            saveEmailVerificationToken: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     userService = moduleRef.get<UserService>(UserService);
+    mailService = moduleRef.get<MailService>(MailService);
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
     roleRepository = moduleRef.get<RoleRepository>(ROLE_REPOSITORY);
     generationRepository = moduleRef.get<GenerationRepository>(
@@ -66,6 +90,7 @@ describe('UserService', () => {
     await userRepository.deleteAll();
     await roleRepository.deleteAll();
     await generationRepository.deleteAll();
+    jest.clearAllMocks();
   });
 
   afterAll(async () => {
@@ -94,8 +119,9 @@ describe('UserService', () => {
       expect(users[0].name).toBe('테스트');
       expect(users[0].email).toBe('test@example.com');
       expect(users[0].type).toBe('TEACHER');
-      expect(users[0].status).toBe('ACTIVATE');
+      expect(users[0].status).toBe('CANDIDATE');
       expect(users[0].roles).toHaveLength(1);
+      expect(mailService.sendEmailVerification).toBeCalledTimes(1);
     });
 
     it('이미 등록된 이메일으로는 등록할 수 없다.', async () => {
@@ -103,19 +129,23 @@ describe('UserService', () => {
       const role: Role = Role.create('USER');
       await roleRepository.save(role);
 
+      const email: string = 'test@example.com';
+
       const user: User = User.createTeacher(
         '테스트',
-        'test@example.com',
+        email,
         role,
         'G$K9Vss9-wNX6jOvY',
       );
+      user.activate();
       await userRepository.save(user);
 
-      const dto = new UserRegistrationRequestDto();
-      dto.name = '테스트';
-      dto.email = 'test@example.com';
-      dto.type = UserType.TEACHER;
-      dto.password = 'G$K9Vss9-wNX6jOvY';
+      const dto: UserRegistrationRequestDto = {
+        name: '테스트',
+        email: email,
+        type: UserType.TEACHER,
+        password: 'G$K9Vss9-wNX6jOvY',
+      };
 
       // when
       const result = async () => {
@@ -124,6 +154,35 @@ describe('UserService', () => {
 
       // then
       await expect(result).rejects.toThrow(AlreadyExistException);
+    });
+
+    it('후보자 상태의 사용자는 인증 메일을 보낸다.', async () => {
+      // given
+      const role: Role = Role.create('USER');
+      await roleRepository.save(role);
+
+      const email: string = 'test@exmaple.com';
+
+      const user: User = User.createTeacher(
+        '테스트',
+        email,
+        role,
+        'G$K9Vss9-wNX6jOvY',
+      );
+      await userRepository.save(user);
+
+      const dto: UserRegistrationRequestDto = {
+        name: '테스트',
+        email: email,
+        type: UserType.TEACHER,
+        password: 'G$K9Vss9-wNX6jOvY',
+      };
+
+      // when
+      await userService.register(dto);
+
+      // then
+      expect(mailService.sendEmailVerification).toBeCalledTimes(1);
     });
   });
 
@@ -214,7 +273,7 @@ describe('UserService', () => {
       const dto: UserUpdateRequestDto = {
         name: 'updated',
         type: UserType.TEACHER,
-        status: 'DEACTIVATED' as UserStatus,
+        status: UserStatus.DEACTIVATED,
         generationNumber: 8,
       };
 
@@ -222,11 +281,11 @@ describe('UserService', () => {
       await userService.updateUserById(user.id, dto);
 
       // then
-      const updatedUser = await userRepository.findOneById(user.id);
+      const updatedUser: User = await userRepository.findOneById(user.id);
 
       expect(updatedUser.name).toBe('updated');
       expect(updatedUser.type).toBe('TEACHER');
-      expect(updatedUser.status).toBe('DEACTIVATE');
+      expect(updatedUser.status).toBe('DEACTIVATED');
     });
   });
 });

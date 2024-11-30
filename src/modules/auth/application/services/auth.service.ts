@@ -4,8 +4,6 @@ import { LoginResponseDto } from '../../presentation/dto/login-response.dto';
 import { TokenService } from '../../../token/application/services/token.service';
 import { User } from '../../../user/domain/entities/user.entity';
 import { TokenRefreshResponseDto } from '../../presentation/dto/token-refresh-response.dto';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
-import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 
 @Injectable()
 export class AuthService {
@@ -41,19 +39,8 @@ export class AuthService {
   }
 
   async refresh(currentRefreshToken: string): Promise<TokenRefreshResponseDto> {
-    let userId: number;
-
-    try {
-      userId =
-        await this.tokenService.getUserIdByRefreshToken(currentRefreshToken);
-    } catch (error) {
-      if (error instanceof ResourceNotFoundException) {
-        throw new IllegalArgumentException(
-          '유효하지 않은 리프레시 토큰입니다.',
-        );
-      }
-      throw error;
-    }
+    const userId: number =
+      await this.tokenService.getUserIdByRefreshToken(currentRefreshToken);
 
     const user: User = await this.userService.getUserById(userId);
 
@@ -83,20 +70,10 @@ export class AuthService {
   async verifyEmailVerificationToken(
     emailVerificationToken: string,
   ): Promise<void> {
-    let email: string;
-
-    try {
-      email = await this.tokenService.getEmailByEmailVerificationToken(
+    const email: string =
+      await this.tokenService.getEmailByEmailVerificationToken(
         emailVerificationToken,
       );
-    } catch (error) {
-      if (error instanceof ResourceNotFoundException) {
-        throw new IllegalArgumentException(
-          '유효하지 않은 이메일 인증 토큰입니다.',
-        );
-      }
-      throw error;
-    }
 
     await this.userService.activateUser(email);
     await this.tokenService.revokeEmailVerificationToken(

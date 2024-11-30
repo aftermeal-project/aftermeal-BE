@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Inject,
   Param,
   Patch,
   Post,
@@ -17,19 +18,24 @@ import { ActivityResponseDto } from '../dto/activity-response.dto';
 import { ActivityCreationRequestDto } from '../dto/activity-creation-request.dto';
 import { ActivityUpdateRequestDto } from '../dto/activity-update-request.dto';
 import { Roles } from '@common/decorators/roles.decorator';
-import { LocalDate } from '@js-joda/core';
 import { ActivityQueryDto } from '../dto/activity-query.dto';
+import { TIME } from '@common/constants/dependency-token';
+import { TimeService } from '@common/time/time.service';
 
 @Controller('activities')
 export class ActivityController {
-  constructor(private readonly activityService: ActivityService) {}
+  constructor(
+    private readonly activityService: ActivityService,
+    @Inject(TIME)
+    private readonly time: TimeService,
+  ) {}
 
   @Roles('ADMIN')
   @Post()
   async createActivity(
     @Body() dto: ActivityCreationRequestDto,
   ): Promise<ResponseEntity<null>> {
-    await this.activityService.createActivity(dto);
+    await this.activityService.createActivity(dto, this.time.now());
     return ResponseEntity.SUCCESS();
   }
 
@@ -39,7 +45,7 @@ export class ActivityController {
     @Query() query: ActivityQueryDto,
   ): Promise<ResponseEntity<ActivityListResponseDto[]>> {
     if (!query.date) {
-      query.date = LocalDate.now();
+      query.date = this.time.now().toLocalDate();
     }
 
     const responseDtos: ActivityListResponseDto[] =

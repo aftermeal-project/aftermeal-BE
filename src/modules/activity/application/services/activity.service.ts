@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ActivityRepository } from '../../domain/repositories/activity.repository';
-import { ACTIVITY_REPOSITORY, TIME } from '@common/constants/dependency-token';
+import { ACTIVITY_REPOSITORY } from '@common/constants/dependency-token';
 import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { Activity } from '../../domain/entities/activity.entity';
 import { ActivityListResponseDto } from '../../presentation/dto/activity-list-response.dto';
@@ -10,7 +10,6 @@ import { ActivityLocation } from '../../../activity-location/domain/entities/act
 import { ActivityUpdateRequestDto } from '../../presentation/dto/activity-update-request.dto';
 import { ActivityLocationService } from '../../../activity-location/application/services/activity-location.service';
 import { ZonedDateTime } from '@js-joda/core';
-import { TimeServices } from '@common/time/time.services';
 import { ActivityQueryDto } from '../../presentation/dto/activity-query.dto';
 
 @Injectable()
@@ -19,13 +18,12 @@ export class ActivityService {
     @Inject(ACTIVITY_REPOSITORY)
     private readonly activityRepository: ActivityRepository,
     private readonly activityLocationService: ActivityLocationService,
-    @Inject(TIME)
-    private readonly time: TimeServices,
   ) {}
 
-  async createActivity(dto: ActivityCreationRequestDto): Promise<void> {
-    const now: ZonedDateTime = this.time.now();
-
+  async createActivity(
+    dto: ActivityCreationRequestDto,
+    currentDateTime: ZonedDateTime,
+  ): Promise<void> {
     const activityLocation: ActivityLocation =
       await this.activityLocationService.getActivityLocationById(
         dto.activityLocationId,
@@ -37,7 +35,7 @@ export class ActivityService {
       activityLocation,
       dto.type,
       dto.scheduledDate,
-      now,
+      currentDateTime,
     );
     await this.activityRepository.save(activity);
   }
@@ -64,10 +62,17 @@ export class ActivityService {
   ): Promise<void> {
     const activity: Activity = await this.getActivityById(activityId);
 
-    const activityLocation: ActivityLocation =
-      await this.activityLocationService.getActivityLocationById(
-        dto.activityLocationId,
-      );
+    let activityLocation: ActivityLocation = activity.location;
+
+    if (
+      dto.activityLocationId &&
+      dto.activityLocationId !== activity.location.id
+    ) {
+      activityLocation =
+        await this.activityLocationService.getActivityLocationById(
+          dto.activityLocationId,
+        );
+    }
 
     activity.update(
       dto.title,

@@ -19,7 +19,7 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 import { ParticipationService } from '../../../src/modules/participation/application/services/participation.service';
-import { EActivityType } from '../../../src/modules/activity/domain/types/activity-type';
+import { EActivityType } from '../../../src/modules/activity/domain/entities/activity-type';
 import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
 import { ActivityLocationRepository } from '../../../src/modules/activity-location/domain/repositories/activity-location.repository';
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';

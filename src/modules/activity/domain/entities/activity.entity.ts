@@ -7,14 +7,17 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { EActivityType } from '../types/activity-type';
+import { EActivityType } from './activity-type';
 import { Participation } from '../../../participation/domain/entities/participation.entity';
-import { ActivityTypeTransformer } from '../types/activity-type.transformer';
-import { LocalDate, ZonedDateTime, ZoneOffset } from '@js-joda/core';
+import { ActivityTypeTransformer } from '../../infrastructure/transformers/activity-type.transformer';
+import { LocalDate, ZonedDateTime } from '@js-joda/core';
 import { LocalDateTransformer } from '@common/transformers/local-date.transformer';
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
-import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
 import { ZonedDateTimeTransformer } from '@common/transformers/zoned-date.transformer';
+import { ApplicationPeriod } from '../vo/application-period';
+import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
+import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
+import { User } from '../../../user/domain/entities/user.entity';
 
 @Entity()
 export class Activity extends BaseTimeEntity {
@@ -52,19 +55,14 @@ export class Activity extends BaseTimeEntity {
   })
   endAt: ZonedDateTime;
 
-  @Column({
-    type: 'datetime',
-    transformer: new ZonedDateTimeTransformer(),
-  })
-  applicationStartAt: ZonedDateTime;
+  @Column(() => ApplicationPeriod)
+  applicationPeriod: ApplicationPeriod;
 
-  @Column({
-    type: 'datetime',
-    transformer: new ZonedDateTimeTransformer(),
+  @ManyToOne(() => ActivityLocation, {
+    nullable: false,
+    eager: true,
+    cascade: true,
   })
-  applicationEndAt: ZonedDateTime;
-
-  @ManyToOne(() => ActivityLocation, { nullable: false, eager: true })
   @JoinColumn({
     name: 'activity_location_id',
     foreignKeyConstraintName: 'fk_activity_activity_location',
@@ -86,14 +84,25 @@ export class Activity extends BaseTimeEntity {
     scheduledDate: LocalDate,
     currentDateTime: ZonedDateTime,
   ): Activity {
-    const startAt: ZonedDateTime = scheduledDate
-      .atTime(type.startAt)
-      .atZone(ZoneOffset.UTC);
-    const endAt: ZonedDateTime = scheduledDate
-      .atTime(type.endAt)
-      .atZone(ZoneOffset.UTC);
+    if (scheduledDate.isBefore(currentDateTime.toLocalDate())) {
+      throw new IllegalArgumentException(
+        '활동 예정 날짜는 과거로 설정할 수 없습니다.',
+      );
+    }
 
-    this.validateStartAt(startAt, currentDateTime);
+    const startAt: ZonedDateTime = type.getActivityStartDateTime(scheduledDate);
+    const endAt: ZonedDateTime = type.getActivityEndDateTime(scheduledDate);
+
+    if (currentDateTime.isAfter(startAt)) {
+      throw new IllegalStateException(
+        '활동 시작 시간 이후엔 활동을 생성할 수 없습니다.',
+      );
+    }
+
+    const applicationPeriod: ApplicationPeriod = ApplicationPeriod.create(
+      currentDateTime,
+      startAt,
+    );
 
     const activity: Activity = new Activity();
     activity.title = title;
@@ -103,51 +112,35 @@ export class Activity extends BaseTimeEntity {
     activity.scheduledDate = scheduledDate;
     activity.startAt = startAt;
     activity.endAt = endAt;
-    activity.applicationStartAt = startAt.minusHours(4);
-    activity.applicationEndAt = startAt.minusMinutes(30);
+    activity.applicationPeriod = applicationPeriod;
+    activity.participations = [];
 
     return activity;
   }
 
   update(
     title: string,
-    maxParticipation: number,
-    activityLocation: ActivityLocation,
+    maxParticipants: number,
+    location: ActivityLocation,
     type: EActivityType,
     scheduledDate: LocalDate,
   ): void {
     this.title = title;
-    this.maxParticipants = maxParticipation;
-    this.location = activityLocation;
+    this.maxParticipants = maxParticipants;
+    this.location = location;
     this.type = type;
     this.scheduledDate = scheduledDate;
-  }
-
-  private static validateStartAt(
-    startAt: ZonedDateTime,
-    currentDateTime: ZonedDateTime,
-  ): void {
-    if (startAt.isBefore(currentDateTime)) {
-      throw new IllegalStateException('과거 날짜로 예약할 수 없습니다.');
-    }
-
-    const deadline: ZonedDateTime = startAt.minusHours(4);
-
-    if (currentDateTime.isAfter(deadline)) {
-      throw new IllegalStateException(
-        '당일 활동은 활동 시작 4시간 전까지만 생성할 수 있습니다.',
-      );
-    }
   }
 
   isFull(): boolean {
     return this.participations.length >= this.maxParticipants;
   }
 
-  isWithInPeriod(currentTime: ZonedDateTime): boolean {
-    return (
-      this.applicationStartAt.isBefore(currentTime) &&
-      this.applicationEndAt.isAfter(currentTime)
-    );
+  isApplicationOpen(dateTime: ZonedDateTime): boolean {
+    return this.applicationPeriod.isWithinApplicationPeriod(dateTime);
+  }
+
+  hasParticipation(user: User): boolean {
+    return this.participations.some((p) => p.isOwnedBy(user));
   }
 }
