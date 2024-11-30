@@ -43,7 +43,7 @@ describe('ActivityCreationRequestDto', () => {
     const dto: ActivityCreationRequestDto = new ActivityCreationRequestDto();
     dto.title = '테스트 활동';
     dto.maxParticipants = 10;
-    dto.activityLocationId = -1;
+    dto.activityLocationId = 1.1;
     dto.type = EActivityType.LUNCH;
     dto.scheduledDate = LocalDate.now();
 

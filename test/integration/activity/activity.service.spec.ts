@@ -73,7 +73,7 @@ describe('ActivityService', () => {
           useValue: new StubTime(
             ZonedDateTime.of(
               LocalDate.of(2024, 1, 1),
-              LocalTime.of(),
+              LocalTime.of(12, 0),
               ZoneOffset.UTC,
             ),
           ),
@@ -224,25 +224,25 @@ describe('ActivityService', () => {
       );
       await userRepository.save(user);
 
-      const scheduledDate: LocalDate = LocalDate.of(2024, 1, 3);
-
       const activity: Activity = Activity.create(
         '배구',
         18,
         activityLocation,
         EActivityType.LUNCH,
-        scheduledDate,
+        LocalDate.of(2024, 1, 1),
         timeService.now(),
       );
       await activityRepository.save(activity);
 
-      const participation: Participation = new Participation();
-      participation.user = user;
-      participation.activity = activity;
+      const participation: Participation = Participation.create(
+        activity,
+        user,
+        timeService.now(),
+      );
       await participationRepository.save(participation);
 
       const query: ActivityQueryDto = {
-        date: scheduledDate,
+        date: LocalDate.of(2024, 1, 1),
       };
 
       // when
@@ -257,8 +257,8 @@ describe('ActivityService', () => {
       expect(result[0].maxParticipants).toBe(18);
       expect(result[0].currentParticipants).toBe(1);
       expect(result[0].type).toBe('LUNCH');
-      expect(result[0].applicationStartAt).toEqual('2024-01-03T08:30Z');
-      expect(result[0].applicationEndAt).toEqual('2024-01-03T12:00Z');
+      expect(result[0].applicationStartAt).toEqual('2024-01-01T12:00Z');
+      expect(result[0].applicationEndAt).toEqual('2024-01-01T12:30Z');
     });
   });
 

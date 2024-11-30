@@ -100,8 +100,8 @@ export class Activity extends BaseTimeEntity {
     }
 
     const applicationPeriod: ApplicationPeriod = ApplicationPeriod.create(
-      startAt,
       currentDateTime,
+      startAt,
     );
 
     const activity: Activity = new Activity();

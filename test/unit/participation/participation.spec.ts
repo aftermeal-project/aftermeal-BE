@@ -102,19 +102,18 @@ describe('Participation', () => {
 });
 
 function createActivity(): Activity {
-  const scheduledDate: LocalDate = LocalDate.of(2024, 1, 1);
   const currentDateTime: ZonedDateTime = ZonedDateTime.of(
     LocalDate.of(2024, 1, 1),
-    LocalTime.of(0, 0),
+    LocalTime.of(11, 0),
     ZoneOffset.UTC,
   );
 
   const activity: Activity = Activity.create(
     'title',
     10,
-    ActivityLocation.create('GYM'),
+    new ActivityLocation(),
     EActivityType.LUNCH,
-    scheduledDate,
+    LocalDate.of(2024, 1, 1),
     currentDateTime,
   );
   activity.participations = []; // initializers
