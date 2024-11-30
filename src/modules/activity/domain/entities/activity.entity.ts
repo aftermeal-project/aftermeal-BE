@@ -135,10 +135,7 @@ export class Activity extends BaseTimeEntity {
     return this.participations.length >= this.maxParticipants;
   }
 
-  isWithinApplicationPeriod(currentTime: ZonedDateTime): boolean {
-    return (
-      this.applicationPeriod.startAt.isBefore(currentTime) &&
-      this.applicationPeriod.endAt.isAfter(currentTime)
-    );
+  isApplicationOpen(dateTime: ZonedDateTime): boolean {
+    return this.applicationPeriod.isWithinApplicationPeriod(dateTime);
   }
 }

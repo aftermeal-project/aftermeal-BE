@@ -38,4 +38,8 @@ export class ApplicationPeriod {
 
     return applicationPeriod;
   }
+
+  isWithinApplicationPeriod(dateTime: ZonedDateTime): boolean {
+    return dateTime.isAfter(this.startAt) && dateTime.isBefore(this.endAt);
+  }
 }

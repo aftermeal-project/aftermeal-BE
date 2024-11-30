@@ -40,7 +40,7 @@ export class Participation extends BaseTimeEntity {
       throw new IllegalStateException('이미 참가 인원이 꽉 찼습니다.');
     }
 
-    if (!activity.isWithinApplicationPeriod(currentDateTime)) {
+    if (!activity.isApplicationOpen(currentDateTime)) {
       throw new IllegalStateException('참가 신청 기간이 아닙니다.');
     }
 
