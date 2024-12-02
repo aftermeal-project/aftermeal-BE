@@ -91,15 +91,15 @@ describe('TokenService', () => {
     it('이메일 인증 토큰으로 이메일을 찾습니다.', async () => {
       // given
       const emailVerificationToken =
-        tokenService.generateEmailVerificationToken();
-      await tokenRepository.saveEmailVerificationToken(
+        tokenService.generateEmailVerificationCode();
+      await tokenRepository.saveEmailVerificationCode(
         emailVerificationToken,
         'test@example.com',
         1000,
       );
 
       // when
-      const result = await tokenService.getEmailByEmailVerificationToken(
+      const result = await tokenService.getEmailByEmailVerificationCode(
         emailVerificationToken,
       );
 
@@ -112,7 +112,7 @@ describe('TokenService', () => {
       const emailVerificationToken = 'invalid';
 
       // when
-      const result = tokenService.getEmailByEmailVerificationToken(
+      const result = tokenService.getEmailByEmailVerificationCode(
         emailVerificationToken,
       );
 
@@ -156,10 +156,11 @@ describe('TokenService', () => {
   describe('generateEmailVerificationToken', () => {
     it('이메일 인증 토큰을 생성합니다.', async () => {
       // when
-      const result = tokenService.generateEmailVerificationToken();
+      const result = tokenService.generateEmailVerificationCode();
 
       // then
       expect(result).toBeDefined();
+      expect(result).toHaveLength(6);
     });
   });
 
@@ -184,17 +185,17 @@ describe('TokenService', () => {
       // given
       const email = 'test@example.com';
       const emailVerificationToken =
-        tokenService.generateEmailVerificationToken();
+        tokenService.generateEmailVerificationCode();
 
       // when
-      await tokenService.saveEmailVerificationToken(
+      await tokenService.saveEmailVerificationCode(
         email,
         emailVerificationToken,
       );
 
       // then
       const storedEmail =
-        await tokenRepository.findEmailByEmailVerificationToken(
+        await tokenRepository.findEmailByEmailVerificationCode(
           emailVerificationToken,
         );
       expect(storedEmail).toBe(email);
@@ -221,18 +222,18 @@ describe('TokenService', () => {
     it('이메일 인증 토큰을 폐기합니다.', async () => {
       // given
       const emailVerificationToken =
-        tokenService.generateEmailVerificationToken();
-      await tokenRepository.saveEmailVerificationToken(
+        tokenService.generateEmailVerificationCode();
+      await tokenRepository.saveEmailVerificationCode(
         emailVerificationToken,
         'test@example.com',
         1000,
       );
 
       // when
-      await tokenService.revokeEmailVerificationToken(emailVerificationToken);
+      await tokenService.revokeEmailVerificationCode(emailVerificationToken);
 
       // then
-      const result = await tokenRepository.findEmailByEmailVerificationToken(
+      const result = await tokenRepository.findEmailByEmailVerificationCode(
         emailVerificationToken,
       );
       expect(result).toBeNull();

@@ -62,22 +62,15 @@ export class AuthService {
     );
   }
 
-  /**
-   * 이메일 인증 토큰을 검증합니다.
-   * 검증에 성공하면 사용자를 활성화하고, 해당 인증 토큰을 폐기합니다.
-   * @param emailVerificationToken
-   */
-  async verifyEmailVerificationToken(
-    emailVerificationToken: string,
+  async verifyEmailVerificationCode(
+    emailVerificationCode: string,
   ): Promise<void> {
     const email: string =
-      await this.tokenService.getEmailByEmailVerificationToken(
-        emailVerificationToken,
+      await this.tokenService.getEmailByEmailVerificationCode(
+        emailVerificationCode,
       );
 
     await this.userService.activateUser(email);
-    await this.tokenService.revokeEmailVerificationToken(
-      emailVerificationToken,
-    );
+    await this.tokenService.revokeEmailVerificationCode(emailVerificationCode);
   }
 }

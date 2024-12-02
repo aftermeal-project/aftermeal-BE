@@ -69,8 +69,8 @@ describe('UserService', () => {
         {
           provide: TokenService,
           useValue: {
-            generateEmailVerificationToken: jest.fn(),
-            saveEmailVerificationToken: jest.fn(),
+            generateEmailVerificationCode: jest.fn(),
+            saveEmailVerificationCode: jest.fn(),
           },
         },
       ],
