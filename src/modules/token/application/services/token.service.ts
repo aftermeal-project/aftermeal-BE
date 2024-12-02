@@ -4,15 +4,15 @@ import { ConfigType } from '@nestjs/config';
 import { TOKEN_REPOSITORY } from '@common/constants/dependency-token';
 import tokenConfiguration from '@config/token.config';
 import { TokenRepository } from '../../../auth/domain/repositories/token.repository';
-import { generateRandomString } from '@common/utils/generate-random-string';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { AccessTokenPayload } from '../../../auth/domain/types/jwt-payload';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class TokenService {
   private static readonly TOKEN_TYPE = 'Bearer';
   private static readonly REFRESH_TOKEN_LENGTH = 32;
-  private static readonly EMAIL_VERIFICATION_TOKEN_LENGTH = 32;
+  private static readonly EMAIL_VERIFICATION_CODE_LENGTH = 6;
 
   constructor(
     private readonly jwtService: JwtService,
@@ -33,11 +33,11 @@ export class TokenService {
     return userId;
   }
 
-  async getEmailByEmailVerificationToken(
+  async getEmailByEmailVerificationCode(
     emailVerificationToken: string,
   ): Promise<string> {
-    const email: string =
-      await this.tokenRepository.findEmailByEmailVerificationToken(
+    const email: string | null =
+      await this.tokenRepository.findEmailByEmailVerificationCode(
         emailVerificationToken,
       );
 
@@ -58,11 +58,21 @@ export class TokenService {
   }
 
   generateRefreshToken(): string {
-    return generateRandomString(TokenService.REFRESH_TOKEN_LENGTH);
+    return randomBytes(4)
+      .toString('base64')
+      .slice(0, TokenService.REFRESH_TOKEN_LENGTH);
   }
 
-  generateEmailVerificationToken(): string {
-    return generateRandomString(TokenService.EMAIL_VERIFICATION_TOKEN_LENGTH);
+  generateEmailVerificationCode(): string {
+    // crypto.randomBytes를 사용하여 암호학적으로 안전한 랜덤 바이트를 생성합니다.
+    // readUInt32BE를 사용하여 4바이트를 부호 없는 32비트 정수로 변환합니다.
+    // 1000000으로 나눈 나머지를 사용하여 0부터 999999 사이의 숫자를 만듭니다.
+    // padStart()을 사용하여 6자리 형식을 유지합니다.
+    const buffer: Buffer = randomBytes(4);
+    const randomNumber: number = buffer.readUInt32BE(0) % 1000000;
+    return randomNumber
+      .toString()
+      .padStart(TokenService.EMAIL_VERIFICATION_CODE_LENGTH, '0');
   }
 
   async saveRefreshToken(refreshToken: string, userId: number): Promise<void> {
@@ -73,12 +83,12 @@ export class TokenService {
     );
   }
 
-  async saveEmailVerificationToken(
+  async saveEmailVerificationCode(
     to: string,
-    emailVerificationToken: string,
+    emailVerificationCode: string,
   ): Promise<void> {
-    await this.tokenRepository.saveEmailVerificationToken(
-      emailVerificationToken,
+    await this.tokenRepository.saveEmailVerificationCode(
+      emailVerificationCode,
       to,
       this.tokenConfig.emailVerificationToken.ttl,
     );
@@ -88,10 +98,10 @@ export class TokenService {
     await this.tokenRepository.deleteRefreshToken(refreshToken);
   }
 
-  async revokeEmailVerificationToken(
+  async revokeEmailVerificationCode(
     emailVerificationToken: string,
   ): Promise<void> {
-    await this.tokenRepository.deleteEmailVerificationToken(
+    await this.tokenRepository.deleteEmailVerificationCode(
       emailVerificationToken,
     );
   }

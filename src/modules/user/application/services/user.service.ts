@@ -110,9 +110,9 @@ export class UserService {
   }
 
   private async sendEmailVerification(to: string): Promise<void> {
-    const token: string = this.tokenService.generateEmailVerificationToken();
-    await this.tokenService.saveEmailVerificationToken(to, token);
+    const code: string = this.tokenService.generateEmailVerificationCode();
+    await this.tokenService.saveEmailVerificationCode(to, code);
 
-    await this.mailService.sendEmailVerification(to, token);
+    await this.mailService.sendEmailVerification(to, code);
   }
 }

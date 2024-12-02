@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class EmailVerificationQueryDto {
+export class EmailVerificationRequestDto {
   @IsString()
-  token: string;
+  code: string;
 }

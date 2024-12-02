@@ -31,14 +31,12 @@ export class MailService {
 
   async sendEmailVerification(
     to: string,
-    emailVerificationToken: string,
+    emailVerificationCode: string,
   ): Promise<void> {
-    const verificationLink: string = `${this.baseUrl}/v1/auth/email-verify?token=${emailVerificationToken}`;
-
     const subject: string = '이메일 인증 요청';
     const html: string = await this.htmlTemplate.templateFromFile(
       'verification',
-      { verificationLink },
+      { emailVerificationCode },
     );
 
     await this.sendMail(to, subject, html);
