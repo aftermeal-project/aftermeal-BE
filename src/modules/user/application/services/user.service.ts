@@ -1,9 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { User } from '../../domain/entities/user.entity';
-import { Role } from '../../../role/domain/entities/role.entity';
-import { UserType } from '../../domain/types/user-type';
+import { UserType } from '../../domain/entities/user-type';
 import { GenerationService } from '../../../generation/application/services/generation.service';
-import { RoleService } from '../../../role/application/services/role.service';
 import { Transactional } from 'typeorm-transactional';
 import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { UserRegistrationRequestDto } from '../../presentation/dto/user-registration-request.dto';
@@ -20,7 +18,6 @@ export class UserService {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
-    private readonly roleService: RoleService,
     private readonly generationService: GenerationService,
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
@@ -69,18 +66,10 @@ export class UserService {
       );
     }
 
-    const role: Role = await this.roleService.getRoleByRoleName('USER');
-
     const user: User =
       dto.type === UserType.STUDENT
-        ? User.createStudent(
-            dto.name,
-            dto.email,
-            role,
-            generation,
-            dto.password,
-          )
-        : User.createTeacher(dto.name, dto.email, role, dto.password);
+        ? User.createStudent(dto.name, dto.email, generation, dto.password)
+        : User.createTeacher(dto.name, dto.email, dto.password);
 
     await user.hashPassword();
     await this.userRepository.save(user);
@@ -90,7 +79,7 @@ export class UserService {
 
   async updateUser(userId: number, dto: UserUpdateRequestDto): Promise<void> {
     const user: User = await this.getUserById(userId);
-    user.update(dto?.name, dto?.type, dto?.status, dto?.generationNumber);
+    user.update(dto.name, dto.type, dto.status, dto.generationNumber);
     await this.userRepository.save(user);
   }
 

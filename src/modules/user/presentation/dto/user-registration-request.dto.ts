@@ -6,7 +6,7 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { UserType } from '../../domain/types/user-type';
+import { UserType } from '../../domain/entities/user-type';
 
 export class UserRegistrationRequestDto {
   @IsNotEmpty({ message: '이름은 빈 값일 수 없습니다.' })

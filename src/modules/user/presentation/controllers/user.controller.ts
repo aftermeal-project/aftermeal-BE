@@ -15,6 +15,7 @@ import { Public } from '@common/decorators/public.decorator';
 import { UserResponseDto } from '../dto/user-response.dto';
 import { UserUpdateRequestDto } from '../dto/user-update-request.dto';
 import { Roles } from '@common/decorators/roles.decorator';
+import { Role } from '../../domain/entities/role';
 
 @Controller('users')
 export class UserController {
@@ -29,13 +30,13 @@ export class UserController {
     return ResponseEntity.SUCCESS();
   }
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Get()
   async getAllUsers(): Promise<ResponseEntity<UserResponseDto[]>> {
     return ResponseEntity.SUCCESS(await this.userService.getAllUsers());
   }
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Patch(':userId')
   @HttpCode(204)
   async updateUserById(
@@ -45,7 +46,7 @@ export class UserController {
     await this.userService.updateUser(userId, dto);
   }
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Delete(':userId')
   @HttpCode(204)
   async deleteUserById(@Param('userId') userId: number): Promise<void> {

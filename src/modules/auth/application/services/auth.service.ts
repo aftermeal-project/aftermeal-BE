@@ -5,6 +5,7 @@ import { TokenService } from '../../../token/application/services/token.service'
 import { User } from '../../../user/domain/entities/user.entity';
 import { TokenRefreshResponseDto } from '../../presentation/dto/token-refresh-response.dto';
 import { MailService } from '@common/mail/mail.service';
+import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,11 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<LoginResponseDto> {
     const user: User = await this.userService.getUserByEmail(email);
-    await user.checkPassword(password);
+
+    const isPasswordValid: boolean = await user.isPasswordValid(password);
+    if (!isPasswordValid) {
+      throw new IllegalArgumentException('비밀번호가 올바르지 않습니다.');
+    }
 
     if (user.isCandidate()) {
       await this.sendEmailVerification(user.email);
@@ -27,7 +32,7 @@ export class AuthService {
     const accessToken: string = this.tokenService.generateAccessToken({
       sub: user.uuid,
       username: user.name,
-      roles: user.roles.map((userRole) => userRole.role.name),
+      role: user.role,
     });
     const refreshToken: string = this.tokenService.generateRefreshToken();
 
@@ -55,7 +60,7 @@ export class AuthService {
     const accessToken: string = this.tokenService.generateAccessToken({
       sub: user.uuid,
       username: user.name,
-      roles: user.roles.map((userRole) => userRole.role.name),
+      role: user.role,
     });
     const refreshToken: string = this.tokenService.generateRefreshToken();
 

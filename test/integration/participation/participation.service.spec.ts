@@ -6,14 +6,12 @@ import {
   ACTIVITY_LOCATION_REPOSITORY,
   ACTIVITY_REPOSITORY,
   PARTICIPATION_REPOSITORY,
-  ROLE_REPOSITORY,
   TIME,
   USER_REPOSITORY,
 } from '@common/constants/dependency-token';
 import { Activity } from '../../../src/modules/activity/domain/entities/activity.entity';
 import { Participation } from '../../../src/modules/participation/domain/entities/participation.entity';
 import { User } from '../../../src/modules/user/domain/entities/user.entity';
-import { Role } from '../../../src/modules/role/domain/entities/role.entity';
 import {
   initializeTransactionalContext,
   StorageDriver,
@@ -25,8 +23,6 @@ import { ActivityLocationRepository } from '../../../src/modules/activity-locati
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
 import { ParticipationRepository } from '../../../src/modules/participation/domain/repositories/participation.repository';
 import { UserRepository } from '../../../src/modules/user/domain/repositories/user.repository';
-import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
-import { RoleTypeormRepository } from '../../../src/modules/role/infrastructure/persistence/role-typeorm.repository';
 import { ParticipationTypeormRepository } from '../../../src/modules/participation/infrastructure/persistence/participation-typeorm.repository';
 import { UserTypeormRepository } from '../../../src/modules/user/infrastructure/persistence/user-typeorm.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -37,7 +33,6 @@ describe('ParticipationService', () => {
   let participationService: ParticipationService;
   let participationRepository: ParticipationRepository;
   let userRepository: UserRepository;
-  let roleRepository: RoleRepository;
   let activityRepository: ActivityRepository;
   let activityLocationRepository: ActivityLocationRepository;
   let dataSource: DataSource;
@@ -47,7 +42,7 @@ describe('ParticipationService', () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [
         getTestMysqlModule(),
-        TypeOrmModule.forFeature([Participation, User, Role]),
+        TypeOrmModule.forFeature([Participation, User]),
         ActivityModule,
       ],
       providers: [
@@ -59,10 +54,6 @@ describe('ParticipationService', () => {
         {
           provide: USER_REPOSITORY,
           useClass: UserTypeormRepository,
-        },
-        {
-          provide: ROLE_REPOSITORY,
-          useClass: RoleTypeormRepository,
         },
         {
           provide: TIME,
@@ -87,7 +78,6 @@ describe('ParticipationService', () => {
       ACTIVITY_LOCATION_REPOSITORY,
     );
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
-    roleRepository = moduleRef.get<RoleRepository>(ROLE_REPOSITORY);
     dataSource = moduleRef.get<DataSource>(DataSource);
   });
 
@@ -95,7 +85,6 @@ describe('ParticipationService', () => {
     await participationRepository.deleteAll();
     await activityRepository.deleteAll();
     await activityLocationRepository.deleteAll();
-    await roleRepository.deleteAll();
     await userRepository.deleteAll();
   });
 
@@ -112,13 +101,9 @@ describe('ParticipationService', () => {
       const activity: Activity = createActivity(activityLocation);
       await activityRepository.save(activity);
 
-      const role: Role = Role.create('USER');
-      await roleRepository.save(role);
-
       const user: User = User.createTeacher(
         '송유현',
         'test@exaple.com',
-        role,
         'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);
@@ -143,13 +128,9 @@ describe('ParticipationService', () => {
       const activity: Activity = createActivity(activityLocation);
       await activityRepository.save(activity);
 
-      const role: Role = Role.create('USER');
-      await roleRepository.save(role);
-
       const user: User = User.createTeacher(
         '송유현',
         'test@exaple.com',
-        role,
         'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);

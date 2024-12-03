@@ -18,6 +18,7 @@ import { TokenRepository } from '../../../src/modules/auth/domain/repositories/t
 import appConfig from '@config/app.config';
 import { TokenRedisRepository } from '../../../src/modules/auth/infrastructure/persistence/token-redis.repository';
 import { TestRedisModule } from '../../utils/get-test-redis.module';
+import { Role } from '../../../src/modules/user/domain/entities/role';
 
 describe('TokenService', () => {
   let tokenService: TokenService;
@@ -127,7 +128,7 @@ describe('TokenService', () => {
       const payload = {
         sub: '1',
         username: 'test',
-        roles: ['user'],
+        role: Role.USER,
       };
 
       // when

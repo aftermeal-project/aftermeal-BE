@@ -4,7 +4,6 @@ import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
 import { Participation } from '../../../src/modules/participation/domain/entities/participation.entity';
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
-import { Role } from '../../../src/modules/role/domain/entities/role.entity';
 import { EActivityType } from '../../../src/modules/activity/domain/entities/activity-type';
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
 
@@ -122,10 +121,5 @@ function createActivity(): Activity {
 }
 
 function createUser(): User {
-  return User.createTeacher(
-    '송유현',
-    'test@example.com',
-    Role.create('USER'),
-    'G$K9Vss9-wNX6jOvY',
-  );
+  return User.createTeacher('송유현', 'test@example.com', 'G$K9Vss9-wNX6jOvY');
 }
