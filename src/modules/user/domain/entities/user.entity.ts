@@ -96,10 +96,50 @@ export class User extends BaseTimeEntity {
     return user;
   }
 
-  update(name: string, type: UserType, status: UserStatus): void {
+  private static validateName(name: string): void {
+    if (name.length > 40) {
+      throw new IllegalArgumentException('이름은 40자 이하여야 합니다.');
+    }
+  }
+
+  private static validatePassword(password: string): void {
+    if (password.length > 20) {
+      throw new IllegalArgumentException('비밀번호는 20자 이하여야 합니다.');
+    }
+    if (!isStrongPassword(password)) {
+      throw new IllegalArgumentException(
+        '비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
+      );
+    }
+  }
+
+  private static validateGeneration(generation: Generation) {
+    if (!generation) {
+      throw new IllegalArgumentException('기수가 존재해야 합니다.');
+    }
+    if (generation.isGraduated) {
+      throw new IllegalArgumentException('재학 중인 학생이어야 합니다.');
+    }
+  }
+
+  private static validateSchoolEmail(schoolEmail: string) {
+    if (!ESchool.GSM.emailFormat.test(schoolEmail)) {
+      throw new IllegalArgumentException(
+        '학생은 학교 이메일을 사용해야 합니다.',
+      );
+    }
+  }
+
+  update(
+    name?: string,
+    type?: UserType,
+    status?: UserStatus,
+    generationNumber?: number,
+  ): void {
     this.name = name;
     this.type = type;
     this.status = status;
+    this.generation.generationNumber = generationNumber;
   }
 
   async hashPassword(): Promise<void> {
@@ -121,39 +161,5 @@ export class User extends BaseTimeEntity {
 
   isCandidate(): boolean {
     return this.status === UserStatus.CANDIDATE;
-  }
-
-  private static validateName(name: string): void {
-    if (name.length > 40) {
-      throw new IllegalArgumentException('이름은 40자 이하여야 합니다.');
-    }
-  }
-
-  private static validatePassword(password: string): void {
-    if (password.length > 20) {
-      throw new IllegalArgumentException('비밀번호는 20자 이하여야 합니다.');
-    }
-    if (!isStrongPassword(password)) {
-      throw new IllegalArgumentException(
-        '비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.',
-      );
-    }
-  }
-
-  private static validateSchoolEmail(schoolEmail: string) {
-    if (!ESchool.GSM.emailFormat.test(schoolEmail)) {
-      throw new IllegalArgumentException(
-        '학생은 학교 이메일을 사용해야 합니다.',
-      );
-    }
-  }
-
-  private static validateGeneration(generation: Generation) {
-    if (!generation) {
-      throw new IllegalArgumentException('기수가 존재해야 합니다.');
-    }
-    if (generation.isGraduated) {
-      throw new IllegalArgumentException('재학 중인 학생이어야 합니다.');
-    }
   }
 }

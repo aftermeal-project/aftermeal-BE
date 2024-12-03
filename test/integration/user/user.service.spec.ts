@@ -278,7 +278,7 @@ describe('UserService', () => {
       };
 
       // when
-      await userService.updateUserById(user.id, dto);
+      await userService.updateUser(user.id, dto);
 
       // then
       const updatedUser: User = await userRepository.findOneById(user.id);

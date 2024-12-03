@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { User } from '../../domain/entities/user.entity';
 import { Role } from '../../../role/domain/entities/role.entity';
 import { UserType } from '../../domain/types/user-type';
@@ -12,9 +12,8 @@ import { USER_REPOSITORY } from '@common/constants/dependency-token';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { UserResponseDto } from '../../presentation/dto/user-response.dto';
 import { UserUpdateRequestDto } from '../../presentation/dto/user-update-request.dto';
-import { MailService } from '@common/mail/mail.service';
-import { TokenService } from '../../../token/application/services/token.service';
 import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
+import { AuthService } from '../../../auth/application/services/auth.service';
 
 @Injectable()
 export class UserService {
@@ -23,8 +22,8 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly roleService: RoleService,
     private readonly generationService: GenerationService,
-    private readonly tokenService: TokenService,
-    private readonly mailService: MailService,
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
   ) {}
 
   async getAllUsers(): Promise<UserResponseDto[]> {
@@ -56,7 +55,7 @@ export class UserService {
 
     if (existUser) {
       if (existUser.isCandidate()) {
-        await this.sendEmailVerification(existUser.email);
+        await this.authService.sendEmailVerification(existUser.email);
         return;
       }
       throw new AlreadyExistException('이미 등록된 이메일입니다.');
@@ -86,19 +85,16 @@ export class UserService {
     await user.hashPassword();
     await this.userRepository.save(user);
 
-    await this.sendEmailVerification(user.email);
+    await this.authService.sendEmailVerification(user.email);
   }
 
-  async updateUserById(
-    userId: number,
-    dto: UserUpdateRequestDto,
-  ): Promise<void> {
+  async updateUser(userId: number, dto: UserUpdateRequestDto): Promise<void> {
     const user: User = await this.getUserById(userId);
-    user.update(dto.name, dto.type, dto.status);
+    user.update(dto?.name, dto?.type, dto?.status, dto?.generationNumber);
     await this.userRepository.save(user);
   }
 
-  async deleteUserById(userId: number): Promise<void> {
+  async deleteUser(userId: number): Promise<void> {
     const user: User = await this.getUserById(userId);
     await this.userRepository.delete(user);
   }
@@ -107,12 +103,5 @@ export class UserService {
     const user: User = await this.getUserByEmail(email);
     user.activate();
     await this.userRepository.save(user);
-  }
-
-  private async sendEmailVerification(to: string): Promise<void> {
-    const code: string = this.tokenService.generateEmailVerificationCode();
-    await this.tokenService.saveEmailVerificationCode(to, code);
-
-    await this.mailService.sendEmailVerification(to, code);
   }
 }

@@ -1,20 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { UserService } from '../../../user/application/services/user.service';
 import { LoginResponseDto } from '../../presentation/dto/login-response.dto';
 import { TokenService } from '../../../token/application/services/token.service';
 import { User } from '../../../user/domain/entities/user.entity';
 import { TokenRefreshResponseDto } from '../../presentation/dto/token-refresh-response.dto';
+import { MailService } from '@common/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly tokenService: TokenService,
+    private readonly mailService: MailService,
   ) {}
 
   async login(email: string, password: string): Promise<LoginResponseDto> {
     const user: User = await this.userService.getUserByEmail(email);
     await user.checkPassword(password);
+
+    if (user.isCandidate()) {
+      await this.sendEmailVerification(user.email);
+      return null;
+    }
 
     const accessToken: string = this.tokenService.generateAccessToken({
       sub: user.uuid,
@@ -60,6 +68,13 @@ export class AuthService {
       this.tokenService.getAccessTokenExpirationTime(),
       refreshToken,
     );
+  }
+
+  async sendEmailVerification(to: string): Promise<void> {
+    const code: string = this.tokenService.generateEmailVerificationCode();
+    await this.tokenService.saveEmailVerificationCode(to, code);
+
+    await this.mailService.sendEmailVerification(to, code);
   }
 
   async verifyEmailVerificationCode(

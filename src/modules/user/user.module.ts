@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UserController } from './presentation/controllers/user.controller';
 import { UserService } from './application/services/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,16 +7,14 @@ import { RoleModule } from '../role/role.module';
 import { GenerationModule } from '../generation/generation.module';
 import { USER_REPOSITORY } from '@common/constants/dependency-token';
 import { UserTypeormRepository } from './infrastructure/persistence/user-typeorm.repository';
-import { TokenModule } from '../token/token.module';
-import { MailModule } from '@common/mail/mail.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     RoleModule,
     GenerationModule,
-    TokenModule,
-    MailModule,
+    forwardRef(() => AuthModule),
   ],
   controllers: [UserController],
   providers: [

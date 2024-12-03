@@ -42,13 +42,13 @@ export class UserController {
     @Param('userId') userId: number,
     @Body() dto: UserUpdateRequestDto,
   ): Promise<void> {
-    await this.userService.updateUserById(userId, dto);
+    await this.userService.updateUser(userId, dto);
   }
 
   @Roles('ADMIN')
   @Delete(':userId')
   @HttpCode(204)
   async deleteUserById(@Param('userId') userId: number): Promise<void> {
-    await this.userService.deleteUserById(userId);
+    await this.userService.deleteUser(userId);
   }
 }

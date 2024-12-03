@@ -1,16 +1,16 @@
 import {
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsOptional,
-  IsPositive,
   IsString,
 } from 'class-validator';
 import { UserType } from '../../domain/types/user-type';
 import { UserStatus } from '../../domain/types/user-status';
 
 export class UserUpdateRequestDto {
-  @IsNotEmpty({ message: '이름은 빈 값일 수 없습니다.' })
   @IsString({ message: '이름은 문자열이어야 합니다.' })
+  @IsNotEmpty({ message: '이름은 빈 값일 수 없습니다.' })
   @IsOptional()
   name?: string;
 
@@ -26,7 +26,7 @@ export class UserUpdateRequestDto {
   @IsOptional()
   status?: UserStatus;
 
-  @IsPositive({ message: '기수는 양수여야 합니다.' })
+  @IsInt({ message: '기수는 정수여야 합니다.' })
   @IsOptional()
   generationNumber?: number;
 }
