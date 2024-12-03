@@ -79,7 +79,7 @@ export class UserService {
 
   async updateUser(userId: number, dto: UserUpdateRequestDto): Promise<void> {
     const user: User = await this.getUserById(userId);
-    user.update(dto.name, dto.type, dto.status, dto.generationNumber);
+    user.update(dto.name, dto.type, dto.role, dto.status, dto.generationNumber);
     await this.userRepository.save(user);
   }
 

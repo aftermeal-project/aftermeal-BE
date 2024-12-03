@@ -3,6 +3,7 @@ import { Generation } from '../../../src/modules/generation/domain/entities/gene
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { UserStatus } from '../../../src/modules/user/domain/entities/user-status';
 import { UserType } from '../../../src/modules/user/domain/entities/user-type';
+import { Role } from '../../../src/modules/user/domain/entities/role';
 
 describe('User', () => {
   describe('createTeacher', () => {
@@ -135,7 +136,7 @@ describe('User', () => {
       );
 
       // when
-      user.update('테스트2', undefined, UserStatus.DEACTIVATED);
+      user.update('테스트2', undefined, Role.ADMIN, UserStatus.DEACTIVATED);
 
       // then
       expect(user.name).toBe('테스트2');

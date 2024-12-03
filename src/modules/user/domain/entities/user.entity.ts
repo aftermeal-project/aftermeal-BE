@@ -120,12 +120,14 @@ export class User extends BaseTimeEntity {
   update(
     name: string,
     type: UserType,
+    role: Role,
     status: UserStatus,
     generationNumber?: number,
   ): void {
     if (name) this.name = name;
     if (type) this.type = type;
     if (status) this.status = status;
+    if (role) this.role = role;
     if (this.isStudent()) {
       if (generationNumber) this.generation.generationNumber = generationNumber;
     }

@@ -28,6 +28,7 @@ import redisConfiguration from '@config/redis.config';
 import { UserStatus } from '../../../src/modules/user/domain/entities/user-status';
 import emailConfig from '@config/email.config';
 import { AuthService } from '../../../src/modules/auth/application/services/auth.service';
+import { Role } from '../../../src/modules/user/domain/entities/role';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -225,15 +226,16 @@ describe('UserService', () => {
     it('사용자 정보를 수정한다.', async () => {
       // given
       const user: User = User.createTeacher(
-        'test',
+        '테스트',
         'test@example.com',
         'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);
 
       const dto: UserUpdateRequestDto = {
-        name: 'updated',
+        name: '감스트',
         type: UserType.TEACHER,
+        role: Role.ADMIN,
         status: UserStatus.DEACTIVATED,
       };
 
@@ -243,9 +245,10 @@ describe('UserService', () => {
       // then
       const updatedUser: User = await userRepository.findOneById(user.id);
 
-      expect(updatedUser.name).toBe('updated');
-      expect(updatedUser.type).toBe('TEACHER');
-      expect(updatedUser.status).toBe('DEACTIVATED');
+      expect(updatedUser.name).toBe('감스트');
+      expect(updatedUser.type).toBe(UserType.TEACHER);
+      expect(updatedUser.role).toBe(Role.ADMIN);
+      expect(updatedUser.status).toBe(UserStatus.DEACTIVATED);
     });
   });
 });
