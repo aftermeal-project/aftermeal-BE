@@ -1,5 +1,7 @@
+import { Role } from '../../../user/domain/entities/role';
+
 export type AccessTokenPayload = {
   sub: string | number;
   username: string;
-  roles: string[];
+  role: Role;
 };

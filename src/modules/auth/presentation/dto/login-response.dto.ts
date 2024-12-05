@@ -1,5 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import { User } from '../../../user/domain/entities/user.entity';
+import { Role } from '../../../user/domain/entities/role';
 
 export class LoginResponseDto {
   @Exclude() private readonly _accessToken: string;
@@ -43,11 +44,11 @@ export class LoginResponseDto {
   }
 
   @Expose()
-  get user(): { id: number; name: string; roles: string[] } {
+  get user(): { id: number; name: string; role: Role } {
     return {
       id: this._user.id,
       name: this._user.name,
-      roles: this._user.roles.map((role) => role.role.name),
+      role: this._user.role,
     };
   }
 }

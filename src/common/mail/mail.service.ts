@@ -3,18 +3,14 @@ import emailConfiguration from '@config/email.config';
 import { ConfigType } from '@nestjs/config';
 import { createTransport, Transporter } from 'nodemailer';
 import { HtmlTemplate } from './html-template';
-import appConfiguration from '@config/app.config';
 
 @Injectable()
 export class MailService {
   private readonly transporter: Transporter;
-  private readonly baseUrl: string;
 
   constructor(
     @Inject(emailConfiguration.KEY)
     readonly emailConfig: ConfigType<typeof emailConfiguration>,
-    @Inject(appConfiguration.KEY)
-    readonly appConfig: ConfigType<typeof appConfiguration>,
     private readonly htmlTemplate: HtmlTemplate,
   ) {
     this.transporter = createTransport({
@@ -26,7 +22,6 @@ export class MailService {
         pass: emailConfig.auth.pass,
       },
     });
-    this.baseUrl = appConfig.baseUrl;
   }
 
   async sendEmailVerification(

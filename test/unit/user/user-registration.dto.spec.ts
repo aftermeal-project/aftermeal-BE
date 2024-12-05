@@ -1,6 +1,6 @@
 import { validateSync } from 'class-validator';
 import { UserRegistrationRequestDto } from '../../../src/modules/user/presentation/dto/user-registration-request.dto';
-import { UserType } from '../../../src/modules/user/domain/types/user-type';
+import { UserType } from '../../../src/modules/user/domain/entities/user-type';
 
 describe('UserRegistrationRequestDto', () => {
   it('유효한 데이터로 검증에 성공해야 한다.', () => {

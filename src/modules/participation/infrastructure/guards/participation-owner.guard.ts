@@ -1,11 +1,12 @@
 import {
   CanActivate,
   ExecutionContext,
-  Injectable,
   ForbiddenException,
+  Injectable,
 } from '@nestjs/common';
 import { User } from '../../../user/domain/entities/user.entity';
 import { Participation } from '../../domain/entities/participation.entity';
+import { Role } from '../../../user/domain/entities/role';
 
 @Injectable()
 export class ParticipationOwnerGuard implements CanActivate {
@@ -15,9 +16,7 @@ export class ParticipationOwnerGuard implements CanActivate {
     const user: User = request.user;
     const participation: Participation = request.participation;
 
-    const isAdmin: boolean = user.roles.some(
-      (role) => role.role.name === 'ADMIN',
-    );
+    const isAdmin: boolean = user.role === Role.ADMIN;
 
     if (isAdmin || participation.isOwnedBy(user)) {
       return true;

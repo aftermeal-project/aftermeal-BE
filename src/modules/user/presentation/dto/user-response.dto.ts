@@ -1,9 +1,9 @@
-import { UserType } from '../../domain/types/user-type';
-import { UserStatus } from '../../domain/types/user-status';
+import { UserType } from '../../domain/entities/user-type';
+import { UserStatus } from '../../domain/entities/user-status';
 import { User } from '../../domain/entities/user.entity';
 import { Exclude, Expose } from 'class-transformer';
 import { Generation } from '../../../generation/domain/entities/generation.entity';
-import { Role } from '../../../role/domain/entities/role.entity';
+import { Role } from '../../domain/entities/role';
 
 export class UserResponseDto {
   @Exclude() private readonly _id: number;
@@ -12,7 +12,7 @@ export class UserResponseDto {
   @Exclude() private readonly _status: UserStatus;
   @Exclude() private readonly _type: UserType;
   @Exclude() private readonly _generation: Generation | null;
-  @Exclude() private readonly _roles: Role[];
+  @Exclude() private readonly _role: Role;
 
   constructor(
     id: number,
@@ -21,7 +21,7 @@ export class UserResponseDto {
     status: UserStatus,
     type: UserType,
     generation: Generation | null,
-    roles: Role[],
+    role: Role,
   ) {
     this._id = id;
     this._name = name;
@@ -29,7 +29,7 @@ export class UserResponseDto {
     this._status = status;
     this._type = type;
     this._generation = generation;
-    this._roles = roles;
+    this._role = role;
   }
 
   @Expose()
@@ -66,8 +66,8 @@ export class UserResponseDto {
   }
 
   @Expose()
-  get roles(): string[] {
-    return this._roles.map((role) => role.name);
+  get role(): Role {
+    return this._role;
   }
 
   static from(user: User): UserResponseDto {
@@ -78,7 +78,7 @@ export class UserResponseDto {
       user.status,
       user.type,
       user.generation,
-      user.roles.map((userRole) => userRole.role),
+      user.role,
     );
   }
 }

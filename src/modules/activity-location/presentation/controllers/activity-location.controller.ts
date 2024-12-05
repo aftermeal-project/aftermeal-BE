@@ -14,6 +14,7 @@ import { ActivityLocationResponseDto } from '../dto/activity-location-response.d
 import { ActivityLocationUpdateRequestDto } from '../dto/activity-location-update-request.dto';
 import { ActivityLocationCreationRequestDto } from '../dto/activity-location-creation-request.dto';
 import { Roles } from '@common/decorators/roles.decorator';
+import { Role } from '../../../user/domain/entities/role';
 
 @Controller('activity-locations')
 export class ActivityLocationController {
@@ -21,7 +22,7 @@ export class ActivityLocationController {
     private readonly activityLocationService: ActivityLocationService,
   ) {}
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Post()
   async createActivityLocation(
     @Body() dto: ActivityLocationCreationRequestDto,
@@ -30,7 +31,7 @@ export class ActivityLocationController {
     return ResponseEntity.SUCCESS();
   }
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Get()
   async getActivityLocations(): Promise<
     ResponseEntity<ActivityLocationResponseDto[]>
@@ -40,7 +41,7 @@ export class ActivityLocationController {
     );
   }
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Patch(':activityLocationId')
   @HttpCode(204)
   async updateActivityLocation(
@@ -53,7 +54,7 @@ export class ActivityLocationController {
     );
   }
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Delete(':activityLocationId')
   @HttpCode(204)
   async deleteActivityLocation(

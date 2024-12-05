@@ -3,17 +3,15 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseTimeEntity } from '@common/models/base-time.entity';
 import { Generation } from '../../../generation/domain/entities/generation.entity';
-import { UserType } from '../types/user-type';
-import { UserStatus } from '../types/user-status';
-import { UserRole } from './user-role.entity';
+import { UserType } from './user-type';
+import { UserStatus } from './user-status';
 import { compare, genSalt, hash } from 'bcrypt';
-import { Role } from '../../../role/domain/entities/role.entity';
-import { ESchool } from '../types/school';
+import { Role } from './role';
+import { ESchool } from './school';
 import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { isStrongPassword } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
@@ -35,17 +33,14 @@ export class User extends BaseTimeEntity {
   @Column({ default: UserStatus.CANDIDATE })
   status: UserStatus;
 
+  @Column({ default: Role.USER })
+  role: Role;
+
   @Column({ type: 'varchar' })
   type: UserType;
 
   @Column()
   password: string;
-
-  @OneToMany(() => UserRole, (userRole) => userRole.user, {
-    cascade: true,
-    eager: true,
-  })
-  roles: UserRole[];
 
   @ManyToOne(() => Generation, { nullable: true, eager: true })
   @JoinColumn({
@@ -54,12 +49,7 @@ export class User extends BaseTimeEntity {
   })
   generation: Generation | null;
 
-  static createTeacher(
-    name: string,
-    email: string,
-    role: Role,
-    password: string,
-  ): User {
+  static createTeacher(name: string, email: string, password: string): User {
     this.validateName(name);
     this.validatePassword(password);
 
@@ -68,7 +58,6 @@ export class User extends BaseTimeEntity {
     user.name = name;
     user.email = email;
     user.type = UserType.TEACHER;
-    user.roles = [UserRole.create(role, user)];
     user.password = password;
     return user;
   }
@@ -76,7 +65,6 @@ export class User extends BaseTimeEntity {
   static createStudent(
     name: string,
     schoolEmail: string,
-    role: Role,
     generation: Generation,
     password: string,
   ): User {
@@ -90,37 +78,9 @@ export class User extends BaseTimeEntity {
     user.name = name;
     user.email = schoolEmail;
     user.type = UserType.STUDENT;
-    user.roles = [UserRole.create(role, user)];
     user.password = password;
     user.generation = generation;
     return user;
-  }
-
-  update(name: string, type: UserType, status: UserStatus): void {
-    this.name = name;
-    this.type = type;
-    this.status = status;
-  }
-
-  async hashPassword(): Promise<void> {
-    const salt: string = await genSalt();
-    this.password = await hash(this.password, salt);
-  }
-
-  async checkPassword(plainPassword: string): Promise<boolean> {
-    const isPasswordCorrect = await compare(plainPassword, this.password);
-    if (!isPasswordCorrect) {
-      throw new IllegalArgumentException('비밀번호가 올바르지 않습니다.');
-    }
-    return isPasswordCorrect;
-  }
-
-  activate(): void {
-    this.status = UserStatus.ACTIVATED;
-  }
-
-  isCandidate(): boolean {
-    return this.status === UserStatus.CANDIDATE;
   }
 
   private static validateName(name: string): void {
@@ -140,6 +100,15 @@ export class User extends BaseTimeEntity {
     }
   }
 
+  private static validateGeneration(generation: Generation) {
+    if (!generation) {
+      throw new IllegalArgumentException('기수가 존재해야 합니다.');
+    }
+    if (generation.isGraduated) {
+      throw new IllegalArgumentException('재학 중인 학생이어야 합니다.');
+    }
+  }
+
   private static validateSchoolEmail(schoolEmail: string) {
     if (!ESchool.GSM.emailFormat.test(schoolEmail)) {
       throw new IllegalArgumentException(
@@ -148,12 +117,40 @@ export class User extends BaseTimeEntity {
     }
   }
 
-  private static validateGeneration(generation: Generation) {
-    if (!generation) {
-      throw new IllegalArgumentException('기수가 존재해야 합니다.');
+  update(
+    name: string,
+    type: UserType,
+    role: Role,
+    status: UserStatus,
+    generationNumber?: number,
+  ): void {
+    if (name) this.name = name;
+    if (type) this.type = type;
+    if (status) this.status = status;
+    if (role) this.role = role;
+    if (this.isStudent()) {
+      if (generationNumber) this.generation.generationNumber = generationNumber;
     }
-    if (generation.isGraduated) {
-      throw new IllegalArgumentException('재학 중인 학생이어야 합니다.');
-    }
+  }
+
+  async hashPassword(): Promise<void> {
+    const salt: string = await genSalt();
+    this.password = await hash(this.password, salt);
+  }
+
+  async isPasswordValid(plainPassword: string): Promise<boolean> {
+    return await compare(plainPassword, this.password);
+  }
+
+  activate(): void {
+    this.status = UserStatus.ACTIVATED;
+  }
+
+  isCandidate(): boolean {
+    return this.status === UserStatus.CANDIDATE;
+  }
+
+  isStudent() {
+    return this.type === UserType.STUDENT;
   }
 }

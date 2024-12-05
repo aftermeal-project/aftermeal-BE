@@ -6,14 +6,12 @@ import {
   ACTIVITY_LOCATION_REPOSITORY,
   ACTIVITY_REPOSITORY,
   PARTICIPATION_REPOSITORY,
-  ROLE_REPOSITORY,
   TIME,
   USER_REPOSITORY,
 } from '@common/constants/dependency-token';
 import { Activity } from '../../../src/modules/activity/domain/entities/activity.entity';
 import { Participation } from '../../../src/modules/participation/domain/entities/participation.entity';
 import { User } from '../../../src/modules/user/domain/entities/user.entity';
-import { Role } from '../../../src/modules/role/domain/entities/role.entity';
 import {
   initializeTransactionalContext,
   StorageDriver,
@@ -31,8 +29,6 @@ import { UserTypeormRepository } from '../../../src/modules/user/infrastructure/
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ParticipationTypeormRepository } from '../../../src/modules/participation/infrastructure/persistence/participation-typeorm.repository';
 import { ActivityCreationRequestDto } from '../../../src/modules/activity/presentation/dto/activity-creation-request.dto';
-import { RoleRepository } from '../../../src/modules/role/domain/repositories/role.repository';
-import { RoleTypeormRepository } from '../../../src/modules/role/infrastructure/persistence/role-typeorm.repository';
 import { ActivityUpdateRequestDto } from '../../../src/modules/activity/presentation/dto/activity-update-request.dto';
 import { ActivityTypeormRepository } from '../../../src/modules/activity/infrastructure/persistence/activity-typeorm.repository';
 import { ActivityLocationTypeormRepository } from '../../../src/modules/activity-location/infrastructure/persistence/activity-location-typeorm.repository';
@@ -48,7 +44,6 @@ describe('ActivityService', () => {
   let activityRepository: ActivityRepository;
   let activityLocationRepository: ActivityLocationRepository;
   let userRepository: UserRepository;
-  let roleRepository: RoleRepository;
   let participationRepository: ParticipationRepository;
   let dataSource: DataSource;
 
@@ -61,7 +56,6 @@ describe('ActivityService', () => {
           Activity,
           ActivityLocation,
           User,
-          Role,
           Participation,
         ]),
       ],
@@ -94,10 +88,6 @@ describe('ActivityService', () => {
           provide: PARTICIPATION_REPOSITORY,
           useClass: ParticipationTypeormRepository,
         },
-        {
-          provide: ROLE_REPOSITORY,
-          useClass: RoleTypeormRepository,
-        },
       ],
     }).compile();
 
@@ -108,7 +98,6 @@ describe('ActivityService', () => {
       ACTIVITY_LOCATION_REPOSITORY,
     );
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
-    roleRepository = moduleRef.get<RoleRepository>(ROLE_REPOSITORY);
     participationRepository = moduleRef.get<ParticipationRepository>(
       PARTICIPATION_REPOSITORY,
     );
@@ -120,7 +109,6 @@ describe('ActivityService', () => {
     await activityRepository.deleteAll();
     await activityLocationRepository.deleteAll();
     await userRepository.deleteAll();
-    await roleRepository.deleteAll();
   });
 
   afterAll(async () => {
@@ -159,13 +147,9 @@ describe('ActivityService', () => {
       const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
 
-      const role: Role = Role.create('USER');
-      await roleRepository.save(role);
-
       const user: User = User.createTeacher(
         '송유현',
         'test@exaple.com',
-        role,
         'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);
@@ -213,13 +197,9 @@ describe('ActivityService', () => {
       const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
 
-      const role: Role = Role.create('USER');
-      await roleRepository.save(role);
-
       const user: User = User.createTeacher(
         '송유현',
         'test@example.com',
-        role,
         'G$K9Vss9-wNX6jOvY',
       );
       await userRepository.save(user);

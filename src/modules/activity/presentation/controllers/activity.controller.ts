@@ -21,6 +21,7 @@ import { Roles } from '@common/decorators/roles.decorator';
 import { ActivityQueryDto } from '../dto/activity-query.dto';
 import { TIME } from '@common/constants/dependency-token';
 import { TimeService } from '@common/time/time.service';
+import { Role } from '../../../user/domain/entities/role';
 
 @Controller('activities')
 export class ActivityController {
@@ -30,7 +31,7 @@ export class ActivityController {
     private readonly time: TimeService,
   ) {}
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Post()
   async createActivity(
     @Body() dto: ActivityCreationRequestDto,
@@ -63,7 +64,7 @@ export class ActivityController {
     return ResponseEntity.SUCCESS(responseDto);
   }
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Patch(':activityId')
   @HttpCode(204)
   async updateActivity(
@@ -73,7 +74,7 @@ export class ActivityController {
     await this.activityService.updateActivity(activityId, dto);
   }
 
-  @Roles('ADMIN')
+  @Roles(Role.ADMIN)
   @Delete(':activityId')
   @HttpCode(204)
   async deleteActivity(@Param('activityId') activityId: number): Promise<void> {
