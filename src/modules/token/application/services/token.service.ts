@@ -29,9 +29,12 @@ export class TokenService {
     accessToken: string | undefined,
   ): Promise<AccessTokenPayload> {
     try {
-      return this.jwtService.verifyAsync<AccessTokenPayload>(accessToken, {
-        secret: this.tokenConfig.accessToken.secret,
-      });
+      return await this.jwtService.verifyAsync<AccessTokenPayload>(
+        accessToken,
+        {
+          secret: this.tokenConfig.accessToken.secret,
+        },
+      );
     } catch (error) {
       if (error.name === 'TokenExpiredError') {
         throw new ExpiredTokenException();
