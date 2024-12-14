@@ -1,12 +1,15 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import { TOKEN_REPOSITORY } from '@common/constants/dependency-token';
 import tokenConfiguration from '@config/token.config';
 import { TokenRepository } from '../../../auth/domain/repositories/token.repository';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { AccessTokenPayload } from '../../../auth/domain/types/jwt-payload';
 import { randomBytes } from 'crypto';
+import { InvalidAccessTokenException } from '@common/exceptions/invalid-access-token.exception';
+import { ExpiredTokenException } from '@common/exceptions/expired-token.exception';
+import { InvalidRefreshTokenException } from '@common/exceptions/invalid-refresh-token.exception';
+import { InvalidEmailVerificationCodeException } from '@common/exceptions/invalid-email-verification-code.exception';
 
 @Injectable()
 export class TokenService {
@@ -20,14 +23,36 @@ export class TokenService {
     private readonly tokenConfig: ConfigType<typeof tokenConfiguration>,
     @Inject(TOKEN_REPOSITORY)
     private readonly tokenRepository: TokenRepository,
+    private readonly logger: Logger,
   ) {}
+
+  async verifyAccessToken(
+    accessToken: string | undefined,
+  ): Promise<AccessTokenPayload> {
+    try {
+      return this.jwtService.verifyAsync<AccessTokenPayload>(accessToken, {
+        secret: this.tokenConfig.accessToken.secret,
+      });
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new ExpiredTokenException();
+      }
+      if (
+        error.name === 'JsonWebTokenError' ||
+        error.name === 'NotBeforeError'
+      ) {
+        throw new InvalidAccessTokenException();
+      }
+      throw error;
+    }
+  }
 
   async getUserIdByRefreshToken(refreshToken: string): Promise<number> {
     const userId: number =
       await this.tokenRepository.findUserIdByRefreshToken(refreshToken);
 
     if (!userId) {
-      throw new IllegalArgumentException('유효하지 않은 리프레시 토큰입니다.');
+      throw new InvalidRefreshTokenException();
     }
 
     return userId;
@@ -42,9 +67,7 @@ export class TokenService {
       );
 
     if (!email) {
-      throw new IllegalArgumentException(
-        '유효하지 않은 이메일 인증 토큰입니다.',
-      );
+      throw new InvalidEmailVerificationCodeException();
     }
 
     return email;

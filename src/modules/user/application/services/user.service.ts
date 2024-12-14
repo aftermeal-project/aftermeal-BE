@@ -10,8 +10,8 @@ import { USER_REPOSITORY } from '@common/constants/dependency-token';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { UserResponseDto } from '../../presentation/dto/user-response.dto';
 import { UserUpdateRequestDto } from '../../presentation/dto/user-update-request.dto';
-import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { AuthService } from '../../../auth/application/services/auth.service';
+import { AlreadyExistUserException } from '@common/exceptions/already-exist-user.exception';
 
 @Injectable()
 export class UserService {
@@ -55,7 +55,7 @@ export class UserService {
         await this.authService.sendEmailVerification(existUser.email);
         return;
       }
-      throw new AlreadyExistException('이미 등록된 이메일입니다.');
+      throw new AlreadyExistUserException();
     }
 
     let generation: Generation | undefined;

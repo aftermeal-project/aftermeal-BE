@@ -2,10 +2,11 @@ import { Activity } from '../../../src/modules/activity/domain/entities/activity
 import { User } from '../../../src/modules/user/domain/entities/user.entity';
 import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
 import { Participation } from '../../../src/modules/participation/domain/entities/participation.entity';
-import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
-import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
 import { EActivityType } from '../../../src/modules/activity/domain/entities/activity-type';
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
+import { ExceedMaxParticipantException } from '@common/exceptions/exceed-max-participant.exception';
+import { NotAvailableParticipateException } from '@common/exceptions/not-available-participate.exception';
+import { AlreadyParticipateActivityException } from '@common/exceptions/already-participate-activity.exception';
 
 describe('Participation', () => {
   describe('create', () => {
@@ -55,7 +56,7 @@ describe('Participation', () => {
         Participation.create(activity, user, currentDateTime);
 
       // then
-      expect(result).toThrowError(AlreadyExistException);
+      expect(result).toThrowError(AlreadyParticipateActivityException);
     });
 
     it('참가 인원이 꽉 찼을 경우 예외를 발생시킨다.', () => {
@@ -76,7 +77,7 @@ describe('Participation', () => {
         Participation.create(activity, user, currentDateTime);
 
       // then
-      expect(result).toThrowError(IllegalStateException);
+      expect(result).toThrowError(ExceedMaxParticipantException);
     });
 
     it('참가 신청 기간이 아닐 경우 예외를 발생시킨다.', () => {
@@ -95,7 +96,7 @@ describe('Participation', () => {
         Participation.create(activity, user, currentDateTime);
 
       // then
-      expect(result).toThrowError(IllegalStateException);
+      expect(result).toThrowError(NotAvailableParticipateException);
     });
   });
 });

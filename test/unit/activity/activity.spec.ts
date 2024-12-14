@@ -2,10 +2,10 @@ import { Activity } from '../../../src/modules/activity/domain/entities/activity
 import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
 import { EActivityType } from '../../../src/modules/activity/domain/entities/activity-type';
-import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { User } from '../../../src/modules/user/domain/entities/user.entity';
 import { Participation } from '../../../src/modules/participation/domain/entities/participation.entity';
+import { ActivityCreationClosedException } from '@common/exceptions/activity-creation-closed.exception';
+import { InvalidScheduledDateException } from '@common/exceptions/invalid-scheduled-date.exception';
 
 describe('Activity', () => {
   describe('create', () => {
@@ -30,7 +30,7 @@ describe('Activity', () => {
         );
 
       // then
-      expect(result).toThrowError(IllegalArgumentException);
+      expect(result).toThrowError(InvalidScheduledDateException);
     });
 
     it('활동 시작 시간 이후엔 활동을 생성할 수 없다.', () => {
@@ -53,7 +53,7 @@ describe('Activity', () => {
         );
 
       // then
-      expect(result).toThrowError(IllegalStateException);
+      expect(result).toThrowError(ActivityCreationClosedException);
     });
   });
 

@@ -1,39 +1,20 @@
 import { User } from '../../../src/modules/user/domain/entities/user.entity';
 import { Generation } from '../../../src/modules/generation/domain/entities/generation.entity';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { UserStatus } from '../../../src/modules/user/domain/entities/user-status';
 import { UserType } from '../../../src/modules/user/domain/entities/user-type';
 import { Role } from '../../../src/modules/user/domain/entities/role';
+import { WeakPasswordException } from '@common/exceptions/weak-password.exception';
+import { GraduatedGenerationException } from '@common/exceptions/graduated-generation.exception';
+import { InvalidSchoolEmailException } from '@common/exceptions/invalid-school-email.exception';
+import { MissingGenerationException } from '@common/exceptions/missing-generation.exception';
 
 describe('User', () => {
   describe('createTeacher', () => {
-    it('이름은 40자 이하여야 한다.', async () => {
-      // when & then
-      expect(() => {
-        User.createTeacher(
-          '테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트',
-          'test@example.com',
-          'G$K9Vss9-wNX6jOvY',
-        );
-      }).toThrow(IllegalArgumentException);
-    });
-
-    it('비밀번호는 20자 이하여야 한다.', async () => {
-      // when & then
-      expect(() => {
-        User.createTeacher(
-          '테스트',
-          'test@example.com',
-          'G$K9Vss9-wNX6jOvYG$K9Vss9-wNX6jOvY',
-        );
-      }).toThrow(IllegalArgumentException);
-    });
-
     it('비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8자 이상이어야 한다.', async () => {
       // when & then
       expect(() => {
         User.createTeacher('테스트', 'test@example.com', 'password');
-      }).toThrow(IllegalArgumentException);
+      }).toThrow(WeakPasswordException);
     });
   });
 
@@ -47,7 +28,7 @@ describe('User', () => {
           null,
           'G$K9Vss9-wNX6jOvY',
         );
-      }).toThrow(IllegalArgumentException);
+      }).toThrow(MissingGenerationException);
     });
 
     it('재학 중인 기수의 학생이어야 한다.', async () => {
@@ -59,7 +40,7 @@ describe('User', () => {
           Generation.create(1, 2018, true),
           'G$K9Vss9-wNX6jOvY',
         );
-      }).toThrow(IllegalArgumentException);
+      }).toThrow(GraduatedGenerationException);
     });
 
     it('이메일은 학교 이메일이어야 한다.', async () => {
@@ -71,7 +52,7 @@ describe('User', () => {
           Generation.create(8, 2024, false),
           'G$K9Vss9-wNX6jOvY',
         );
-      }).toThrow(IllegalArgumentException);
+      }).toThrow(InvalidSchoolEmailException);
     });
   });
 

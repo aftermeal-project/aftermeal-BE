@@ -2,9 +2,10 @@ import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTimeEntity } from '@common/models/base-time.entity';
 import { User } from '../../../user/domain/entities/user.entity';
 import { Activity } from '../../../activity/domain/entities/activity.entity';
-import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
-import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
 import { ZonedDateTime } from '@js-joda/core';
+import { ExceedMaxParticipantException } from '@common/exceptions/exceed-max-participant.exception';
+import { AlreadyParticipateActivityException } from '@common/exceptions/already-participate-activity.exception';
+import { NotAvailableParticipateException } from '@common/exceptions/not-available-participate.exception';
 
 @Entity()
 export class Participation extends BaseTimeEntity {
@@ -33,15 +34,15 @@ export class Participation extends BaseTimeEntity {
     currentDateTime: ZonedDateTime,
   ): Participation {
     if (activity.hasParticipation(user)) {
-      throw new AlreadyExistException('이미 참가한 활동입니다.');
+      throw new AlreadyParticipateActivityException();
     }
 
     if (activity.isFull()) {
-      throw new IllegalStateException('이미 참가 인원이 꽉 찼습니다.');
+      throw new ExceedMaxParticipantException();
     }
 
     if (!activity.isApplicationOpen(currentDateTime)) {
-      throw new IllegalStateException('참가 신청 기간이 아닙니다.');
+      throw new NotAvailableParticipateException();
     }
 
     const participation: Participation = new Participation();

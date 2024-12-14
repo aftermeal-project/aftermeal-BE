@@ -1,22 +1,12 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigType } from '@nestjs/config';
-import tokenConfiguration from '@config/token.config';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '@common/decorators/public.decorator';
+import { TokenService } from '../../modules/token/application/services/token.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
-    private readonly jwtService: JwtService,
-    @Inject(tokenConfiguration.KEY)
-    private readonly jwtConfig: ConfigType<typeof tokenConfiguration>,
+    private readonly tokenService: TokenService,
     private readonly reflector: Reflector,
   ) {}
 
@@ -31,19 +21,9 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    const token: string | undefined = this.extractTokenFromHeader(request);
 
-    if (!token) {
-      throw new UnauthorizedException('Token not found');
-    }
-
-    try {
-      request['user'] = await this.jwtService.verifyAsync(token, {
-        secret: this.jwtConfig.accessToken.secret,
-      });
-    } catch (error) {
-      throw new UnauthorizedException(error);
-    }
+    request['user'] = await this.tokenService.verifyAccessToken(token);
 
     return true;
   }

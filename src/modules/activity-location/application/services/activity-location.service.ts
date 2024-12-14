@@ -4,9 +4,9 @@ import { ActivityLocationRepository } from '../../domain/repositories/activity-l
 import { ActivityLocation } from '../../domain/entities/activity-location.entity';
 import { ActivityLocationResponseDto } from '../../presentation/dto/activity-location-response.dto';
 import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
-import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
 import { ActivityLocationUpdateRequestDto } from '../../presentation/dto/activity-location-update-request.dto';
 import { ActivityLocationCreationRequestDto } from '../../presentation/dto/activity-location-creation-request.dto';
+import { AlreadyExistActivityLocationException } from '@common/exceptions/already-exist-activity-location.exception';
 
 @Injectable()
 export class ActivityLocationService {
@@ -22,7 +22,7 @@ export class ActivityLocationService {
       await this.activityLocationRepository.findOneByName(dto.name);
 
     if (existingLocation) {
-      throw new AlreadyExistException('이미 존재하는 활동 장소입니다.');
+      throw new AlreadyExistActivityLocationException();
     }
 
     const activityLocation: ActivityLocation = ActivityLocation.create(
