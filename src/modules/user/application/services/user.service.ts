@@ -52,7 +52,7 @@ export class UserService {
 
     if (existUser) {
       if (existUser.isCandidate()) {
-        await this.authService.sendEmailVerification(existUser.email);
+        this.authService.sendEmailVerification(existUser.email);
         return;
       }
       throw new AlreadyExistUserException();
@@ -74,7 +74,7 @@ export class UserService {
     await user.hashPassword();
     await this.userRepository.save(user);
 
-    await this.authService.sendEmailVerification(user.email);
+    this.authService.sendEmailVerification(user.email);
   }
 
   async updateUser(userId: number, dto: UserUpdateRequestDto): Promise<void> {
