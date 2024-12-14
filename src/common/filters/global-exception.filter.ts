@@ -2,18 +2,13 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
-  HttpException,
   HttpStatus,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ResponseEntity } from '@common/models/response.entity';
 import { instanceToPlain } from 'class-transformer';
-import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
-import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
-import { AlreadyExistException } from '@common/exceptions/already-exist.exception';
-import { BaseException } from '@common/exceptions/base-exception';
 import { ExceptionCode } from '@common/exceptions/exception-code';
 
 @Catch()
@@ -22,37 +17,20 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const request: Request = ctx.getRequest<Request>();
+    const response: Response = ctx.getResponse<Response>();
 
     let status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-    let code: ExceptionCode = ExceptionCode.INTERNAL_SERVER_ERROR;
-    let message: string = 'Internal server error';
+    let code: ExceptionCode = ExceptionCode.UNKNOWN_ERROR;
+    let message: string =
+      '확인되지 않은 오류입니다. 잠시 후 다시 시도해주세요.';
 
-    if (exception instanceof BaseException) {
-      switch (exception.constructor) {
-        case ResourceNotFoundException:
-          status = HttpStatus.NOT_FOUND;
-          break;
-        case IllegalArgumentException && IllegalStateException:
-          status = HttpStatus.BAD_REQUEST;
-          break;
-        case AlreadyExistException:
-          status = HttpStatus.CONFLICT;
-          break;
-      }
-      code = exception.code;
-      message = exception.message;
-      this.logger.warn(
-        `Request ${request.method} ${request.url} - ${message}`,
-        GlobalExceptionFilter.name,
-      );
-    } else if (exception instanceof HttpException) {
+    if (exception instanceof NotFoundException) {
       status = exception.getStatus();
-      code = ExceptionCode[HttpStatus[status]];
-      message = exception.message;
+      code = ExceptionCode.NO_HANDLER;
+      message = '요청한 경로를 찾을 수 없습니다.';
       this.logger.warn(
-        `Request ${request.method} ${request.url} - ${message}`,
+        `Request ${request.method} ${request.url} - ${exception}`,
         GlobalExceptionFilter.name,
       );
     } else {

@@ -5,7 +5,8 @@ import { TokenService } from '../../../token/application/services/token.service'
 import { User } from '../../../user/domain/entities/user.entity';
 import { TokenRefreshResponseDto } from '../../presentation/dto/token-refresh-response.dto';
 import { MailService } from '@common/mail/mail.service';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
+import { InvalidPasswordException } from '@common/exceptions/invalid-password.exception';
+import { InvalidEmailVerificationCodeException } from '@common/exceptions/invalid-email-verification-code.exception';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,7 @@ export class AuthService {
 
     const isPasswordValid: boolean = await user.isPasswordValid(password);
     if (!isPasswordValid) {
-      throw new IllegalArgumentException('비밀번호가 올바르지 않습니다.');
+      throw new InvalidPasswordException();
     }
 
     if (user.isCandidate()) {
@@ -83,14 +84,17 @@ export class AuthService {
   }
 
   async verifyEmailVerificationCode(
+    email: string,
     emailVerificationCode: string,
   ): Promise<void> {
-    const email: string =
-      await this.tokenService.getEmailByEmailVerificationCode(
-        emailVerificationCode,
-      );
+    const savedEmailVerificationCode: string | null =
+      await this.tokenService.getEmailVerificationCodeByEmail(email);
+
+    if (emailVerificationCode !== savedEmailVerificationCode) {
+      throw new InvalidEmailVerificationCodeException();
+    }
 
     await this.userService.activateUser(email);
-    await this.tokenService.revokeEmailVerificationCode(emailVerificationCode);
+    await this.tokenService.revokeEmailVerificationCode(email);
   }
 }

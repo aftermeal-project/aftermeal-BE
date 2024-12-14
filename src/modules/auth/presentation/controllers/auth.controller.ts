@@ -46,7 +46,7 @@ export class AuthController {
   async verifyEmail(
     @Body() dto: EmailVerificationRequestDto,
   ): Promise<ResponseEntity<void>> {
-    await this.authService.verifyEmailVerificationCode(dto.code);
+    await this.authService.verifyEmailVerificationCode(dto.email, dto.code);
     return ResponseEntity.SUCCESS();
   }
 }

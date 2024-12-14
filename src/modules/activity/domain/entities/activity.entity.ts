@@ -15,9 +15,9 @@ import { LocalDateTransformer } from '@common/transformers/local-date.transforme
 import { ActivityLocation } from '../../../activity-location/domain/entities/activity-location.entity';
 import { ZonedDateTimeTransformer } from '@common/transformers/zoned-date.transformer';
 import { ApplicationPeriod } from '../vo/application-period';
-import { IllegalStateException } from '@common/exceptions/illegal-state.exception';
-import { IllegalArgumentException } from '@common/exceptions/illegal-argument.exception';
 import { User } from '../../../user/domain/entities/user.entity';
+import { ActivityCreationClosedException } from '@common/exceptions/activity-creation-closed.exception';
+import { InvalidScheduledDateException } from '@common/exceptions/invalid-scheduled-date.exception';
 
 @Entity()
 export class Activity extends BaseTimeEntity {
@@ -85,18 +85,14 @@ export class Activity extends BaseTimeEntity {
     currentDateTime: ZonedDateTime,
   ): Activity {
     if (scheduledDate.isBefore(currentDateTime.toLocalDate())) {
-      throw new IllegalArgumentException(
-        '활동 예정 날짜는 과거로 설정할 수 없습니다.',
-      );
+      throw new InvalidScheduledDateException();
     }
 
     const startAt: ZonedDateTime = type.getActivityStartDateTime(scheduledDate);
     const endAt: ZonedDateTime = type.getActivityEndDateTime(scheduledDate);
 
     if (currentDateTime.isAfter(startAt)) {
-      throw new IllegalStateException(
-        '활동 시작 시간 이후엔 활동을 생성할 수 없습니다.',
-      );
+      throw new ActivityCreationClosedException();
     }
 
     const applicationPeriod: ApplicationPeriod = ApplicationPeriod.create(

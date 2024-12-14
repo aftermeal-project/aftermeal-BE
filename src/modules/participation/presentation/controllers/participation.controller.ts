@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   HttpCode,
+  Inject,
   Param,
   Post,
   UseGuards,
@@ -12,17 +13,27 @@ import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { ResponseEntity } from '@common/models/response.entity';
 import { User } from '../../../user/domain/entities/user.entity';
 import { ParticipationOwnerGuard } from '../../infrastructure/guards/participation-owner.guard';
+import { TIME } from '@common/constants/dependency-token';
+import { TimeService } from '@common/time/time.service';
 
 @Controller()
 export class ParticipationController {
-  constructor(private readonly participationService: ParticipationService) {}
+  constructor(
+    private readonly participationService: ParticipationService,
+    @Inject(TIME)
+    private readonly time: TimeService,
+  ) {}
 
   @Post('participations')
   async participate(
     @Body('activityId') activityId: number,
     @CurrentUser() user: User,
   ): Promise<ResponseEntity<null>> {
-    await this.participationService.participate(activityId, user);
+    await this.participationService.participate(
+      activityId,
+      user,
+      this.time.now(),
+    );
     return ResponseEntity.SUCCESS();
   }
 

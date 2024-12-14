@@ -5,10 +5,12 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  MaxLength,
 } from 'class-validator';
 import { UserType } from '../../domain/entities/user-type';
 
 export class UserRegistrationRequestDto {
+  @MaxLength(20, { message: '이름은 20자 이하여야 합니다.' })
   @IsNotEmpty({ message: '이름은 빈 값일 수 없습니다.' })
   @IsString({ message: '이름은 문자열이어야 합니다.' })
   name: string;
@@ -25,6 +27,7 @@ export class UserRegistrationRequestDto {
   @IsOptional()
   generationNumber?: number;
 
+  @MaxLength(40, { message: '비밀번호는 40자 이하여야 합니다.' })
   @IsNotEmpty({ message: '비밀번호는 필수값입니다.' })
   @IsString({ message: '이름은 문자열이어야 합니다.' })
   password: string;

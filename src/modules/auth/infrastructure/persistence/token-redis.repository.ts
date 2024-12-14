@@ -21,12 +21,8 @@ export class TokenRedisRepository implements TokenRepository {
     return parseInt(userId, 10);
   }
 
-  async findEmailByEmailVerificationCode(
-    emailVerificationCode: string,
-  ): Promise<string> {
-    return await this.client.get(
-      `email_verification_code:${emailVerificationCode}`,
-    );
+  async findEmailVerificationCodeByEmail(email: string): Promise<string> {
+    return await this.client.get(`email:${email}`);
   }
 
   async saveRefreshToken(
@@ -44,23 +40,17 @@ export class TokenRedisRepository implements TokenRepository {
     email: string,
     ttl: number,
   ): Promise<void> {
-    await this.client.set(
-      `email_verification_code:${emailVerificationCode}`,
-      email,
-      {
-        EX: ttl,
-      },
-    );
+    await this.client.set(`email:${email}`, emailVerificationCode, {
+      EX: ttl,
+    });
   }
 
   async deleteRefreshToken(refreshToken: string): Promise<void> {
     await this.client.del(`refresh_token:${refreshToken}`);
   }
 
-  async deleteEmailVerificationCode(
-    emailVerificationCode: string,
-  ): Promise<void> {
-    await this.client.del(`email_verification_code:${emailVerificationCode}`);
+  async deleteEmailVerificationCode(email: string): Promise<void> {
+    await this.client.del(`email:${email}`);
   }
 
   async deleteAll(): Promise<void> {
