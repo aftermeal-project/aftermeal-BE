@@ -2,6 +2,7 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
+  ForbiddenException,
   HttpStatus,
   Logger,
   NotFoundException,
@@ -29,6 +30,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       status = exception.getStatus();
       code = ExceptionCode.NO_HANDLER;
       message = '요청한 경로를 찾을 수 없습니다.';
+      this.logger.warn(
+        `Request ${request.method} ${request.url} - ${exception}`,
+        GlobalExceptionFilter.name,
+      );
+    } else if (exception instanceof ForbiddenException) {
+      status = exception.getStatus();
+      code = ExceptionCode.FORBIDDEN;
+      message = exception.message;
       this.logger.warn(
         `Request ${request.method} ${request.url} - ${exception}`,
         GlobalExceptionFilter.name,
