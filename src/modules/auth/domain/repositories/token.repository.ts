@@ -1,8 +1,6 @@
 export interface TokenRepository {
   findUserIdByRefreshToken(refreshToken: string): Promise<number>;
-  findEmailByEmailVerificationCode(
-    emailVerificationCode: string,
-  ): Promise<string>;
+  findEmailVerificationCodeByEmail(email: string): Promise<string | null>;
   saveRefreshToken(
     refreshToken: string,
     userId: number,
