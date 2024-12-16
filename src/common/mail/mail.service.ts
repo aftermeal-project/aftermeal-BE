@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import emailConfiguration from '@config/email.config';
 import { ConfigType } from '@nestjs/config';
 import { createTransport, Transporter } from 'nodemailer';
@@ -12,6 +12,7 @@ export class MailService {
     @Inject(emailConfiguration.KEY)
     readonly emailConfig: ConfigType<typeof emailConfiguration>,
     private readonly htmlTemplate: HtmlTemplate,
+    private readonly logger: Logger,
   ) {
     this.transporter = createTransport({
       service: emailConfig.service,
@@ -43,6 +44,13 @@ export class MailService {
     html: string,
   ): Promise<void> {
     const from: string = '에프터밀 <aftermealonline@gmail.com>';
-    await this.transporter.sendMail({ from, to, subject, html });
+    this.transporter
+      .sendMail({ from, to, subject, html })
+      .then(() => {
+        this.logger.log('이메일이 성공적으로 전송되었습니다.');
+      })
+      .catch((error) => {
+        this.logger.error('이메일을 보내는 중 오류가 발생했습니다.', error);
+      });
   }
 }
