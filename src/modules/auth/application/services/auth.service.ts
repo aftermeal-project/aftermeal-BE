@@ -25,11 +25,6 @@ export class AuthService {
       throw new InvalidPasswordException();
     }
 
-    if (user.isCandidate()) {
-      await this.sendEmailVerification(user.email);
-      return null;
-    }
-
     const accessToken: string = this.tokenService.generateAccessToken({
       sub: user.uuid,
       username: user.name,

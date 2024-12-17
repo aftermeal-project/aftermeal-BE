@@ -40,7 +40,7 @@ export class UserService {
   async getUserByEmail(email: string): Promise<User> {
     const user: User | undefined =
       await this.userRepository.findOneByEmail(email);
-    if (!user) {
+    if (!user || user.isCandidate()) {
       throw new ResourceNotFoundException('존재하지 않는 사용자입니다.');
     }
     return user;
@@ -52,7 +52,7 @@ export class UserService {
 
     if (existUser) {
       if (existUser.isCandidate()) {
-        this.authService.sendEmailVerification(existUser.email);
+        void this.authService.sendEmailVerification(existUser.email);
         return;
       }
       throw new AlreadyExistUserException();
@@ -74,7 +74,7 @@ export class UserService {
     await user.hashPassword();
     await this.userRepository.save(user);
 
-    this.authService.sendEmailVerification(user.email);
+    void this.authService.sendEmailVerification(user.email);
   }
 
   async updateUser(userId: number, dto: UserUpdateRequestDto): Promise<void> {
