@@ -44,13 +44,12 @@ export class MailService {
     html: string,
   ): Promise<void> {
     const from: string = '에프터밀 <aftermealonline@gmail.com>';
-    this.transporter
-      .sendMail({ from, to, subject, html })
-      .then(() => {
-        this.logger.log('이메일이 성공적으로 전송되었습니다.');
-      })
-      .catch((error) => {
-        this.logger.error('이메일을 보내는 중 오류가 발생했습니다.', error);
-      });
+
+    try {
+      await this.transporter.sendMail({ from, to, subject, html });
+      this.logger.log('이메일이 성공적으로 전송되었습니다.');
+    } catch (error) {
+      this.logger.error('이메일을 보내는 중 오류가 발생했습니다.', error);
+    }
   }
 }
