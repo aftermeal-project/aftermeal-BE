@@ -47,9 +47,13 @@ export class MailService {
 
     try {
       await this.transporter.sendMail({ from, to, subject, html });
-      this.logger.log('이메일이 성공적으로 전송되었습니다.');
+      this.logger.log('이메일이 성공적으로 전송되었습니다.', MailService.name);
     } catch (error) {
-      this.logger.error('이메일을 보내는 중 오류가 발생했습니다.', error);
+      this.logger.error(
+        '이메일을 보내는 중 오류가 발생했습니다.',
+        error.stack,
+        MailService.name,
+      );
     }
   }
 }
