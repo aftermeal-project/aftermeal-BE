@@ -31,7 +31,7 @@ export class UserService {
   async getUserById(userId: number): Promise<User> {
     const user: User | undefined =
       await this.userRepository.findOneById(userId);
-    if (!user) {
+    if (!user || !user.isActivated()) {
       throw new ResourceNotFoundException('존재하지 않는 사용자입니다.');
     }
     return user;
@@ -40,7 +40,7 @@ export class UserService {
   async getUserByEmail(email: string): Promise<User> {
     const user: User | undefined =
       await this.userRepository.findOneByEmail(email);
-    if (!user || user.isCandidate()) {
+    if (!user || !user.isActivated()) {
       throw new ResourceNotFoundException('존재하지 않는 사용자입니다.');
     }
     return user;
