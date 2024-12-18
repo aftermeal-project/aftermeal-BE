@@ -63,10 +63,6 @@ class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  EMAIL_SERVICE: string;
-
-  @IsString()
-  @IsNotEmpty()
   EMAIL_HOST: string;
 
   @IsNumber()

@@ -15,9 +15,9 @@ export class MailService {
     private readonly logger: Logger,
   ) {
     this.transporter = createTransport({
-      service: emailConfig.service,
       host: emailConfig.host,
       port: emailConfig.port,
+      secure: false,
       auth: {
         user: emailConfig.auth.user,
         pass: emailConfig.auth.pass,
