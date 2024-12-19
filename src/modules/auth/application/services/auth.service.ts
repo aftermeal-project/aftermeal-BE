@@ -82,8 +82,6 @@ export class AuthService {
     email: string,
     emailVerificationCode: string,
   ): Promise<void> {
-    console.log('emailVerificationCode', emailVerificationCode);
-    console.log('email', email);
     const savedEmailVerificationCode: string | null =
       await this.tokenService.getEmailVerificationCodeByEmail(email);
 

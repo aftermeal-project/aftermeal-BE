@@ -53,6 +53,8 @@ export class ActivityService {
     activityId: number,
   ): Promise<ActivityResponseDto> {
     const activity: Activity = await this.getActivityById(activityId);
+    console.log(activity);
+    console.log(activity.participations);
     return ActivityResponseDto.from(activity);
   }
 
