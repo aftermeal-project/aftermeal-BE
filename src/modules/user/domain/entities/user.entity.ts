@@ -138,10 +138,6 @@ export class User extends BaseTimeEntity {
     return this.status === UserStatus.CANDIDATE;
   }
 
-  isActivated(): boolean {
-    return this.status === UserStatus.ACTIVATED;
-  }
-
   isStudent(): boolean {
     return this.type === UserType.STUDENT;
   }
