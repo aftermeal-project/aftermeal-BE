@@ -22,10 +22,9 @@ export function setNestApp<T extends INestApplication>(app: T): void {
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
       transform: true,
+      stopAtFirstError: true,
       exceptionFactory: (errors) => {
-        const message = errors
-          .map((error) => Object.values(error.constraints))
-          .join(', ');
+        const [message] = Object.values(errors[0].constraints);
         return new ValidationException(message);
       },
     }),
