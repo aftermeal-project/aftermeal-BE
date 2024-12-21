@@ -11,10 +11,10 @@ import {
 import { ParticipationService } from '../../application/services/participation.service';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { ResponseEntity } from '@common/models/response.entity';
-import { User } from '../../../user/domain/entities/user.entity';
 import { ParticipationOwnerGuard } from '../../infrastructure/guards/participation-owner.guard';
 import { TIME } from '@common/constants/dependency-token';
 import { TimeService } from '@common/time/time.service';
+import { AccessTokenPayload } from '../../../auth/domain/types/jwt-payload';
 
 @Controller()
 export class ParticipationController {
@@ -27,11 +27,11 @@ export class ParticipationController {
   @Post('participations')
   async participate(
     @Body('activityId') activityId: number,
-    @CurrentUser() user: User,
+    @CurrentUser() tokenPayload: AccessTokenPayload,
   ): Promise<ResponseEntity<null>> {
     await this.participationService.participate(
       activityId,
-      user,
+      tokenPayload.sub,
       this.time.now(),
     );
     return ResponseEntity.SUCCESS();

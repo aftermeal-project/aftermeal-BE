@@ -28,6 +28,7 @@ import { UserTypeormRepository } from '../../../src/modules/user/infrastructure/
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StubTime } from '../../utils/stub-time';
 import { ActivityModule } from '../../../src/modules/activity/activity.module';
+import { TimeService } from '@common/time/time.service';
 
 describe('ParticipationService', () => {
   let participationService: ParticipationService;
@@ -35,6 +36,7 @@ describe('ParticipationService', () => {
   let userRepository: UserRepository;
   let activityRepository: ActivityRepository;
   let activityLocationRepository: ActivityLocationRepository;
+  let timeService: TimeService;
   let dataSource: DataSource;
 
   beforeAll(async () => {
@@ -78,6 +80,7 @@ describe('ParticipationService', () => {
       ACTIVITY_LOCATION_REPOSITORY,
     );
     userRepository = moduleRef.get<UserRepository>(USER_REPOSITORY);
+    timeService = moduleRef.get<TimeService>(TIME);
     dataSource = moduleRef.get<DataSource>(DataSource);
   });
 
@@ -98,7 +101,14 @@ describe('ParticipationService', () => {
       const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
 
-      const activity: Activity = createActivity(activityLocation);
+      const activity: Activity = Activity.create(
+        '배구',
+        18,
+        activityLocation,
+        EActivityType.LUNCH,
+        LocalDate.of(2024, 1, 3),
+        timeService.now(),
+      );
       await activityRepository.save(activity);
 
       const user: User = User.createTeacher(
@@ -109,13 +119,19 @@ describe('ParticipationService', () => {
       await userRepository.save(user);
 
       // when
-      await participationService.participate(activity.id, user);
+      await participationService.participate(
+        activity.id,
+        user.uuid,
+        timeService.now(),
+      );
 
       // then
       const participations: Participation[] =
         await participationRepository.find();
 
       expect(participations.length).toEqual(1);
+      expect(participations[0].id).toBeDefined();
+      expect(participations[0].user.id).toBeDefined();
     });
   });
 
@@ -125,7 +141,14 @@ describe('ParticipationService', () => {
       const activityLocation: ActivityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
 
-      const activity: Activity = createActivity(activityLocation);
+      const activity: Activity = Activity.create(
+        '배구',
+        18,
+        activityLocation,
+        EActivityType.LUNCH,
+        LocalDate.of(2024, 1, 3),
+        timeService.now(),
+      );
       await activityRepository.save(activity);
 
       const user: User = User.createTeacher(
@@ -160,21 +183,3 @@ describe('ParticipationService', () => {
     });
   });
 });
-
-function createActivity(activityLocation: ActivityLocation) {
-  const now: ZonedDateTime = ZonedDateTime.of(
-    LocalDate.of(2024, 1, 1),
-    LocalTime.of(0, 0),
-    ZoneOffset.UTC,
-  );
-  const scheduledDate: LocalDate = LocalDate.of(2024, 1, 3);
-
-  return Activity.create(
-    '배구',
-    18,
-    activityLocation,
-    EActivityType.LUNCH,
-    scheduledDate,
-    now,
-  );
-}

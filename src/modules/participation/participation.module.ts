@@ -10,9 +10,14 @@ import { ParticipationTypeormRepository } from './infrastructure/persistence/par
 import { ParticipationController } from './presentation/controllers/participation.controller';
 import { JodaTimeService } from '@common/time/joda-time.service';
 import { ActivityModule } from '../activity/activity.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Participation]), ActivityModule],
+  imports: [
+    TypeOrmModule.forFeature([Participation]),
+    ActivityModule,
+    UserModule,
+  ],
   controllers: [ParticipationController],
   providers: [
     ParticipationService,

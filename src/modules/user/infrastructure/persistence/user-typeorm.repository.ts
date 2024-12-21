@@ -20,6 +20,10 @@ export class UserTypeormRepository implements UserRepository {
     return await this.userRepository.findOneBy({ email: email });
   }
 
+  async findOneByUuid(uuid: string): Promise<User> {
+    return await this.userRepository.findOneBy({ uuid: uuid });
+  }
+
   async existsByEmail(email: string): Promise<boolean> {
     return await this.userRepository.existsBy({ email: email });
   }

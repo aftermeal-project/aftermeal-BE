@@ -46,6 +46,15 @@ export class UserService {
     return user;
   }
 
+  async getUserByUuid(uuid: string): Promise<User> {
+    const user: User | undefined =
+      await this.userRepository.findOneByUuid(uuid);
+    if (!user) {
+      throw new ResourceNotFoundException('존재하지 않는 사용자입니다.');
+    }
+    return user;
+  }
+
   @Transactional()
   async register(dto: UserRegistrationRequestDto): Promise<void> {
     const existUser: User = await this.userRepository.findOneByEmail(dto.email);

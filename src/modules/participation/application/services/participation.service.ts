@@ -7,6 +7,7 @@ import { ZonedDateTime } from '@js-joda/core';
 import { ParticipationRepository } from '../../domain/repositories/participation.repository';
 import { ActivityService } from '../../../activity/application/services/activity.service';
 import { Activity } from '../../../activity/domain/entities/activity.entity';
+import { UserService } from '../../../user/application/services/user.service';
 
 @Injectable()
 export class ParticipationService {
@@ -14,6 +15,7 @@ export class ParticipationService {
     @Inject(PARTICIPATION_REPOSITORY)
     private readonly participationRepository: ParticipationRepository,
     private readonly activityService: ActivityService,
+    private readonly userService: UserService,
   ) {}
 
   async getParticipationById(participationId: number): Promise<Participation> {
@@ -29,9 +31,10 @@ export class ParticipationService {
 
   async participate(
     activityId: number,
-    user: User,
+    userUuid: string,
     currentDateTime: ZonedDateTime,
   ): Promise<void> {
+    const user: User = await this.userService.getUserByUuid(userUuid);
     const activity: Activity =
       await this.activityService.getActivityById(activityId);
 

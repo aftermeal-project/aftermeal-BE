@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import { TOKEN_REPOSITORY } from '@common/constants/dependency-token';
@@ -22,7 +22,6 @@ export class TokenService {
     private readonly tokenConfig: ConfigType<typeof tokenConfiguration>,
     @Inject(TOKEN_REPOSITORY)
     private readonly tokenRepository: TokenRepository,
-    private readonly logger: Logger,
   ) {}
 
   async verifyAccessToken(
