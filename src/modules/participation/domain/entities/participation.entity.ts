@@ -12,7 +12,7 @@ export class Participation extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User, { eager: true, nullable: false })
   @JoinColumn({
     name: 'user_id',
     foreignKeyConstraintName: 'fk_participation_user',
@@ -21,6 +21,7 @@ export class Participation extends BaseTimeEntity {
 
   @ManyToOne(() => Activity, (activity) => activity.participations, {
     eager: false,
+    nullable: false,
   })
   @JoinColumn({
     name: 'activity_id',
