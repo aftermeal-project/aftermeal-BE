@@ -45,10 +45,6 @@ export class ActivityController {
   async getActivities(
     @Query() query: ActivityQueryDto,
   ): Promise<ResponseEntity<ActivityListResponseDto[]>> {
-    if (!query.date) {
-      query.date = this.time.now().toLocalDate();
-    }
-
     const responseDtos: ActivityListResponseDto[] =
       await this.activityService.getActivityListResponseByDate(query);
     return ResponseEntity.SUCCESS(responseDtos);
