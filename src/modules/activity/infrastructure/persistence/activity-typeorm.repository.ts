@@ -14,9 +14,9 @@ export class ActivityTypeormRepository implements ActivityRepository {
     return await this.repository.find();
   }
 
-  async findByDate(date: LocalDate): Promise<Activity[]> {
+  async findByScheduledDate(scheduledDate: LocalDate): Promise<Activity[]> {
     return await this.repository.find({
-      where: { scheduledDate: date.toString() },
+      where: { scheduledDate: scheduledDate?.toString() },
     });
   }
 

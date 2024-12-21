@@ -5,5 +5,5 @@ import { IsOptional } from 'class-validator';
 export class ActivityQueryDto {
   @Transform(({ value }) => LocalDate.parse(value))
   @IsOptional()
-  date?: LocalDate;
+  scheduledDate?: LocalDate;
 }

@@ -222,7 +222,7 @@ describe('ActivityService', () => {
       await participationRepository.save(participation);
 
       const query: ActivityQueryDto = {
-        date: LocalDate.of(2024, 1, 1),
+        scheduledDate: LocalDate.of(2024, 1, 1),
       };
 
       // when
