@@ -43,8 +43,9 @@ export class ActivityService {
   async getActivityListResponseByDate(
     query: ActivityQueryDto,
   ): Promise<ActivityListResponseDto[]> {
-    const activities: Activity[] =
-      await this.activityRepository.findByScheduledDate(query.scheduledDate);
+    const activities: Activity[] = await this.activityRepository.find({
+      scheduledDate: query?.scheduledDate.toString(),
+    });
     return activities.map((activity) => ActivityListResponseDto.from(activity));
   }
 
