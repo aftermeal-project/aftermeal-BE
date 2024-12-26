@@ -121,11 +121,11 @@ export class Activity extends BaseTimeEntity {
     type: EActivityType,
     scheduledDate: LocalDate,
   ): void {
-    this.title = title;
-    this.maxParticipants = maxParticipants;
-    this.location = location;
-    this.type = type;
-    this.scheduledDate = scheduledDate;
+    if (title) this.title = title;
+    if (maxParticipants) this.maxParticipants = maxParticipants;
+    if (location) this.location = location;
+    if (type) this.type = type;
+    if (scheduledDate) this.scheduledDate = scheduledDate;
   }
 
   isFull(): boolean {

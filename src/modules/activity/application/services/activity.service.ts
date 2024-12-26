@@ -44,7 +44,8 @@ export class ActivityService {
     query: ActivityQueryDto,
   ): Promise<ActivityListResponseDto[]> {
     const activities: Activity[] = await this.activityRepository.find({
-      scheduledDate: query?.scheduledDate.toString(),
+      scheduledDate: query?.scheduledDate,
+      type: query?.type,
     });
     return activities.map((activity) => ActivityListResponseDto.from(activity));
   }

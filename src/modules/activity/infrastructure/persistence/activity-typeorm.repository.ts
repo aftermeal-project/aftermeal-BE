@@ -2,6 +2,8 @@ import { ActivityRepository } from '../../domain/repositories/activity.repositor
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Activity } from '../../domain/entities/activity.entity';
+import { LocalDate } from '@js-joda/core';
+import { EActivityType } from '../../domain/entities/activity-type';
 
 export class ActivityTypeormRepository implements ActivityRepository {
   constructor(
@@ -9,7 +11,10 @@ export class ActivityTypeormRepository implements ActivityRepository {
     private readonly repository: Repository<Activity>,
   ) {}
 
-  async find(filter?: { scheduledDate: string }): Promise<Activity[]> {
+  async find(filter?: {
+    scheduledDate: LocalDate;
+    type: EActivityType;
+  }): Promise<Activity[]> {
     return await this.repository.find({
       where: filter,
       order: { scheduledDate: 'DESC' },

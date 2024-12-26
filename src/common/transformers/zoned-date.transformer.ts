@@ -10,11 +10,11 @@ export class ZonedDateTimeTransformer implements ValueTransformer {
     return convert(entityValue).toDate();
   }
 
-  from(databaseValue: string | null): ZonedDateTime | null {
+  from(databaseValue: Date | null): ZonedDateTime | null {
     if (!databaseValue) {
       return null;
     }
 
-    return nativeJs(new Date(databaseValue), ZoneOffset.UTC);
+    return nativeJs(databaseValue, ZoneOffset.UTC);
   }
 }

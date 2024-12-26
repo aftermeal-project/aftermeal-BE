@@ -15,11 +15,13 @@ export class StubTime implements TimeService {
     hour: number,
     minute: number,
     second: number,
-  ): ZonedDateTime {
-    return ZonedDateTime.of(
-      LocalDate.of(year, month, day),
-      LocalTime.of(hour, minute, second),
-      ZoneOffset.UTC,
+  ): StubTime {
+    return new StubTime(
+      ZonedDateTime.of(
+        LocalDate.of(year, month, day),
+        LocalTime.of(hour, minute, second),
+        ZoneOffset.UTC,
+      ),
     );
   }
 

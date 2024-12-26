@@ -19,7 +19,7 @@ export class UserRegistrationRequestDto {
   email: string;
 
   @IsEnum(UserType, {
-    message: `사용자 유형은 다음 값 중 하나여야 합니다: ${Object.values(UserType)}`,
+    message: `사용자유형은 다음 값 중 하나여야 합니다: ${Object.values(UserType)}`,
   })
   type: UserType;
 

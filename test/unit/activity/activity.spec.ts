@@ -9,13 +9,14 @@ import { InvalidScheduledDateException } from '@common/exceptions/invalid-schedu
 
 describe('Activity', () => {
   describe('create', () => {
-    it('활동 예정 날짜는 과거로 설정할 수 없다.', () => {
+    it('활동일자는 과거로 설정할 수 없다.', () => {
       // given
       const now: ZonedDateTime = ZonedDateTime.of(
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         LocalTime.of(0, 0),
         ZoneOffset.UTC,
       );
+
       const scheduledDate: LocalDate = now.minusDays(1).toLocalDate();
 
       // when
@@ -36,7 +37,7 @@ describe('Activity', () => {
     it('활동 시작 시간 이후엔 활동을 생성할 수 없다.', () => {
       // given
       const now: ZonedDateTime = ZonedDateTime.of(
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         LocalTime.of(12, 30, 1),
         ZoneOffset.UTC,
       );
@@ -48,7 +49,7 @@ describe('Activity', () => {
           10,
           new ActivityLocation(),
           EActivityType.LUNCH,
-          LocalDate.of(2024, 10, 30),
+          LocalDate.of(2024, 1, 1),
           now,
         );
 
@@ -61,16 +62,17 @@ describe('Activity', () => {
     it('참가 인원이 꽉 찼을 때 true를 반환한다.', () => {
       // given
       const now: ZonedDateTime = ZonedDateTime.of(
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         LocalTime.of(8, 30, 0),
         ZoneOffset.UTC,
       );
+
       const activity: Activity = Activity.create(
         'title',
         1,
         new ActivityLocation(),
         EActivityType.LUNCH,
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         now,
       );
 
@@ -86,16 +88,17 @@ describe('Activity', () => {
     it('참가 인원이 꽉 차지 않았을 때 false를 반환한다.', () => {
       // given
       const now: ZonedDateTime = ZonedDateTime.of(
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         LocalTime.of(8, 30, 0),
         ZoneOffset.UTC,
       );
+
       const activity: Activity = Activity.create(
         'title',
         2,
         new ActivityLocation(),
         EActivityType.LUNCH,
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         now,
       );
 
@@ -113,16 +116,17 @@ describe('Activity', () => {
     it('해당 참가자가 참가한 사용자면 true를 반환한다.', () => {
       // given
       const now: ZonedDateTime = ZonedDateTime.of(
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         LocalTime.of(8, 30, 0),
         ZoneOffset.UTC,
       );
+
       const activity: Activity = Activity.create(
         'title',
         2,
         new ActivityLocation(),
         EActivityType.LUNCH,
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         now,
       );
 
@@ -143,17 +147,18 @@ describe('Activity', () => {
 
     it('해당 참가자가 참가한 사용자가 아니면 false를 반환한다.', () => {
       // given
-      const now = ZonedDateTime.of(
-        LocalDate.of(2024, 10, 30),
+      const now: ZonedDateTime = ZonedDateTime.of(
+        LocalDate.of(2024, 1, 1),
         LocalTime.of(8, 30, 0),
         ZoneOffset.UTC,
       );
+
       const activity: Activity = Activity.create(
         'title',
         2,
         new ActivityLocation(),
         EActivityType.LUNCH,
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         now,
       );
 

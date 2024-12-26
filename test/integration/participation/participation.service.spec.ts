@@ -59,13 +59,7 @@ describe('ParticipationService', () => {
         },
         {
           provide: TIME,
-          useValue: new StubTime(
-            ZonedDateTime.of(
-              LocalDate.of(2024, 1, 3),
-              LocalTime.of(11, 30),
-              ZoneOffset.UTC,
-            ),
-          ),
+          useValue: StubTime.of(2024, 1, 1, 11, 30, 0),
         },
       ],
     }).compile();

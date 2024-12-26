@@ -53,7 +53,7 @@ describe('UserRegistrationRequestDto', () => {
     expect(errors[0].property).toBe('email');
   });
 
-  it('사용자 유형은 유효한 enum 값이어야 한다.', () => {
+  it('사용자유형은 유효한 enum 값이어야 한다.', () => {
     // given
     const dto = new UserRegistrationRequestDto();
     dto.name = '테스트';

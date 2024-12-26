@@ -55,7 +55,7 @@ describe('ActivityCreationRequestDto', () => {
     expect(errors[0].property).toBe('activityLocationId');
   });
 
-  it('활동 유형은 유효한 값이어야 한다.', () => {
+  it('활동유형은 유효한 값이어야 한다.', () => {
     // given
     const dto: ActivityCreationRequestDto = new ActivityCreationRequestDto();
     dto.title = '테스트 활동';
@@ -72,7 +72,7 @@ describe('ActivityCreationRequestDto', () => {
     expect(errors[0].property).toBe('type');
   });
 
-  it('예정 날짜는 유효한 LocalDate 형식이어야 한다.', () => {
+  it('활동일자는 유효한 LocalDate 형식이어야 한다.', () => {
     // given
     const dto: ActivityCreationRequestDto = new ActivityCreationRequestDto();
     dto.title = '테스트 활동';

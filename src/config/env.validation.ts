@@ -20,10 +20,6 @@ class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  BASE_URL: string;
-
-  @IsString()
-  @IsNotEmpty()
   DB_HOST: string;
 
   @IsNumber()

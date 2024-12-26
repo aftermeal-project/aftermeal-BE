@@ -6,12 +6,12 @@ describe('ActivityPeriod', () => {
     it('신청 기간 내에 있는 경우 true를 반환한다.', () => {
       // given
       const applicationStartAt: ZonedDateTime = ZonedDateTime.of(
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         LocalTime.of(8, 30, 0),
         ZoneOffset.UTC,
       );
       const applicationEndAt: ZonedDateTime = ZonedDateTime.of(
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         LocalTime.of(12, 30, 0),
         ZoneOffset.UTC,
       );
@@ -22,7 +22,7 @@ describe('ActivityPeriod', () => {
       );
 
       const applicationAt: ZonedDateTime = ZonedDateTime.of(
-        LocalDate.of(2024, 10, 30),
+        LocalDate.of(2024, 1, 1),
         LocalTime.of(8, 30, 0),
         ZoneOffset.UTC,
       );
@@ -38,12 +38,12 @@ describe('ActivityPeriod', () => {
       // given
       const applicationPeriod: ApplicationPeriod = ApplicationPeriod.create(
         ZonedDateTime.of(
-          LocalDate.of(2024, 10, 30),
+          LocalDate.of(2024, 1, 1),
           LocalTime.of(8, 30, 0),
           ZoneOffset.UTC,
         ),
         ZonedDateTime.of(
-          LocalDate.of(2024, 10, 30),
+          LocalDate.of(2024, 1, 1),
           LocalTime.of(12, 30, 0),
           ZoneOffset.UTC,
         ),
@@ -52,7 +52,7 @@ describe('ActivityPeriod', () => {
       // when
       const result = applicationPeriod.isWithinApplicationPeriod(
         ZonedDateTime.of(
-          LocalDate.of(2024, 10, 30),
+          LocalDate.of(2024, 1, 1),
           LocalTime.of(8, 29, 59),
           ZoneOffset.UTC,
         ),

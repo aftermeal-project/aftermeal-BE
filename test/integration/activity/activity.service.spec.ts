@@ -20,7 +20,7 @@ import { ResourceNotFoundException } from '@common/exceptions/resource-not-found
 import { ActivityListResponseDto } from '../../../src/modules/activity/presentation/dto/activity-list-response.dto';
 import { ActivityRepository } from '../../../src/modules/activity/domain/repositories/activity.repository';
 import { EActivityType } from '../../../src/modules/activity/domain/entities/activity-type';
-import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
+import { LocalDate } from '@js-joda/core';
 import { ActivityLocation } from '../../../src/modules/activity-location/domain/entities/activity-location.entity';
 import { ActivityLocationRepository } from '../../../src/modules/activity-location/domain/repositories/activity-location.repository';
 import { UserRepository } from '../../../src/modules/user/domain/repositories/user.repository';
@@ -64,13 +64,7 @@ describe('ActivityService', () => {
         ActivityLocationService,
         {
           provide: TIME,
-          useValue: new StubTime(
-            ZonedDateTime.of(
-              LocalDate.of(2024, 1, 1),
-              LocalTime.of(12, 0),
-              ZoneOffset.UTC,
-            ),
-          ),
+          useValue: StubTime.of(2024, 1, 1, 12, 0, 0),
         },
         {
           provide: ACTIVITY_REPOSITORY,
@@ -223,6 +217,7 @@ describe('ActivityService', () => {
 
       const query: ActivityQueryDto = {
         scheduledDate: LocalDate.of(2024, 1, 1),
+        type: EActivityType.LUNCH,
       };
 
       // when
@@ -296,20 +291,13 @@ describe('ActivityService', () => {
       const activityLocation = ActivityLocation.create('GYM');
       await activityLocationRepository.save(activityLocation);
 
-      const now: ZonedDateTime = ZonedDateTime.of(
-        LocalDate.of(2024, 1, 1),
-        LocalTime.of(0, 0),
-        ZoneOffset.UTC,
-      );
-      const scheduledDate: LocalDate = LocalDate.of(2024, 1, 3);
-
       const activity: Activity = Activity.create(
         '배구',
         18,
         activityLocation,
         EActivityType.LUNCH,
-        scheduledDate,
-        now,
+        LocalDate.of(2024, 1, 3),
+        timeService.now(),
       );
       await activityRepository.save(activity);
 

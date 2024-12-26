@@ -4,7 +4,9 @@ import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
+import * as dotenv from 'dotenv';
 
+dotenv.config();
 /**
  * 테스트 MySQL 가져오기
  *

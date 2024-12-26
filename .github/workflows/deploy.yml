@@ -63,7 +63,6 @@ jobs:
         env:
             NODE_ENV: ${{ secrets.NODE_ENV }}
             APP_PORT: ${{ secrets.APP_PORT }}
-            BASE_URL: ${{ secrets.BASE_URL }}
             DB_HOST: ${{ secrets.DB_HOST }}
             DB_PORT: ${{ secrets.DB_PORT }}
             DB_USER: ${{ secrets.DB_USER }}

@@ -32,10 +32,6 @@ export class EActivityType extends EnumType<EActivityType>() {
     return this._code;
   }
 
-  get displayName(): string {
-    return this._displayName;
-  }
-
   getActivityStartDateTime(date: LocalDate): ZonedDateTime {
     return date.atTime(this._activityStartTime).atZone(ZoneOffset.UTC);
   }

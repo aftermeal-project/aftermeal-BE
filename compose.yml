@@ -25,7 +25,6 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV}
       - APP_PORT=${APP_PORT}
-      - BASE_URL=${BASE_URL}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
