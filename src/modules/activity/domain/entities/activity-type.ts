@@ -1,5 +1,6 @@
 import { Enum, EnumType } from 'ts-jenum';
-import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
+import { LocalDate, LocalTime, ZonedDateTime, ZoneId } from '@js-joda/core';
+import '@js-joda/timezone';
 
 @Enum('code')
 export class EActivityType extends EnumType<EActivityType>() {
@@ -33,10 +34,10 @@ export class EActivityType extends EnumType<EActivityType>() {
   }
 
   getActivityStartDateTime(date: LocalDate): ZonedDateTime {
-    return date.atTime(this._activityStartTime).atZone(ZoneOffset.UTC);
+    return date.atTime(this._activityStartTime).atZone(ZoneId.of('Asia/Seoul'));
   }
 
   getActivityEndDateTime(date: LocalDate): ZonedDateTime {
-    return date.atTime(this._activityEndTime).atZone(ZoneOffset.UTC);
+    return date.atTime(this._activityEndTime).atZone(ZoneId.of('Asia/Seoul'));
   }
 }
