@@ -50,8 +50,16 @@ class EnvironmentVariables {
   @IsNumber()
   EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME: number;
 
+  @IsString()
+  @IsNotEmpty()
+  REDIS_HOST: string;
+
   @IsNumber()
   REDIS_PORT: number;
+
+  @IsString()
+  @IsNotEmpty()
+  REDIS_USER: string;
 
   @IsString()
   @IsNotEmpty()
