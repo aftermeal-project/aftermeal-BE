@@ -12,6 +12,7 @@ export class UserTypeormRepository implements UserRepository {
   async find(): Promise<User[]> {
     return await this.userRepository.find();
   }
+
   async findOneById(id: number): Promise<User> {
     return await this.userRepository.findOneBy({ id: id });
   }

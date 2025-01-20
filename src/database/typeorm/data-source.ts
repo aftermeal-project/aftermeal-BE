@@ -3,11 +3,12 @@ import { DataSource } from 'typeorm';
 import databaseConfig from '@config/database.config';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
 dotenv.config();
 const dbConfig = databaseConfig();
 
-export const AppDataSource = new DataSource({
+const options: MysqlConnectionOptions = {
   type: 'mysql',
   host: dbConfig.host,
   port: dbConfig.port,
@@ -22,4 +23,6 @@ export const AppDataSource = new DataSource({
   namingStrategy: new SnakeNamingStrategy(),
   bigNumberStrings: false,
   timezone: 'Z',
-});
+};
+
+export const AppDataSource = new DataSource(options);

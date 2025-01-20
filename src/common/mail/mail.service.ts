@@ -1,8 +1,10 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import emailConfiguration from '@config/email.config';
 import { ConfigType } from '@nestjs/config';
 import { createTransport, Transporter } from 'nodemailer';
 import { HtmlTemplate } from './html-template';
+import { WINSTON_LOGGER } from '@common/constants/dependency-token';
+import { CustomLoggerService } from '@common/logger/custom-logger.service';
 
 @Injectable()
 export class MailService {
@@ -12,7 +14,8 @@ export class MailService {
     @Inject(emailConfiguration.KEY)
     readonly emailConfig: ConfigType<typeof emailConfiguration>,
     private readonly htmlTemplate: HtmlTemplate,
-    private readonly logger: Logger,
+    @Inject(WINSTON_LOGGER)
+    private readonly logger: CustomLoggerService,
   ) {
     this.transporter = createTransport({
       host: emailConfig.host,
@@ -23,6 +26,7 @@ export class MailService {
         pass: emailConfig.auth.pass,
       },
     });
+    this.logger.setContext(MailService.name);
   }
 
   async sendEmailVerification(
@@ -47,7 +51,7 @@ export class MailService {
 
     try {
       await this.transporter.sendMail({ from, to, subject, html });
-      this.logger.log('이메일이 성공적으로 전송되었습니다.', MailService.name);
+      this.logger.info('이메일이 성공적으로 전송되었습니다.');
     } catch (error) {
       this.logger.error(
         '이메일을 보내는 중 오류가 발생했습니다.',

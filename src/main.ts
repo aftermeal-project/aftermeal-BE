@@ -2,7 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
 import appConfig from '@config/app.config';
-import { Logger } from '@nestjs/common';
+import { CustomLoggerService } from '@common/logger/custom-logger.service';
+import { WINSTON_LOGGER } from '@common/constants/dependency-token';
 import { setNestApp } from '@common/middlewares/set-nest-app';
 import {
   initializeTransactionalContext,
@@ -15,17 +16,17 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     forceCloseConnections: true,
     abortOnError: true,
+    logger: ['error', 'warn'],
   });
 
-  setNestApp(app);
+  await setNestApp(app);
 
+  const logger = await app.resolve<CustomLoggerService>(WINSTON_LOGGER);
   const config = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
-  const port: number = config.port;
 
-  await app.listen(port);
-
-  const logger: Logger = app.get(Logger);
-  logger.log(`Application is running on: ${await app.getUrl()}`);
+  await app.listen(config.port);
+  logger.setContext('Main');
+  logger.info(`Application is running on: ${await app.getUrl()}`);
 }
 
 void bootstrap();
