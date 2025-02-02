@@ -19,6 +19,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - /var/log/aftermeal:/var/log/aftermeal
     ports:
       - ${APP_PORT}:${APP_PORT}
     restart: unless-stopped
