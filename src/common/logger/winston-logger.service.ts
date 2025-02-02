@@ -23,7 +23,9 @@ export class WinstonLoggerService implements CustomLoggerService {
       format: isProduction ? this.getJsonFormat() : this.getTextFormat(),
       transports: [
         isProduction
-          ? new transports.File({ filename: 'combined.log' })
+          ? new transports.File({
+              filename: '/var/log/aftermeal/application.log',
+            })
           : new transports.Console(),
       ],
     });
