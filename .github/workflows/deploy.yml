@@ -75,6 +75,7 @@ jobs:
             EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME: ${{ secrets.EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME }}
             REDIS_HOST: ${{ secrets.REDIS_HOST }}
             REDIS_PORT: ${{ secrets.REDIS_PORT }}
+            REDIS_USER: ${{ secrets.REDIS_USER }}
             REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
             EMAIL_SERVICE: ${{ secrets.EMAIL_SERVICE }}
             EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
