@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppDataSource } from './typeorm/data-source';
+import { AppDataSource } from './data-source';
 import { DataSource } from 'typeorm';
 import {
   addTransactionalDataSource,

@@ -4,7 +4,7 @@ import { ConfigType } from '@nestjs/config';
 import { createTransport, Transporter } from 'nodemailer';
 import { HtmlTemplate } from './html-template';
 import { WINSTON_LOGGER } from '@common/constants/dependency-token';
-import { CustomLoggerService } from '@common/logger/custom-logger.service';
+import { CustomLoggerService } from '../logger/custom-logger.service';
 
 @Injectable()
 export class MailService {

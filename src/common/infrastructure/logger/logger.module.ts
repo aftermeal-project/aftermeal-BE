@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { WinstonLoggerService } from '@common/logger/winston-logger.service';
+import { WinstonLogger } from './winston.logger';
 import { WINSTON_LOGGER } from '@common/constants/dependency-token';
 
 @Global()
@@ -7,7 +7,7 @@ import { WINSTON_LOGGER } from '@common/constants/dependency-token';
   providers: [
     {
       provide: WINSTON_LOGGER,
-      useClass: WinstonLoggerService,
+      useClass: WinstonLogger,
     },
   ],
   exports: [WINSTON_LOGGER],

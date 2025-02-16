@@ -1,4 +1,4 @@
-import { TimeService } from '@common/time/time.service';
+import { TimeService } from '@common/infrastructure/time/time.service';
 import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from '@js-joda/core';
 
 export class StubTime implements TimeService {

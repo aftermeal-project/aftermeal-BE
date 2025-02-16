@@ -1,4 +1,4 @@
-import { TimeService } from '@common/time/time.service';
+import { TimeService } from './time.service';
 import { ZonedDateTime, ZoneOffset } from '@js-joda/core';
 import { Injectable } from '@nestjs/common';
 

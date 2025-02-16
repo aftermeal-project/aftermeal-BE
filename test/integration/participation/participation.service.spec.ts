@@ -28,7 +28,7 @@ import { UserTypeormRepository } from '../../../src/modules/user/infrastructure/
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StubTime } from '../../utils/stub-time';
 import { ActivityModule } from '../../../src/modules/activity/activity.module';
-import { TimeService } from '@common/time/time.service';
+import { TimeService } from '@common/infrastructure/time/time.service';
 
 describe('ParticipationService', () => {
   let participationService: ParticipationService;

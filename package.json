@@ -20,12 +20,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "schema:sync": "yarn typeorm schema:sync -d ./src/database/typeorm/data-source.ts",
-    "schema:drop": "yarn typeorm schema:drop -d ./src/database/typeorm/data-source.ts",
-    "migration:create": "yarn typeorm migration:create ./src/database/migrations/Migration",
-    "migration:generate": "yarn typeorm migration:generate ./src/database/migrations/Migration -d ./src/database/typeorm/data-source.ts",
-    "migration:run": "yarn typeorm migration:run -d ./src/database/typeorm/data-source.ts",
-    "migration:revert": "yarn typeorm migration:revert -d ./src/database/typeorm/data-source.ts"
+    "schema:sync": "yarn typeorm schema:sync -d src/common/infrastructure/database/data-source.ts",
+    "schema:drop": "yarn typeorm schema:drop -d src/common/infrastructure/database/data-source.ts",
+    "migration:create": "yarn typeorm migration:create src/common/infrastructure/database/migrations/Migration",
+    "migration:generate": "yarn typeorm migration:generate src/common/infrastructure/database/migrations/Migration -d ./src/database/typeorm/data-source.ts",
+    "migration:run": "yarn typeorm migration:run -d src/common/infrastructure/database/data-source.ts",
+    "migration:revert": "yarn typeorm migration:revert -d src/common/infrastructure/database/data-source.ts"
   },
   "dependencies": {
     "@js-joda/core": "^5.6.1",
@@ -51,6 +51,7 @@
     "mustache": "^4.2.0",
     "mysql2": "^3.9.8",
     "nest-winston": "^1.9.7",
+    "nestjs-cls": "^5.2.0",
     "nodemailer": "6.9.9",
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",

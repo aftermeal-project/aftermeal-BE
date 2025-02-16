@@ -6,7 +6,7 @@ import { ACTIVITY_REPOSITORY, TIME } from '@common/constants/dependency-token';
 import { ActivityTypeormRepository } from './infrastructure/persistence/activity-typeorm.repository';
 import { ActivityController } from './presentation/controllers/activity.controller';
 import { ActivityLocationModule } from '../activity-location/activity-location.module';
-import { JodaTimeService } from '@common/time/joda-time.service';
+import { JodaTimeService } from '@common/infrastructure/time/joda-time.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Activity]), ActivityLocationModule],

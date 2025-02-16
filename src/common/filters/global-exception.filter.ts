@@ -13,7 +13,7 @@ import { ResponseEntity } from '@common/models/response.entity';
 import { instanceToPlain } from 'class-transformer';
 import { ExceptionCode } from '@common/exceptions/exception-code';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { CustomLoggerService } from '@common/logger/custom-logger.service';
+import { CustomLoggerService } from '@common/infrastructure/logger/custom-logger.service';
 import { WINSTON_LOGGER } from '@common/constants/dependency-token';
 
 @Catch()

@@ -5,7 +5,7 @@ import { UserModule } from '../user/user.module';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { TokenModule } from '../token/token.module';
-import { MailModule } from '@common/mail/mail.module';
+import { MailModule } from '@common/infrastructure/mail/mail.module';
 
 @Module({
   imports: [forwardRef(() => UserModule), TokenModule, MailModule],

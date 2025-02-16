@@ -6,7 +6,7 @@ import {
 import { ConfigType } from '@nestjs/config';
 import redisConfiguration from '@config/redis.config';
 import { createClient, RedisClientType } from 'redis';
-import { CustomLoggerService } from '@common/logger/custom-logger.service';
+import { CustomLoggerService } from '../logger/custom-logger.service';
 
 @Module({
   providers: [

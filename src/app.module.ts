@@ -12,10 +12,12 @@ import { ActivityModule } from './modules/activity/activity.module';
 import { UserModule } from './modules/user/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from '@common/infrastructure/database/database.module';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { TokenModule } from './modules/token/token.module';
-import { LoggerModule } from '@common/logger/logger.module';
+import { LoggerModule } from '@common/infrastructure/logger/logger.module';
+import { ClsModule } from 'nestjs-cls';
+import { v4 as uuidv4 } from 'uuid';
 
 @Module({
   imports: [
@@ -30,6 +32,18 @@ import { LoggerModule } from '@common/logger/logger.module';
       ],
       isGlobal: true,
       validate: validate,
+    }),
+    ClsModule.forRoot({
+      global: true,
+      middleware: {
+        mount: true,
+        generateId: true,
+        idGenerator: () => uuidv4(),
+        setup: (cls, req) => {
+          cls.set('url', req.originalUrl);
+          cls.set('method', req.method);
+        },
+      },
     }),
     DatabaseModule,
     LoggerModule,

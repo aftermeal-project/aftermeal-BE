@@ -4,7 +4,7 @@ import { LoginResponseDto } from '../../presentation/dto/login-response.dto';
 import { TokenService } from '../../../token/application/services/token.service';
 import { User } from '../../../user/domain/entities/user.entity';
 import { TokenRefreshResponseDto } from '../../presentation/dto/token-refresh-response.dto';
-import { MailService } from '@common/mail/mail.service';
+import { MailService } from '@common/infrastructure/mail/mail.service';
 import { InvalidPasswordException } from '@common/exceptions/invalid-password.exception';
 import { InvalidEmailVerificationCodeException } from '@common/exceptions/invalid-email-verification-code.exception';
 

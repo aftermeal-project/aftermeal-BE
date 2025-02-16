@@ -27,7 +27,7 @@ import { NotAvailableParticipateException } from '@common/exceptions/not-availab
 import { ActivityCreationClosedException } from '@common/exceptions/activity-creation-closed.exception';
 import { GraduatedGenerationException } from '@common/exceptions/graduated-generation.exception';
 import { WeakPasswordException } from '@common/exceptions/weak-password.exception';
-import { CustomLoggerService } from '@common/logger/custom-logger.service';
+import { CustomLoggerService } from '@common/infrastructure/logger/custom-logger.service';
 import { WINSTON_LOGGER } from '@common/constants/dependency-token';
 
 @Catch(BaseException)

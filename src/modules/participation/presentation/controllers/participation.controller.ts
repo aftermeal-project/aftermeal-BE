@@ -13,7 +13,7 @@ import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { ResponseEntity } from '@common/models/response.entity';
 import { ParticipationOwnerGuard } from '../../infrastructure/guards/participation-owner.guard';
 import { TIME } from '@common/constants/dependency-token';
-import { TimeService } from '@common/time/time.service';
+import { TimeService } from '@common/infrastructure/time/time.service';
 import { AccessTokenPayload } from '../../../auth/domain/types/jwt-payload';
 
 @Controller()

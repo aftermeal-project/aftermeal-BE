@@ -35,7 +35,7 @@ import { ActivityLocationTypeormRepository } from '../../../src/modules/activity
 import { StubTime } from '../../utils/stub-time';
 import { ActivityLocationService } from '../../../src/modules/activity-location/application/services/activity-location.service';
 import { ActivityResponseDto } from '../../../src/modules/activity/presentation/dto/activity-response.dto';
-import { TimeService } from '@common/time/time.service';
+import { TimeService } from '@common/infrastructure/time/time.service';
 import { ActivityQueryDto } from '../../../src/modules/activity/presentation/dto/activity-query.dto';
 
 describe('ActivityService', () => {

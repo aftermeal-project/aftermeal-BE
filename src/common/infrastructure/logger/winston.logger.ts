@@ -3,18 +3,20 @@ import { ConfigType } from '@nestjs/config';
 import appConfiguration from '@config/app.config';
 import { createLogger, format, Logger, transports } from 'winston';
 import { Format } from 'logform';
-import { CustomLoggerService } from '@common/logger/custom-logger.service';
+import { CustomLoggerService } from './custom-logger.service';
+import { ClsService } from 'nestjs-cls';
 
 const { combine, timestamp, ms, json, errors, printf } = format;
 
 @Injectable({ scope: Scope.TRANSIENT })
-export class WinstonLoggerService implements CustomLoggerService {
+export class WinstonLogger implements CustomLoggerService {
   private logger: Logger;
   private context: string;
 
   constructor(
     @Inject(appConfiguration.KEY)
     appConfig: ConfigType<typeof appConfiguration>,
+    private readonly cls: ClsService,
   ) {
     const isProduction: boolean = appConfig.env === 'production';
 
@@ -32,22 +34,23 @@ export class WinstonLoggerService implements CustomLoggerService {
   }
 
   info(message: string, context?: string): void {
-    this.logger.info(message, { context: context ? context : this.context });
+    const meta = { context: context ? context : this.context };
+    this.logger.info(message, meta);
   }
 
   debug(message: string, context?: string): void {
-    this.logger.debug(message, { context: context ? context : this.context });
+    const meta = { context: context ? context : this.context };
+    this.logger.debug(message, meta);
   }
 
   warn(message: string, context?: string): void {
-    this.logger.warn(message, { context: context ? context : this.context });
+    const meta = { context: context ? context : this.context };
+    this.logger.warn(message, meta);
   }
 
   error(message: string, stack?: string, context?: string): void {
-    this.logger.error(message, {
-      context: context ? context : this.context,
-      stack,
-    });
+    const meta = { context: context ? context : this.context, stack };
+    this.logger.error(message, meta);
   }
 
   setContext(context: string): void {
@@ -55,9 +58,14 @@ export class WinstonLoggerService implements CustomLoggerService {
   }
 
   private getTextFormat(): Format {
-    const myFormat: Format = printf(
-      ({ timestamp, level, message, context, stack }) => {
-        return `[${timestamp}] ${level.toUpperCase()} ${context ? '[' + context + ']' : ''} ${message} ${stack ? '\n' + stack : ''}`;
+    const textFormat: Format = printf(
+      ({ timestamp, level, message, context, stack, ms }) => {
+        const requestId = this.cls.getId() || '-';
+        const method = this.cls.get('method') || '-';
+        const url = this.cls.get('url') || '-';
+        const logContext = context || this.context || 'NoContext';
+        const formattedStack = stack ? `\n${stack}` : '';
+        return `${timestamp} ${level.toUpperCase()} [${logContext}] [${requestId}] ${method} ${url} - ${message} ${ms} ${formattedStack}`;
       },
     );
 
@@ -65,7 +73,9 @@ export class WinstonLoggerService implements CustomLoggerService {
       timestamp({
         format: 'YYYY-MM-DD HH:mm:ss',
       }),
-      myFormat,
+      errors({ stack: true }),
+      ms(),
+      textFormat,
     );
   }
 

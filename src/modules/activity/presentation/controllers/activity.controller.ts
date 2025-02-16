@@ -20,7 +20,7 @@ import { ActivityUpdateRequestDto } from '../dto/activity-update-request.dto';
 import { Roles } from '@common/decorators/roles.decorator';
 import { ActivityQueryDto } from '../dto/activity-query.dto';
 import { TIME } from '@common/constants/dependency-token';
-import { TimeService } from '@common/time/time.service';
+import { TimeService } from '@common/infrastructure/time/time.service';
 import { Role } from '../../../user/domain/entities/role';
 
 @Controller('activities')
