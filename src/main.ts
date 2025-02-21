@@ -2,11 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
 import appConfig from '@config/app.config';
-import { setNestApp } from './set-nest-app';
 import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
+import { VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
@@ -17,7 +17,9 @@ async function bootstrap() {
     logger: ['error', 'warn'],
   });
 
-  await setNestApp(app);
+  app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
+  app.enableCors();
+  app.enableShutdownHooks();
 
   const { port } = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
 
