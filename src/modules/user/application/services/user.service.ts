@@ -12,6 +12,7 @@ import { UserResponseDto } from '../../presentation/dto/user-response.dto';
 import { UserUpdateRequestDto } from '../../presentation/dto/user-update-request.dto';
 import { AuthService } from '../../../auth/application/services/auth.service';
 import { AlreadyExistUserException } from '@common/exceptions/already-exist-user.exception';
+import { PendingVerificationUserException } from '@common/exceptions/pending-verification-user.exception';
 
 @Injectable()
 export class UserService {
@@ -57,13 +58,14 @@ export class UserService {
 
   @Transactional()
   async register(dto: UserRegistrationRequestDto): Promise<void> {
-    const existUser: User = await this.userRepository.findOneByEmail(dto.email);
+    const existUser: User | undefined =
+      await this.userRepository.findOneByEmail(dto.email);
+
+    if (existUser && existUser.isCandidate()) {
+      throw new PendingVerificationUserException();
+    }
 
     if (existUser) {
-      if (existUser.isCandidate()) {
-        void this.authService.sendEmailVerification(existUser.email);
-        return;
-      }
       throw new AlreadyExistUserException();
     }
 
