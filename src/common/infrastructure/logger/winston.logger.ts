@@ -60,12 +60,10 @@ export class WinstonLogger implements CustomLoggerService {
   private getTextFormat(): Format {
     const textFormat: Format = printf(
       ({ timestamp, level, message, context, stack, ms }) => {
-        const requestId = this.cls.getId() || '-';
-        const method = this.cls.get('method') || '-';
-        const url = this.cls.get('url') || '-';
-        const logContext = context || this.context || 'NoContext';
-        const formattedStack = stack ? `\n${stack}` : '';
-        return `${timestamp} ${level.toUpperCase()} [${logContext}] [${requestId}] ${method} ${url} - ${message} ${ms} ${formattedStack}`;
+        const requestId = this.cls.get('requestID') || '';
+        const logContext = context || '';
+        const formattedStack = stack ? '\n' + stack : '';
+        return `${timestamp} ${level.toUpperCase()} [${logContext}] [${requestId}] - ${message} ${ms} ${formattedStack}`;
       },
     );
 
