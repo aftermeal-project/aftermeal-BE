@@ -1,7 +1,7 @@
 import { ExceptionCode } from '@common/exceptions/exception-code';
-import { BaseException } from '@common/exceptions/base-exception';
+import { BusinessException } from '@common/exceptions/base-exception';
 
-export class ActivityCreationClosedException extends BaseException {
+export class ActivityCreationClosedException extends BusinessException {
   override readonly code = ExceptionCode.ACTIVITY_CREATION_CLOSED;
 
   constructor(

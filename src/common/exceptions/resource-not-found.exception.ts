@@ -1,7 +1,7 @@
 import { ExceptionCode } from '@common/exceptions/exception-code';
-import { BaseException } from '@common/exceptions/base-exception';
+import { BusinessException } from '@common/exceptions/base-exception';
 
-export class ResourceNotFoundException extends BaseException {
+export class ResourceNotFoundException extends BusinessException {
   override readonly code = ExceptionCode.RESOURCE_NOT_FOUND;
 
   constructor(message: string) {

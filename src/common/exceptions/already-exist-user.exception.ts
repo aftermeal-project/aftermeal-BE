@@ -1,7 +1,7 @@
-import { BaseException } from '@common/exceptions/base-exception';
+import { BusinessException } from '@common/exceptions/base-exception';
 import { ExceptionCode } from '@common/exceptions/exception-code';
 
-export class AlreadyExistUserException extends BaseException {
+export class AlreadyExistUserException extends BusinessException {
   override readonly code = ExceptionCode.ALREADY_EXIST_USER;
 
   constructor(message = '이미 존재하는 사용자입니다.') {

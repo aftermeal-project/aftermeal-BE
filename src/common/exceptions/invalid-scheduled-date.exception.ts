@@ -1,7 +1,7 @@
-import { BaseException } from '@common/exceptions/base-exception';
+import { BusinessException } from '@common/exceptions/base-exception';
 import { ExceptionCode } from '@common/exceptions/exception-code';
 
-export class InvalidScheduledDateException extends BaseException {
+export class InvalidScheduledDateException extends BusinessException {
   override readonly code = ExceptionCode.INVALID_SCHEDULED_DATE;
 
   constructor(

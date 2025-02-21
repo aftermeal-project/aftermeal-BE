@@ -1,7 +1,7 @@
-import { BaseException } from '@common/exceptions/base-exception';
+import { BusinessException } from '@common/exceptions/base-exception';
 import { ExceptionCode } from '@common/exceptions/exception-code';
 
-export class WeakPasswordException extends BaseException {
+export class WeakPasswordException extends BusinessException {
   override readonly code = ExceptionCode.WEAK_PASSWORD;
 
   constructor(

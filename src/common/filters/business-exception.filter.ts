@@ -5,12 +5,12 @@ import {
   HttpStatus,
   Inject,
 } from '@nestjs/common';
-import { BaseException } from '@common/exceptions/base-exception';
+import { BusinessException } from '@common/exceptions/base-exception';
 import { ResourceNotFoundException } from '@common/exceptions/resource-not-found.exception';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ResponseEntity } from '@common/models/response.entity';
 import { instanceToPlain } from 'class-transformer';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ValidationException } from '@common/exceptions/validation.exception';
 import { InvalidAccessTokenException } from '@common/exceptions/invalid-access-token.exception';
 import { ExpiredTokenException } from '@common/exceptions/expired-token.exception';
@@ -29,37 +29,33 @@ import { GraduatedGenerationException } from '@common/exceptions/graduated-gener
 import { WeakPasswordException } from '@common/exceptions/weak-password.exception';
 import { CustomLoggerService } from '@common/infrastructure/logger/custom-logger.service';
 import { WINSTON_LOGGER } from '@common/constants/dependency-token';
+import { ExceptionCode } from '@common/exceptions/exception-code';
 
-@Catch(BaseException)
-export class BaseExceptionFilter implements ExceptionFilter {
+@Catch(BusinessException)
+export class BusinessExceptionFilter implements ExceptionFilter {
   constructor(
     @Inject(WINSTON_LOGGER)
     private readonly logger: CustomLoggerService,
   ) {
-    this.logger.setContext(BaseExceptionFilter.name);
+    this.logger.setContext(BusinessExceptionFilter.name);
   }
 
-  catch(exception: BaseException, host: ArgumentsHost) {
+  catch(exception: BusinessException, host: ArgumentsHost) {
     const ctx: HttpArgumentsHost = host.switchToHttp();
-    const request: Request = ctx.getRequest<Request>();
     const response: Response = ctx.getResponse<Response>();
 
-    const status: HttpStatus = this.getStatus(exception);
+    this.logger.warn(exception.message);
 
-    this.logger.warn(
-      `Request ${request.method} ${request.url} - ${exception.message}`,
-    );
+    const status: HttpStatus = this.getStatus(exception);
+    const code: ExceptionCode = exception.code;
+    const message: string = exception.message;
 
     response
       .status(status)
-      .json(
-        instanceToPlain(
-          ResponseEntity.ERROR(exception.code, exception.message),
-        ),
-      );
+      .json(instanceToPlain(ResponseEntity.ERROR(code, message)));
   }
 
-  private getStatus(exception: BaseException): HttpStatus {
+  private getStatus(exception: BusinessException): HttpStatus {
     switch (exception.constructor) {
       case ValidationException:
       case InvalidPasswordException:
